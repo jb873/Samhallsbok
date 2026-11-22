@@ -1,0 +1,1121 @@
+/* Bokmotorn – delkapitlets sida (hubben) och läsboken.
+ * Basen är plattformens gemensamma, densamma som i de andra böckerna (geografibokens css/geografi.css): papper
+ * #ece2c8, bläck #1b2a36, Marcellus SC (kapitäler) för rubriker och knappar, EB Garamond för text och alla siffror
+ * (Marcellus 1 liknar ett I). Bara ämnesfärgen är fysikens egen (varje bok har sin --accent): indigo, med antikt
+ * guld som andrafärg. Övriga färger är bokmotorns fysiktema (1800-talet/verktyg/bok.py, TEMAN["fysik"]). */
+
+@font-face { font-family: "EB Garamond"; src: url("typsnitt/EBGaramond-wght.ttf") format("truetype");
+             font-weight: 400 800; font-display: swap; }
+@font-face { font-family: "Marcellus SC"; src: url("typsnitt/MarcellusSC-Regular.ttf") format("truetype"); font-display: swap; }
+/* Marcellus (gemener): bara på omslaget – undertiteln, upphovet och F, som i musikvideorna */
+@font-face { font-family: "Marcellus"; src: url("typsnitt/Marcellus-Regular.ttf") format("truetype"); font-display: swap; }
+
+:root {
+  --black: #1b2a36;          /* bläck: plattformens ink */
+  --dampad: #625646;         /* dämpad text: plattformens muted */
+  --linje: rgba(27, 42, 54, .18);   /* linjer: bläcket svagt, som plattformen (ingen fast grå) */
+  /* Fysikens ämnesfärg. Kontrast mot papperet (#ece2c8), WCAG 2.1: --accent 8,8:1 (text, kanter, aktiva val,
+   *   begrepp); --accent-2-mork 5,4:1 (text i guld). --accent-2 (3,0:1) bara för linjer och dekor, aldrig text.
+   *   --accent-2-ljus för guld på mörk botten. */
+  --accent: #4a2d66;         /* djup indigo – fysikens natthimmel och spektrum */
+  --accent-2: #a07d2f;       /* antikt guld – celest sekundär */
+  --accent-2-mork: #6f561c;  /* guldet för text på papperet */
+  --accent-2-ljus: #cfae62;  /* guldet på mörk botten: bannern och boklisterna */
+  --papper: #ece2c8;         /* papper: plattformens paper */
+  --papper-ljus: #f4ecd6;    /* plattformens paper-light */
+  /* Faktarutan: plattformens mönster (kemins faktaruta) i fysikens indigo – papper-ljus med en svag indigo-ton. */
+  --ruta-ton: rgba(74, 45, 102, .07);
+  --ruta-kant: rgba(74, 45, 102, .35);
+  --ruta: #e8dfce;           /* samma ton som en fast färg (papper-ljus + 7 % indigo), där en gradient inte går */
+  --fokus: #96bee4;          /* FOCUS */
+  --atom: #d6c094;           /* ATOM: hela partiklar i neutral sandfärg */
+  --bord: #2a2d33;           /* runt boken */
+  --list: #1d2026;           /* list och knappar */
+  --list-text: #e8e3d5;
+  --list-dampad: #a9a69c;
+  --text: "EB Garamond", Georgia, "Times New Roman", serif;
+  --rubrik: "Marcellus SC", "EB Garamond", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--papper); }
+body { margin: 0; min-height: 100vh; font-family: var(--text); color: var(--black); background: var(--papper);
+  -webkit-text-size-adjust: 100%; }
+body.bok-oppen { overflow: hidden; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.nr { font-family: var(--text); font-weight: 600; font-variant-caps: normal; letter-spacing: 0; }
+.kommer-chip { display: inline-block; margin-left: .55em; padding: 0 .55em; border: 1px solid currentColor; border-radius: 999px;
+  font-family: var(--text); font-size: .7em; line-height: 1.5; letter-spacing: .06em; text-transform: uppercase;
+  vertical-align: .12em; opacity: .75; }
+
+/* ---------- Hubben: delkapitlets sida (bok.js: byggHubb, ritaHubb) ----------
+ * Plattformens avsnittssida, regel för regel ur geografiboken (jb873/geografibok, css/geografi.css: hero-banner,
+ * flikar, underdel- och nivåväljare). Bara färgerna och typsnitten är fysikens:
+ *   paper → --papper, paper-light → --papper-ljus, ink → --black, muted → --dampad,
+ *   brass → --accent-2, brass-text → --accent-2-mork, bannerns ocean-blå → --accent (indigo).
+ *   Aktiva val (flik, text, nivå) fylls med --accent, där geografin har brass-text.
+ * main.sida delar namn med bokens sidor (.sida), så dess egna mått sätts här uttryckligen. */
+
+body { background-image:
+    radial-gradient(ellipse at top left, rgba(74, 45, 102, .06) 0%, rgba(74, 45, 102, 0) 55%),
+    radial-gradient(ellipse at bottom right, rgba(160, 125, 47, .07) 0%, rgba(160, 125, 47, 0) 55%);
+  background-attachment: fixed; background-repeat: no-repeat; }
+
+.hero-banner {
+  background: linear-gradient(180deg, #1b102a 0%, var(--accent) 100%); color: rgba(232, 227, 213, .95);
+  padding: 20px 0 24px; text-align: center; min-height: 150px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  font-size: 1.1875rem; line-height: 1.65;
+}
+.hero-banner .hero-inner { max-width: 1180px; margin: 0 auto; padding: 0 1rem; width: 100%; }
+.brodsmulor { text-align: center; font-family: var(--rubrik); font-size: .74rem; letter-spacing: .22em;
+  text-transform: uppercase; margin-bottom: 2.25rem; padding-left: .22em; }
+.hero-banner .brodsmulor { font-size: 13px; margin-bottom: 16px; color: rgba(232, 227, 213, .7);
+  text-transform: uppercase; letter-spacing: .08em; }
+.hero-banner .brodsmulor a { color: var(--accent-2-ljus); text-decoration: none; }
+.hero-banner .brodsmulor a:hover { color: rgba(232, 227, 213, 1); }
+.hero-banner .brodsmulor .skiljare { color: rgba(232, 227, 213, .3); margin: 0 .5em; }
+.hero-banner .brodsmulor .aktuell { color: rgba(232, 227, 213, 1); }
+.hero-banner .avsnitt-label { display: block; font-family: var(--rubrik); font-size: 12px; text-transform: uppercase;
+  letter-spacing: .15em; color: var(--accent-2-ljus); margin-bottom: 8px; }
+.hero-banner h1 { font-family: var(--rubrik); font-weight: 400; letter-spacing: .04em; font-size: clamp(30px, 3vw, 42px);
+  color: rgba(232, 227, 213, .95); margin: 0; line-height: 1.1; }
+.hero-banner .subtitel { font-family: var(--text); font-style: italic; font-size: 17px; color: rgba(232, 227, 213, .7);
+  margin-top: 8px; }
+
+main.sida {
+  position: static; display: block; width: auto; height: auto; background: none; touch-action: auto;
+  font-size: 1.1875rem; line-height: 1.65; font-weight: 400; font-variant-numeric: normal;
+  max-width: 1180px; margin: 0 auto; padding: 4.5rem 1.5rem 3rem;
+}
+.hero-banner + main.sida { padding-top: .5rem; }
+
+.flikar-rad { display: flex; justify-content: center; gap: 2rem; border-bottom: 1px solid var(--accent-2); margin: 2rem 0 2.25rem; }
+.flik {
+  font-family: var(--rubrik); font-size: 1rem; line-height: normal; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--dampad); background: none; border: none; border-bottom: 2px solid transparent;
+  padding: .6rem .4rem; margin-bottom: -1px; cursor: pointer; transition: color .15s ease, border-color .15s ease;
+}
+.flik:hover { color: var(--black); }
+.flik.aktiv { color: var(--accent); border-bottom-color: var(--accent); }
+.flik[disabled], .flik[aria-disabled="true"] { opacity: .4; cursor: not-allowed; pointer-events: none; }
+
+.flik-innehall { font-size: 19px; line-height: 1.7; }
+.flik-innehall.dold { display: none; }
+.flik-innehall .intro { font-style: italic; color: var(--dampad); margin-bottom: 1.5rem; text-align: center; }
+/* Djupdykningarna längst ned i Läs ("Vill du veta mer?"): plattformens kort (geografi.css, Djupdykningar), här
+   knappar som öppnar djupdykningen som en egen bok. brass → --accent-2, paper-light → --papper-ljus. */
+.vill-veta-mer { margin-top: 2.75rem; padding-top: 1.75rem; border-top: 1px solid rgba(27, 42, 54, 0.15); }
+.vill-veta-mer h2 { font-family: var(--rubrik); font-weight: 400; color: var(--black); line-height: 1.15; }
+.fordj-kort-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.fordj-kort { display: flex; align-items: flex-start; gap: 0.85rem; background-color: var(--papper-ljus);
+  border: 1px solid rgba(27, 42, 54, 0.14); border-left: 3px solid var(--accent-2); border-radius: 3px; padding: 1rem 1.1rem;
+  color: inherit; transition: background-color 0.15s ease, transform 0.15s ease;
+  font: inherit; text-align: left; cursor: pointer; }                 /* (knapp i stället för länk) */
+.fordj-kort:hover { background-color: #faf4e4; transform: translateY(-1px); }
+.fordj-kort[aria-disabled="true"] { opacity: .55; cursor: default; transform: none; }
+.fordj-kort-text { display: flex; flex-direction: column; gap: 0.2rem; }
+.fordj-kort-titel { font-family: var(--rubrik); color: var(--black); font-size: 1.05rem; letter-spacing: 0.03em; }
+.fordj-kort-ingress { font-size: 0.95rem; line-height: 1.4; color: var(--dampad); }   /* arbetsorder 19 */
+/* Nästa steg (arbetsorder 11): blocket under djupdykningarna i samma stil, med indigo kant; övningsböckerna överst i
+   fliken Öva och en stödbok (på sin egen sida) i Läs, utan rubrik och linje ovanför */
+.vill-veta-mer.nasta-steg .fordj-kort { border-left-color: var(--accent); }
+.vill-veta-mer.stodbocker, .vill-veta-mer.ovningsbocker { margin-top: 0; padding-top: 0; border-top: none; }
+/* en sida utan flikrad (flikar: false): lika mycket luft under bannern som flikraden ger */
+.flikar-rad[hidden] + .flik-innehall { margin-top: 2.25rem; }
+.vill-veta-mer.ovningsbocker + .flik-ram { margin-top: 1.5rem; }
+.flik-ram { display: block; width: 100%; height: 75vh; border: 1px solid rgba(27, 42, 54, .18); border-radius: 4px;
+  background: var(--papper-ljus); }
+
+.underdel-valjare {
+  display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin: 0 auto 1.25rem;
+  width: fit-content; max-width: 100%; background: var(--papper-ljus);
+  border: 1px solid rgba(160, 125, 47, .35); border-radius: 8px; padding: .45rem .7rem;
+}
+.underdel-valjare[hidden], .niva-valjare[hidden], .flikar-rad[hidden], .flik-innehall .intro[hidden] { display: none; }
+.underdel-knapp {
+  display: flex; align-items: center; gap: .6rem; background-color: var(--papper-ljus);
+  border: 1px solid rgba(27, 42, 54, .18); border-radius: 4px; padding: .45rem .9rem; cursor: pointer;
+  text-align: left; line-height: normal; transition: background-color .15s ease, border-color .15s ease;
+}
+.underdel-knapp:hover { background-color: #faf4e4; }
+.underdel-knapp.aktiv { background-color: var(--accent); border-color: var(--accent); }
+.underdel-knapp.aktiv .underdel-bokstav, .underdel-knapp.aktiv .underdel-titel { color: var(--papper); }
+.underdel-knapp[aria-disabled="true"] { opacity: .4; cursor: not-allowed; }   /* en text utan innehåll: "kommer" */
+/* Textvalet i en hjälpmedelsflik (föreläsning och musikvideo per avsnitt, 2026-11-11): samma utseende som textvalet
+   i Läs, men egna klasser – .underdel-knapp är Läs-flikens */
+.flik-texter {
+  display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin: 0 auto 1.25rem;
+  width: fit-content; max-width: 100%; background: var(--papper-ljus);
+  border: 1px solid rgba(160, 125, 47, .35); border-radius: 8px; padding: .45rem .7rem;
+}
+.flik-text {
+  display: flex; align-items: center; gap: .6rem; background-color: var(--papper-ljus);
+  border: 1px solid rgba(27, 42, 54, .18); border-radius: 4px; padding: .45rem .9rem; cursor: pointer;
+  text-align: left; line-height: normal; transition: background-color .15s ease, border-color .15s ease;
+}
+.flik-text:hover { background-color: #faf4e4; }
+.flik-text.aktiv { background-color: var(--accent); border-color: var(--accent); }
+.flik-text.aktiv .underdel-bokstav, .flik-text.aktiv .underdel-titel { color: var(--papper); }
+.flik-text[aria-disabled="true"] { opacity: .4; cursor: not-allowed; }
+.underdel-bokstav { font-family: var(--rubrik); font-size: 1.35rem; line-height: 1; color: var(--accent-2-mork); }
+.underdel-titel { font-family: var(--text); font-size: .95rem; color: var(--dampad); }
+
+.niva-valjare {
+  display: flex; justify-content: center; gap: .4rem; margin: 1.5rem auto; width: fit-content; max-width: 100%;
+  background: var(--papper-ljus); border: 1px solid rgba(160, 125, 47, .35); border-radius: 8px; padding: .45rem .7rem;
+}
+/* .niva-valjare framför: bokens tysta nivåknapp heter också .niva-knapp */
+.niva-valjare .niva-knapp {
+  display: inline-block; font-family: var(--rubrik); font-size: .85rem; line-height: normal; letter-spacing: .08em;
+  color: var(--black); background-color: transparent; border: 1px solid rgba(27, 42, 54, .2); border-radius: 3px;
+  padding: .45rem .95rem; cursor: pointer; transition: background-color .15s ease, color .15s ease;
+}
+.niva-valjare .niva-knapp:hover { background-color: rgba(74, 45, 102, .1); }
+.niva-valjare .niva-knapp.aktiv { background-color: var(--accent); color: var(--papper); border-color: var(--accent); }
+.niva-valjare .niva-knapp[aria-disabled="true"] { opacity: .4; cursor: not-allowed; background-color: transparent; }
+
+.footnote { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(27, 42, 54, .18); text-align: center;
+  font-style: italic; color: var(--dampad); font-size: .98rem; }
+
+@media (max-width: 600px) {
+  .underdel-knapp, .flik-text { width: 100%; }
+  .flikar-rad { gap: .3rem .5rem; flex-wrap: wrap; }       /* fem flikar på en rad också i en mobil (2026-11-11) */
+  .flik { font-size: .76rem; letter-spacing: .03em; padding: .6rem .15rem; }
+  .niva-valjare { flex-wrap: wrap; }                         /* fler än tre nivåer ryms inte på en rad */
+  .niva-valjare .niva-knapp { padding: .45rem .55rem; letter-spacing: .04em; }
+}
+
+/* ---------- Startsidan (Fysik/index.html) och kapitelindexet (kraft_och_rorelse/index.html) ----------
+ * Plattformens sidor, regel för regel ur geografiboken (css/geografi.css: ornament-rad, sektion-label,
+ * innehallsforteckning, kapitel-kort, sektion-avgransare, huvudelevbok-kort, resurser-rad, resurs-kort, kommer-snart).
+ * Bara färgerna och typsnitten är fysikens, som för avsnittssidan ovan: brass-text → --accent-2-mork, paper-light →
+ * --papper-ljus, ink → --black, muted → --dampad. Kapitlens vänsterkant (geografin: en färg per kapitel) är indigo.
+ * Ett kort som inte finns än är tonat (dimmad) och ett span med aria-disabled, inte en länk. */
+
+.ornament-rad { text-align: center; color: var(--accent-2-mork); letter-spacing: .6em; font-size: .95rem;
+  margin: 1.75rem 0 2.5rem; padding-left: .6em; }
+.sektion-label { display: block; text-align: center; font-family: var(--rubrik); color: var(--dampad); letter-spacing: .42em;
+  font-size: .8rem; text-transform: uppercase; margin-bottom: 1.5rem; padding-left: .42em; }
+
+.innehallsforteckning { display: flex; flex-direction: column; gap: 1rem; list-style: none; margin: 0; padding: 0; }
+.kapitel-kort {
+  position: relative; display: flex; align-items: center; gap: 1.5rem;
+  background-color: var(--papper-ljus); border: 1px solid rgba(27, 42, 54, .15); border-left: 4px solid var(--accent);
+  border-radius: 3px; padding: 1.35rem 1.75rem; color: inherit; text-decoration: none;
+  transition: background-color .18s ease, transform .18s ease;
+}
+a.kapitel-kort:hover { background-color: #faf4e4; transform: translateY(-1px); }
+.kapitel-kort .romersk { flex: 0 0 auto; font-family: var(--rubrik); color: var(--accent-2-mork); font-size: 1.75rem; line-height: 1;
+  min-width: 2.4rem; text-align: center; }
+.kapitel-kort .kap-text { flex: 1 1 auto; }
+.kapitel-kort .kap-titel { display: block; font-family: var(--rubrik); color: var(--black); font-size: 1.2rem; letter-spacing: .03em;
+  line-height: 1.15; margin: 0 0 .25rem; }
+.kapitel-kort .kap-beskrivning { color: var(--dampad); font-size: 1rem; line-height: 1.45; margin: 0; }
+.kapitel-kort .pil { flex: 0 0 auto; color: var(--accent-2-mork); font-size: 1.4rem; line-height: 1; }
+.kapitel-kort.dimmad { opacity: .55; cursor: not-allowed; }
+
+.sektion-avgransare { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(27, 42, 54, .15); }
+.sektion-avgransare .litet-ornament { text-align: center; color: var(--accent-2-mork); font-size: .85rem; margin-bottom: 1.25rem; }
+.sektion-avgransare .sektion-label { color: var(--accent-2-mork); }
+
+.huvudelevbok-kort { border-left-color: var(--accent-2-mork); }
+.huvudelevbok-kort .ikon { flex: 0 0 auto; width: 32px; height: 32px; color: var(--black); }
+.huvudelevbok-kort .ikon svg { display: block; width: 100%; height: 100%; }
+.huvudelevbok-kort h3 { font-family: var(--rubrik); font-weight: 400; color: var(--black); font-size: 1.2rem; letter-spacing: .03em;
+  line-height: 1.15; margin: 0 0 .25rem; }
+.huvudelevbok-kort + .huvudelevbok-kort { margin-top: 1rem; }
+/* Nästa steg på startsidan (arbetsorder 11): listan över kapitlen med Nästa steg och, bredvid den, Matematiken i
+   fysiken. Bredvid varandra på en bred skärm, under varandra på mobilen. */
+.nasta-steg-delar { display: grid; grid-template-columns: 3fr 2fr; gap: 1rem; align-items: start; }
+.nasta-steg-lista { display: flex; flex-direction: column; gap: 1rem; list-style: none; margin: 0; padding: 0; }
+.matematik-kort { border-left-color: var(--accent-2-mork); }
+.matematik-kort .ikon { flex: 0 0 auto; width: 32px; height: 32px; color: var(--black); }
+.matematik-kort .ikon svg { display: block; width: 100%; height: 100%; }
+@media (max-width: 699px) { .nasta-steg-delar { grid-template-columns: 1fr; } }
+
+.resurser-rad { display: flex; flex-wrap: wrap; gap: .85rem; justify-content: center; }
+.resurs-kort {
+  flex: 1 1 260px; max-width: 360px; display: flex; align-items: center; gap: .85rem;
+  background-color: var(--papper-ljus); border: 1px solid rgba(27, 42, 54, .14); border-radius: 3px; padding: .7rem .9rem;
+  color: inherit; text-decoration: none; transition: background-color .18s ease, transform .18s ease;
+}
+a.resurs-kort:hover { background-color: #faf4e4; transform: translateY(-1px); }
+.resurs-kort.dimmad { opacity: .55; cursor: not-allowed; }
+.resurs-kort .ikon { flex: 0 0 auto; width: 24px; height: 24px; color: var(--black); }
+.resurs-kort .ikon svg { display: block; width: 100%; height: 100%; }
+.resurs-kort h4 { font-family: var(--rubrik); color: var(--black); font-size: .98rem; font-weight: 400; letter-spacing: .03em;
+  line-height: 1.15; margin: 0 0 .15rem; }
+.resurs-kort .resurs-beskrivning { color: var(--dampad); font-size: .88rem; line-height: 1.35; margin: 0; }
+/* "Kommer"-etiketten på ett tonat kort */
+.kommer-snart { display: block; font-family: var(--rubrik); color: var(--accent-2-mork); font-size: .7rem; letter-spacing: .18em;
+  text-transform: uppercase; margin-bottom: .25rem; }
+
+@media (max-width: 560px) {
+  .resurs-kort { flex-basis: 100%; max-width: 100%; }
+  .kapitel-kort { gap: 1rem; padding: 1.1rem 1.1rem; }
+}
+
+/* ---------- Boken: hela fönstret (eller helskärmen) över hubben ---------- */
+
+.bokapp { position: fixed; inset: 0; z-index: 5; display: grid; grid-template-rows: 1fr; background: var(--bord); color: var(--list-text); }
+.bokapp[hidden] { display: none; }
+.bokapp.smal { grid-template-rows: auto 1fr auto; }
+
+.topplist, .bottenlist { display: none; align-items: center; gap: 8px; padding: 0 8px;
+  background: var(--list); color: var(--list-text); min-height: 44px; }
+.smal > .topplist { display: grid; grid-template-columns: auto 1fr auto; }
+.smal > .bottenlist { display: grid; grid-template-columns: auto 1fr auto; min-height: 52px; }
+.topp-niva { justify-self: center; }
+
+.knapp {
+  background: transparent; border: 1px solid rgba(232, 227, 213, .28); border-radius: 4px;
+  color: var(--list-text); padding: 4px 10px; font-family: var(--rubrik); font-size: 14.5px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.knapp:hover:not([disabled]) { background: rgba(232, 227, 213, .1); }
+.knapp[disabled] { opacity: .35; cursor: default; }
+.bottenlist .knapp { min-width: 48px; min-height: 40px; justify-content: center; font-size: 24px; padding: 0 10px 3px; }
+
+.scen-ram { position: relative; min-height: 0; }
+.scen {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.scen:focus { outline: none; }
+/* Vågräta svep bläddrar (bok.js); rullning i sidled och webbläsarens "bakåt"-gest tas inte av sidorna.
+   Gäller också i sidans rullbara innehåll, där touch-action annars börjar om. Zoomning med två fingrar fungerar. */
+.scen, .sida, .sidinnehall { touch-action: pan-y pinch-zoom; }
+[data-ingen-svep] { touch-action: auto; }
+
+.sidpil {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 50px; height: 110px;
+  background: transparent; border: 0; border-radius: 6px; color: var(--list-text);
+  font-family: var(--text); font-size: 54px; line-height: 1; padding: 0 0 8px; opacity: .28; cursor: pointer;
+  transition: opacity .4s;
+}
+.sidpil:hover:not([disabled]) { opacity: 1; background: rgba(232, 227, 213, .07); }
+.sidpil[disabled] { opacity: .06; cursor: default; }
+.sidpil-bak { left: 19px; }
+.sidpil-fram { right: 19px; }
+.smal .sidpil { display: none; }
+
+/* Dator: reglagen tysta i marginalerna bredvid boken (88 px), så att de inte tar höjd från sidorna. */
+.las-reglage { display: none; }
+.bokapp:not(.smal) .las-reglage { display: flex; transition: opacity .4s; }
+.las-kolumn {
+  position: absolute; top: 0; bottom: 0; width: 88px; z-index: 3; flex-direction: column; align-items: center;
+  padding: 14px 4px 16px; pointer-events: none;
+}
+.las-kolumn > * { pointer-events: auto; }
+.las-vanster { left: 0; justify-content: space-between; }
+.las-hoger { right: 0; justify-content: flex-start; }
+.las-topp { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.las-knapp {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 72px; padding: 6px 4px; cursor: pointer;
+  background: none; border: 1px solid rgba(232, 227, 213, .25); border-radius: 6px; color: var(--list-text);
+  font-family: var(--rubrik); font-size: 13px; line-height: 1.2; text-align: center; opacity: .75;
+}
+.las-knapp.bok-innehall { border-color: transparent; opacity: .55; }
+.las-knapp:hover { opacity: 1; background: rgba(232, 227, 213, .08); }
+.las-x { font-family: var(--text); font-size: 17px; line-height: 1; }
+.las-botten { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.las-sidtext { display: flex; flex-direction: column; align-items: center; font-size: 13px; line-height: 1.3;
+  color: var(--list-dampad); }
+.las-vanster .tillbaka-chip { white-space: normal; text-align: center; font-size: 13px; line-height: 1.25;
+  padding: 5px 8px; border-radius: 6px; opacity: .85; }
+
+.las-remsa { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); height: 3px; gap: 5px; z-index: 3; }
+.lr-grupp { display: flex; gap: 2px; }
+.lr-sida { flex: 1; border-radius: 2px; background: rgba(232, 227, 213, .14); }
+.lr-sida.synlig { background: var(--accent-2-ljus); }
+
+/* Nivåknappen: liten och tyst; de andra nivåerna i en lista under den */
+.niva { position: relative; }
+.niva-knapp { display: inline-flex; align-items: center; gap: 4px; background: none; cursor: pointer;
+  border: 1px solid rgba(232, 227, 213, .22); border-radius: 4px; padding: 4px 7px;
+  font-family: var(--rubrik); font-size: 13px; color: var(--list-text); }
+.las-hoger .niva { opacity: .6; }
+.las-hoger .niva:hover, .las-hoger .niva:focus-within { opacity: 1; }
+.niva-pil { font-size: .8em; color: var(--list-dampad); }
+.niva-lista { position: absolute; top: calc(100% + 4px); right: 0; z-index: 6; display: flex; flex-direction: column;
+  min-width: 150px; padding: 4px; background: var(--list); border: 1px solid rgba(232, 227, 213, .25); border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .4); }
+.niva-lista[hidden] { display: none; }
+.topp-niva .niva-lista { right: auto; left: 50%; transform: translateX(-50%); }
+.niva-lista button { background: none; border: 0; border-radius: 4px; padding: 6px 10px; text-align: left; cursor: pointer;
+  font-family: var(--rubrik); font-size: 14px; color: var(--list-text); white-space: nowrap; }
+.niva-lista button:hover:not([aria-disabled]) { background: rgba(232, 227, 213, .1); }
+.niva-lista button[aria-checked="true"] { background: var(--papper); color: var(--black); }
+.niva-lista button[aria-disabled="true"] { color: var(--list-dampad); cursor: not-allowed; }
+
+/* "Vid musrörelse": reglagen och muspekaren göms efter en stund i stillhet (bok.js: vakna) */
+.bokapp.vila { cursor: none; }
+.bokapp.vila .las-reglage, .bokapp.vila .sidpil { opacity: 0; }
+.bokapp .las-reglage:focus-within { opacity: 1; }
+
+.position { text-align: center; font-size: 14px; line-height: 1.25; min-width: 0; overflow: hidden; }
+.position .pos-avsnitt { display: block; font-family: var(--rubrik); white-space: nowrap; }
+.position .nr { color: var(--accent-2-ljus); }
+.position .pos-sida { display: block; color: var(--list-dampad); white-space: nowrap; }
+.position .pos-skiljetecken { display: none; }
+.botten-mitt { display: flex; justify-content: center; min-width: 0; }
+.tillbaka-chip {
+  background: var(--papper); color: var(--black); border: 0; border-radius: 999px;
+  padding: 4px 14px; font-size: 15px; cursor: pointer; white-space: nowrap;
+}
+.tillbaka-chip[hidden] { display: none; }
+.tillbaka-chip:hover { color: var(--accent); }
+
+/* ---------- Uppslaget och sidorna ---------- */
+
+.uppslag { display: flex; }
+.uppslag.ar-uppslag, .uppslag.ar-enkel:not(.smal) { box-shadow: 0 12px 34px rgba(0, 0, 0, .38); border-radius: 3px; }
+.in-framat { animation: in-framat .17s ease-out; }
+.in-bakat { animation: in-bakat .17s ease-out; }
+@keyframes in-framat { from { opacity: 0; transform: translateX(14px); } }
+@keyframes in-bakat { from { opacity: 0; transform: translateX(-14px); } }
+@media (prefers-reduced-motion: reduce) { .in-framat, .in-bakat { animation: none; } }
+
+/* Bladvändningen (bok.js: vandBlad): ett lager ovanpå scenen, med bladet vridet runt ryggen i perspektiv (som
+   kameran i filmernas bok, ≈ 5 sidbredder). Bladets två ytor döljer sin baksida; ljuset (bladet mörknar på högkant)
+   och skuggan på sidan under bladet tonas av bok.js. Lagret tar inga klick. */
+.blad-lager { position: absolute; z-index: 1; pointer-events: none; perspective: calc(var(--sb) * 5); }
+.blad-lager.ar-enkel { perspective: calc(var(--sb) * 8); }          /* en sida vrids bara till högkant: svagare */
+.blad-lager > div { position: absolute; top: 0; bottom: 0; }
+.blad { transform-style: preserve-3d; will-change: transform; }
+.blad.fran-hoger { transform-origin: left center; }
+.blad.fran-vanster { transform-origin: right center; }
+.blad-sida { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+.blad-sida.bak { transform: rotateY(180deg); }
+.blad-ljus { position: absolute; inset: 0; background: #000; opacity: 0; }
+.blad-skugga { opacity: 0; }
+.blad-skugga.mot-hoger { background: linear-gradient(to right, rgba(20, 14, 4, .34), rgba(20, 14, 4, 0) 55%); }
+.blad-skugga.mot-vanster { background: linear-gradient(to left, rgba(20, 14, 4, .34), rgba(20, 14, 4, 0) 55%); }
+.blad-fast .sida, .blad-sida .sida { box-shadow: none; }
+
+.sida {
+  position: relative; display: flex; flex-direction: column;
+  width: var(--sb); height: var(--sh); background: var(--papper);
+  font-size: var(--fs); line-height: 1.42; font-weight: 450; color: var(--black);
+  font-variant-numeric: lining-nums;
+}
+.ar-enkel .sida { border-radius: 3px; }
+.ar-enkel.smal .sida { border-radius: 0; }
+.vanstersida { border-radius: 3px 0 0 3px;
+  background: linear-gradient(to left, rgba(40, 30, 10, .10), rgba(40, 30, 10, 0) 5%), var(--papper); }
+.hogersida { border-radius: 0 3px 3px 0;
+  background: linear-gradient(to right, rgba(40, 30, 10, .10), rgba(40, 30, 10, 0) 5%), var(--papper); }
+.tom-sida { filter: brightness(.97); }
+
+/* Omslaget (bok.js: omslagElement), som i musikvideorna: sida 0, före innehållet. På ett uppslag står det ensamt som
+   högersida och boken är stängd – till vänster syns bordet (också under bladvändningen, i bladlagret). Hörnen är
+   filmens (14 av 1036). Mobilen: omslaget fyller sidan. */
+.uppslag.med-omslag { box-shadow: none; }
+.sida.omslag { background: #162040; border-radius: calc(var(--sh) * 14 / 1036); overflow: hidden;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .38); }
+.smal .sida.omslag, .blad-sida .sida.omslag { box-shadow: none; }
+.smal .sida.omslag { border-radius: 0; }
+.omslag-bild, .omslag-bild svg { display: block; width: 100%; height: 100%; }
+.sida.fore-omslag { background: none; border-radius: 0; }
+.blad-fast .sida.fore-omslag { background: var(--bord); }
+
+/* Sidhuvud: avsnittet och sidnumret, med numret i det yttre hörnet (till vänster på en vänstersida). */
+.sidhuvud {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1em;
+  margin: 0 8%; padding: 1em 0 .35em; border-bottom: 1px solid var(--linje);
+  font-size: .8em; letter-spacing: .05em; font-variant-caps: all-small-caps; color: var(--dampad); white-space: nowrap;
+}
+.vanstersida .sidhuvud { flex-direction: row-reverse; }
+.sh-namn { overflow: hidden; text-overflow: ellipsis; }
+.sh-namn .nr { color: var(--accent-2-mork); }
+.sh-folio { font-size: 1.2em; font-variant-caps: normal; letter-spacing: 0; color: var(--black); }
+
+.sidinnehall {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: .8em 8% 1.1em; container-type: inline-size;
+}
+@media (max-width: 599px) {
+  .sidhuvud { margin: 0 6%; padding-top: .8em; }
+  .sidinnehall { padding: .7em 6% .9em; }
+}
+.sida.har-mer .sidinnehall {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.2em), transparent);
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 2.2em), transparent);
+}
+.mer-hint { display: none; position: absolute; left: 0; right: 0; bottom: .5em; text-align: center;
+  font-size: .8em; color: var(--dampad); pointer-events: none; }
+.sida.har-mer .mer-hint { display: block; }
+
+/* ---------- Text på sidan ---------- */
+
+.sidinnehall > :first-child { margin-top: 0; }
+.sidinnehall > :last-child { margin-bottom: 0; }   /* sidans sista block: ingen marginal under (brytningen räknar så) */
+.avsnittsstart { display: flex; align-items: baseline; gap: .4em; margin: 0 0 .45em;
+  padding-bottom: .25em; border-bottom: 2px solid var(--accent-2); }
+.avsnittsnr { font-family: var(--text); font-weight: 600; font-size: 1.8em; line-height: 1; color: var(--accent-2-mork); }
+.avsnittsstart h1 { font-family: var(--rubrik); font-weight: 400; font-size: 1.55em; line-height: 1.1; margin: 0; }
+.sidtitel { font-family: var(--rubrik); font-weight: 400; font-size: 1.32em; line-height: 1.2; margin: .2em 0 .45em; }
+.b-rubrik { font-family: var(--rubrik); font-weight: 400; font-size: 1.08em; margin: .8em 0 .25em; color: var(--black); }
+.sidinnehall p { margin: 0 0 .55em; }
+.begrepp { font-weight: 620; color: var(--accent); }
+/* Ett begrepp som är en länk till begreppslistan: samma färg, en tunn prickad linje under. */
+a.begrepp { text-decoration: underline dotted rgba(74, 45, 102, .45); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+a.begrepp:hover { text-decoration-style: solid; }
+sub, sup { font-size: .7em; line-height: 0; }
+
+.b-punkter { list-style: none; margin: 0 0 .6em; padding: 0; }
+.b-punkter li { position: relative; padding-left: 1.05em; margin-bottom: .28em; }
+/* en punkt ur en punktlista som får delas (arbetsorder 16): samma avstånd som mellan punkterna i en hel lista, och
+   listans marginal under den sista – höjden blir densamma som den hela listans */
+.b-punktdel:not(.pd-sista) { margin-bottom: .28em; }
+.b-punkter li::before {
+  content: ""; position: absolute; left: .1em; top: .6em; width: .3em; height: .3em;
+  background: var(--accent-2); transform: rotate(45deg);
+}
+
+.b-ruta { background: linear-gradient(var(--ruta-ton), var(--ruta-ton)), var(--papper-ljus);
+  border: 1px solid var(--ruta-kant); border-left: 4px solid var(--accent); border-radius: 2px;
+  padding: .5em .85em .55em; margin: .7em 0; }
+.b-ruta h4 { font-family: var(--rubrik); font-weight: 400; font-size: 1em; margin: 0 0 .2em; }
+.b-ruta p:last-child, .b-ruta .b-punkter:last-child, .b-ruta li:last-child { margin-bottom: 0; }
+.b-ruta-definition { font-size: 1.12em; padding: .6em .9em; }
+
+.b-jamforelse { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.3em; margin: .3em 0 .6em; }
+.b-jamforelse section { border-top: 2px solid var(--accent-2); padding-top: .3em; }
+.b-jamforelse h4 { font-family: var(--rubrik); font-weight: 400; font-size: 1.12em; margin: 0 0 .25em; }
+@container (max-width: 22em) { .b-jamforelse { grid-template-columns: 1fr; gap: .5em; } }
+
+.brak { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; line-height: 1.15;
+  font-size: .92em; margin: 0 .1em; }
+.brak-t { border-bottom: 1.4px solid currentColor; padding: 0 .25em .05em; }
+.brak-n { padding: .05em .25em 0; }
+
+.b-formel { display: flex; align-items: center; justify-content: center; gap: 1.6em; flex-wrap: wrap;
+  margin: .5em 0 .7em; padding: .55em .8em; border: 1px solid var(--linje); border-radius: 3px; }
+.formel-uttryck { font-size: 1.75em; line-height: 1.1; white-space: nowrap; }
+.formel-uttryck .brak { font-size: .85em; }
+.b-formel dl { display: grid; grid-template-columns: auto 1fr; gap: .05em .55em; margin: 0; }
+.b-formel dt { font-weight: 620; color: var(--accent); text-align: center; }
+.b-formel dd { margin: 0; }
+
+.b-exempel { margin: .6em 0; padding-left: .85em; border-left: 2px solid var(--linje); }
+.b-exempel h4 { font-family: var(--rubrik); font-weight: 400; font-size: 1em; margin: 0 0 .15em; color: var(--dampad); }
+.b-exempel p { margin: 0 0 .25em; }
+
+/* Nästa steg (arbetsorder 11). FORMEL: uttrycket stort och centrerat på en rad, förklaringen under i mindre stil.
+   Uttrycket bryts aldrig: är spalten för smal krymper det (--b: uttryckets bredd i em, bok.js formelBredd; 100cqi är
+   sidinnehållets bredd, se .sidinnehall). */
+.b-formel-rad { flex-direction: column; gap: .3em; text-align: center; }
+.b-formel-rad .formel-uttryck { font-size: min(1.75em, calc((100cqi - 1.8em) / var(--b))); max-width: 100%; }
+.formel-forklaring { font-size: .84em; line-height: 1.3; color: var(--dampad); margin: 0 !important; }
+/* EXEMPEL och PROVA: en ruta i rader (en post per rad, så att ett långt exempel kan brytas mellan raderna) */
+.b-rutarad { background: linear-gradient(var(--ruta-ton), var(--ruta-ton)), var(--papper-ljus);
+  border-left: 3px solid var(--accent-2); padding: 0 .85em; margin: 0 !important; }
+.b-rutarad p { margin: 0 !important; }
+.b-rutarad.rr-ny { padding-top: .45em; }
+.b-rutarad.rr-forsta { padding-top: .5em; margin-top: .7em !important; border-top-right-radius: 2px; }
+.b-rutarad.rr-sista { padding-bottom: .55em; margin-bottom: .7em !important; border-bottom-right-radius: 2px; }
+.sidinnehall > .b-rutarad:first-child { margin-top: 0 !important; }
+.sidinnehall > .b-rutarad:last-child { margin-bottom: 0 !important; }
+.b-rutarad h4 { font-family: var(--rubrik); font-weight: 400; font-size: 1em; margin: 0 0 .25em; color: var(--accent); }
+.rr-prova { border-left-color: var(--accent); }
+.ex-ord { font-weight: 620; }
+/* Rader i följd (mellanled): var och en på sin rad, mellanrummen står kvar */
+.b-rader { margin: 0 0 .55em; }
+/* en rad ur rader i följd som får delas (arbetsorder 21): ingen marginal mellan raderna, blockets under den sista */
+.b-raddel:not(.rd-sista) { margin-bottom: 0; }
+.b-rad { white-space: pre-wrap; }
+.b-numrerad { margin: 0 0 .6em; padding-left: 1.6em; }
+.b-numrerad li { margin-bottom: .28em; padding-left: .2em; }
+.b-numrerad li::marker { font-weight: 600; color: var(--accent-2-mork); }
+/* Länkar till en annan bok: "Matematik du behöver:" / "Används i Nästa steg:" överst i avsnittet */
+.b-bokref { font-size: .86em; line-height: 1.35; color: var(--dampad); margin: 0 0 .6em !important; }
+.bokref-etikett { font-variant-caps: all-small-caps; letter-spacing: .05em; color: var(--accent-2-mork); }
+.bok-lank, .bok-lank-sida { color: var(--accent); text-decoration: underline dotted rgba(74, 45, 102, .45); text-underline-offset: .2em; }
+.bok-lank:hover, .bok-lank-sida:hover { text-decoration-style: solid; }
+.b-boklank { font-family: var(--rubrik); }
+.b-boklank .bok-lank { text-decoration: none; }
+.b-boklank .bok-lank:hover { text-decoration: underline; text-underline-offset: .15em; }
+
+.b-tabell { margin: .4em 0 .7em; }
+.b-tabell table { border-collapse: collapse; font-variant-numeric: tabular-nums lining-nums; }
+.b-tabell th, .b-tabell td { text-align: left; padding: .16em 1.1em .16em 0; border-bottom: 1px solid var(--linje); }
+.b-tabell thead th { font-weight: 450; font-size: .82em; letter-spacing: .04em; font-variant-caps: all-small-caps;
+  color: var(--dampad); border-bottom-color: var(--dampad); }
+.b-tabell tbody th { font-weight: 560; }
+/* Bokstavssymboler och enheter i rubriker och tabellhuvuden (bok.js: symboler): vanlig stil, rätt skiftläge – inte
+   kapitäler, där g blir G och kg KG */
+.sym { font-family: var(--text); font-variant-caps: normal; text-transform: none; letter-spacing: normal; font-weight: 500; }
+.tabell-fotnot { font-size: .82em; color: var(--dampad); margin: .3em 0 0; }
+
+/* Länken ut till hjälpmedlen (blocktypen lank), t.ex. i slutet av ett avsnitt. Den står i sidans fot (bok.js:
+   byggSida): en tyst rad under en tunn linje, i stället för det mesta av sidans nedre marginal. */
+.sidfot { margin: 0 8%; padding: .15em 0 .3em; border-top: 1px solid var(--linje); font-size: .76em; line-height: 1.2; }  /* (luften minskad 2026-11-11, se .b-lank) */
+.sida.har-fot .sidinnehall { padding-bottom: .25em; }
+.sida.har-fot .mer-hint { bottom: 2.4em; }
+@media (max-width: 599px) { .sidfot { margin: 0 6%; } }
+/* (2026-11-11) tätare radavstånd: med Musikvideo blir Sammanfattningens rad ofta två rader, och då ska foten inte ta
+   mer plats än nödvändigt */
+.b-lank { display: flex; flex-wrap: wrap; gap: 0 1.6em; line-height: 1.1; font-family: var(--rubrik); }
+.lank-post { color: var(--accent); text-decoration: none; }
+a.lank-post:hover { text-decoration: underline; text-underline-offset: .15em; }
+.lank-post.kommer { color: var(--dampad); opacity: .8; }
+.lank-post .kommer-chip { font-size: .72em; }
+
+.b-figur { margin: .5em 0 .7em; }
+.figur-bild svg { display: block; width: 100%; height: auto; max-height: calc(var(--sh) * .32); margin: 0 auto; }
+.b-figur figcaption { font-size: .86em; color: var(--dampad); margin-top: .3em; line-height: 1.3; }
+.figur-saknas, .block-okand { border: 1.5px dashed var(--accent-2); padding: 1em; text-align: center; color: var(--accent-2-mork); }
+
+/* Figurernas delar (bokskal/figurer.js). Storlekarna är i figurens egna enheter. */
+.fig-rubrik { font-family: var(--rubrik); font-size: 19px; fill: var(--black); text-anchor: middle; }
+.fig-text { font-family: var(--text); font-size: 16.5px; fill: var(--black); font-weight: 450; }
+.fig-pil-text { font-family: var(--text); font-size: 15.5px; font-weight: 600; fill: var(--accent-2-mork); text-anchor: middle; }
+.fig-mitt { text-anchor: middle; }
+.fig-vanster { text-anchor: start; }
+.fig-hoger { text-anchor: end; }
+.fig-dampad { fill: var(--dampad); }
+.fig-stor { font-size: 23px; font-weight: 560; }
+.fig-utfall { fill: var(--accent); font-weight: 620; }
+.fig-pil { stroke: var(--accent-2-mork); stroke-width: 2.4; fill: none; stroke-linecap: round; }
+.fig-pilspets { fill: var(--accent-2-mork); }
+.fig-pil.fig-resultant { stroke: var(--accent); stroke-dasharray: 7 5; }
+.fig-pilspets.fig-resultant { fill: var(--accent); }
+.fig-pil-text.fig-resultant { fill: var(--accent); }
+.fig-varde { font-weight: 450; fill: var(--black); }
+.fig-halo { paint-order: stroke; stroke: var(--papper); stroke-width: 5px; stroke-linejoin: round; }
+.fig-kontur { fill: none; stroke: var(--dampad); stroke-width: 2; stroke-linejoin: round; }
+.fig-bord { stroke: var(--dampad); stroke-width: 2; }
+.fig-skraffer { stroke: var(--dampad); stroke-width: 1.2; opacity: .6; }
+.fig-partikel { fill: var(--atom); stroke: #8a7656; stroke-width: 1.3; }
+.fig-spar { stroke: #b3a07a; stroke-width: 1.6; stroke-linecap: round; }
+.fig-vatten { fill: #b8d0e3; }
+.fig-vattenyta { stroke: #4f7fa8; stroke-width: 2; }
+.fig-tra { fill: #c9a06a; stroke: #8a6a3e; stroke-width: 1.5; }
+.fig-is { fill: #eef5fa; stroke: #7d9fba; stroke-width: 1.5; }
+.fig-jarn { fill: #6f7581; stroke: #4a4f58; stroke-width: 1.5; }
+.fig-foremal { fill: #e4dccd; stroke: #8f846f; stroke-width: 1.5; }
+.fig-angrepp { fill: var(--accent-2-mork); }
+.fig-varm { fill: #efcfb6; stroke: #c48458; stroke-width: 1.5; }   /* varmt föremål: figurens egen färg, som vatten och is */
+.fig-kall { fill: #d3e2ee; stroke: #7d9fba; stroke-width: 1.5; }
+.fig-ljum { fill: #e4dccd; stroke: #a99d86; stroke-width: 1.5; }
+/* skalmodell: skalen tunna, elektronerna bläck; de som flyttar i guld och lite större; protoner indigo, neutroner sand */
+.fig-skal { fill: none; stroke: var(--dampad); stroke-width: 1.4; opacity: .7; }
+.fig-elektron { fill: var(--black); }
+.fig-elektron.fig-elektron-flyttar { fill: var(--accent-2); stroke: var(--accent-2-mork); stroke-width: 1.4; }
+.fig-karna { fill: var(--atom); stroke: #8a7656; stroke-width: 1.3; }
+.fig-karntext { font-size: 13.5px; font-weight: 600; }
+.fig-proton { fill: var(--accent); stroke: #2c1a3e; stroke-width: 1; }
+.fig-neutron { fill: var(--atom); stroke: #8a7656; stroke-width: 1; }
+.fig-liten { font-size: 14.5px; }
+/* rörelsespår: prickarna i bläck, strålen (rörelseriktningen) i guld */
+.fig-prick { fill: var(--black); }
+.fig-pil.fig-strale { stroke-width: 2; }
+.fig-snore { stroke: var(--dampad); stroke-width: 1.6; }
+.fig-lupp { fill: none; stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.fig-yta-foremal { fill: #e4dccd; }                                  /* blocket i förstoring: som fig-foremal */
+.fig-yta-underlag { fill: #cdd3d1; }                                 /* bordet: dämpat gråblått, skiljer sig från blocket */
+.fig-ytlinje { fill: none; stroke: #8f846f; stroke-width: 1.5; stroke-linejoin: round; }
+.fig-ytlinje.fig-ytlinje-underlag { stroke: #7f8b88; }
+/* bildpilar: röda pilar med vit kant på foto (guldet försvinner mot trä); fotot får vara upp till 45 % av sidhöjden */
+.figur-bild svg[data-bildpilar] { max-height: calc(var(--sh) * .45); }
+/* --bp-k (bok.js: passaEtiketter): när fotot skalas ner växer etiketterna och pilarnas tjocklek, så att etiketten
+   aldrig blir mindre än 14 px på skärmen */
+.fig-pil.fig-bildpil-kant { stroke: #fff; stroke-width: calc(7.5px * var(--bp-k, 1)); }
+.fig-pilspets.fig-bildpil-kant { fill: #fff; stroke: #fff; stroke-width: calc(4.5px * var(--bp-k, 1)); stroke-linejoin: round; }
+.fig-pil.fig-bildpil-rod { stroke: #b3261e; stroke-width: calc(3.4px * var(--bp-k, 1)); }
+.fig-pilspets.fig-bildpil-rod { fill: #b3261e; }
+.fig-bildpil-prick { fill: #b3261e; stroke: #fff; stroke-width: calc(2px * var(--bp-k, 1)); r: calc(4.5px * var(--bp-k, 1)); }
+.fig-bildpil-lage { fill: #b3261e; stroke: #fff; stroke-width: calc(2.4px * var(--bp-k, 1)); r: calc(6px * var(--bp-k, 1)); }
+/* lutande_plan: starthöjden streckad i guld, kulan där den stannar tonad */
+.fig-hojd { stroke: var(--accent-2); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.fig-tonad { opacity: .5; }
+/* stoppstracka: reaktionssträckan i ljust bläck, bromssträckan i mörkt; markeringen streckad i fysikens indigo */
+.fig-stopp-reaktion { fill: rgba(27, 42, 54, .28); }
+.fig-stopp-broms { fill: var(--black); }
+.fig-stopp-markering { stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.fig-stopp-markering-text { fill: var(--accent); font-weight: 600; }
+/* fallande_hiss och newtons_kanon */
+.fig-hiss-rubrik { font-weight: 600; }
+.fig-hiss-korg { fill: rgba(27, 42, 54, .04); stroke: var(--dampad); stroke-width: 2; }
+.fig-hiss-kabel { fill: none; stroke: var(--dampad); stroke-width: 2; stroke-linejoin: round; }
+.fig-hiss-display { font-size: 13px; font-weight: 600; }
+.fig-gubbe { stroke: var(--black); stroke-width: 2.4; stroke-linecap: round; fill: var(--papper); }
+.fig-jorden { fill: #cddbe6; stroke: #7d9fba; stroke-width: 1.6; }
+.fig-berg { fill: #e4dccd; stroke: #8f846f; stroke-width: 1.5; stroke-linejoin: round; }
+.fig-kanon { fill: var(--black); }
+.fig-kanon-bana path.fig-pil { fill: none; }
+.fig-pil.fig-kanon-runt { fill: none; stroke-dasharray: 6 5; }
+.figur-bild svg[data-newtons-kanon] { max-height: calc(var(--sh) * .48); }      /* jorden och banorna behöver plats */
+.fig-hiss-stump { fill: var(--dampad); }
+.fig-hiss-fransar { stroke: var(--dampad); stroke-width: 1.2; stroke-linecap: round; }
+.fig-bildpil-text { font-family: var(--text); font-size: calc(18px * var(--bp-k, 1)); font-weight: 650; fill: #b3261e; text-anchor: middle;
+  paint-order: stroke; stroke: #fff; stroke-width: calc(5px * var(--bp-k, 1)); stroke-linejoin: round; }
+/* Två paneler (figurer.js: paneler): bredvid varandra lika stora som en figur på 440 enheter med samma höjdgräns
+   (--fig-kvot = 440 / höjden). Blir texten under 14 px när de står bredvid varandra staplas de under varandra, så
+   stora att den minsta texten blir 14 px: gränsen är 440 · 14 / minsta texten (i figurens enheter), storleken
+   220 · 14 / minsta texten. Sidinnehållet är containern, så brytningen mäter samma sak som eleven ser. */
+.fig-paneler { display: flex; justify-content: center; margin: 0 auto; max-width: calc(var(--sh) * .32 * var(--fig-kvot)); }
+.figur-bild .fig-paneler svg { flex: 1 1 0; min-width: 0; width: 50%; max-height: none; margin: 0; }
+/* fallande_hiss: minsta texten är displayen (13), alltså staplad under 474 px; staplad blir displayen 14,5, och den
+   högra panelen flyttas 20 enheter åt vänster så att korgarna står rakt under varandra */
+@container (max-width: 473.9px) {
+  .fig-paneler[data-paneler="fallande_hiss"] { flex-direction: column; align-items: center; gap: .45em; max-width: none; }
+  .figur-bild .fig-paneler[data-paneler="fallande_hiss"] svg { flex: none; width: min(100%, 213px); }
+  .fig-paneler[data-paneler="fallande_hiss"] svg + svg { translate: -9.091% 0; }
+  .fig-paneler[data-paneler="fallande_hiss"] .fig-hiss-display { font-size: 14.5px; }
+}
+/* jord_och_mane: minsta texten är 15,5 (tyngden och vågens display), alltså staplad under 397 px, 199 px bred */
+.fig-jm-jord { fill: #d3d8a8; }                                     /* grönaktig sand: syns mot papperets sandfärg */
+.fig-jm-jord-kant { stroke: #8fae6e; stroke-width: 3.5; }
+.fig-jm-mane { fill: #dcdcd8; }
+.fig-jm-mane-kant { stroke: #9b9b95; stroke-width: 2; }
+.fig-jm-krater { fill: #c4c4bf; stroke: #a3a39d; stroke-width: 1; }
+.fig-jm-display { fill: #f7f5ef; stroke: #8f846f; stroke-width: 1; }
+.fig-jm-vag { font-size: 15.5px; font-weight: 600; }
+/* Rymdfigurerna (kapitel I Materia och universum, order 9, 2026-11-07): solen, planeterna, jordens inre, månen och
+   natthalvan. Jordklotet, månfaserna och årstiderna är runda figurer och får upp till 45 % av sidhöjden, som kanonen. */
+.fig-sol { fill: #f2c27b; stroke: #c98a3a; stroke-width: 1.5; }
+.fig-kropp, .fig-ae-prick { stroke: #56606a; stroke-width: .8; }
+.fig-jord-mantel { fill: #e8d3b0; }
+.fig-jord-karna { fill: #e3a86f; stroke: #c48458; stroke-width: 1.2; }
+.fig-jorden-natt { fill: rgba(27, 42, 54, .5); }
+.fig-mane-mork { fill: #4a4f5a; stroke: #2f333b; stroke-width: 1; }
+.fig-mane-ljus { fill: #f3f1e8; }
+.fig-axel { stroke: var(--black); stroke-width: 1.8; }
+.figur-bild svg[data-rymd="jordklot_tyngd"], .figur-bild svg[data-rymd="manfaser"],
+.figur-bild svg[data-rymd="arstider"] { max-height: calc(var(--sh) * .45); }
+/* Diagram och vektorer på rutat papper (Nästa steg, arbetsorder 11): rutnätet tunt, axlarna och graferna i bläck och
+   indigo, ytorna i två ljusa toner, Δ-linjerna streckade i guld. Texten 19 enheter: minst 14 px också i mobilens spalt.
+   Ett diagram får som de runda figurerna upp till 45 % av sidhöjden, så att texten inte krymper under 14 px. */
+.fig-rutnat { stroke: rgba(27, 42, 54, .16); stroke-width: 1; }
+.fig-pil.fig-axel-pil { stroke: var(--black); stroke-width: 1.6; }
+.fig-pilspets.fig-axel-pil { fill: var(--black); }
+.fig-graf { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.fig-graf-punkt { fill: var(--accent); }
+.fig-yta-1 { fill: rgba(160, 125, 47, .26); }
+.fig-yta-2 { fill: rgba(74, 45, 102, .14); }
+.fig-delta { stroke: var(--accent-2-mork); stroke-width: 1.8; stroke-dasharray: 5 4; }
+/* Kaströrelse och cirkelrörelse (IV C, arbetsorder 16): text 19 enheter som diagrammen, kraftpilarna i kraftpilarnas
+   färg; den kastade bollen i indigo, den släppta i sand; banor och raka banor streckade */
+.fig-kast-text { font-size: 19px; }
+.fig-kast-pil-text { fill: var(--accent-2-mork); font-weight: 600; }
+.fig-kast-vx-text { fill: var(--accent); font-weight: 600; }
+.fig-kast-vy-text { fill: var(--accent-2-mork); font-weight: 600; }
+.fig-hus { fill: #e6dcc6; stroke: var(--dampad); stroke-width: 1.6; }
+.fig-hus-fonster { fill: #cddbe6; stroke: var(--dampad); stroke-width: 1; }
+.fig-kast-boll { stroke: var(--black); stroke-width: 1.2; }
+.fig-kast-kastad { fill: var(--accent); }
+.fig-kast-slappt { fill: #d6c08f; }
+.fig-kast-bana, .fig-kast-bana-v { fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 6 5; opacity: .75; }
+.fig-kast-bana-v { stroke-dasharray: none; stroke-width: 2.4; opacity: 1; }
+.fig-kast-hojd { stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 4 4; }
+.fig-kast-landning, .fig-kast-start { fill: var(--accent); }
+.fig-pil.fig-kast-vx { stroke: var(--accent); }
+.fig-pilspets.fig-kast-vx { fill: var(--accent); }
+.fig-cirkel-bana { fill: none; stroke: var(--dampad); stroke-width: 1.6; stroke-dasharray: 6 5; }
+.fig-cirkel-mitt { fill: var(--black); }
+.fig-cirkel-mittkors { stroke: var(--black); stroke-width: 2; }
+.fig-pil.fig-cirkel-riktning { stroke: var(--dampad); stroke-width: 1.8; fill: none; }
+.fig-pilspets.fig-cirkel-riktning { fill: var(--dampad); }
+.fig-pil.fig-tangent { stroke: var(--accent); stroke-dasharray: 7 5; }
+.fig-pilspets.fig-tangent { fill: var(--accent); }
+.fig-vag { fill: #d9d4c7; stroke: var(--dampad); stroke-width: 1.6; }
+.fig-vag-mitt { fill: none; stroke: #fff; stroke-width: 2; stroke-dasharray: 10 8; }
+.fig-bil rect { fill: var(--accent); stroke: var(--black); stroke-width: 1.2; }
+.fig-bil rect.fig-bil-ruta { fill: #cddbe6; }
+/* Stabilitet, hopp och krock (IV D, arbetsorder 17) */
+.fig-lada { fill: #e6dcc6; stroke: var(--black); stroke-width: 1.6; }
+.fig-tyngdpunkt { fill: var(--accent-2-mork); stroke: #fff; stroke-width: 1.5; }
+.fig-lodlinje { stroke: var(--accent-2-mork); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.fig-stodyta { stroke: var(--accent); stroke-width: 5; stroke-linecap: butt; }
+.fig-pil.fig-stab-pil { fill: none; stroke-width: 2; }
+.fig-pil.fig-stab-tillbaka { stroke: var(--accent); } .fig-pilspets.fig-stab-tillbaka { fill: var(--accent); }
+.fig-pil.fig-stab-valter { stroke: #b3261e; } .fig-pilspets.fig-stab-valter { fill: #b3261e; }
+.fig-stab-valter-text { fill: #b3261e; font-weight: 600; }
+.fig-fordon { fill: #d6c08f; stroke: var(--black); stroke-width: 1.4; stroke-linejoin: round; }
+.fig-fordon-chassi { fill: #8a8273; stroke: var(--black); stroke-width: 1.2; }
+.fig-fordon-dorr { fill: #cddbe6; stroke: var(--black); stroke-width: 1; }
+.fig-hjul { fill: #3a3631; stroke: var(--black); stroke-width: 1; }
+.fig-stang { stroke: var(--dampad); stroke-width: 4; }
+.fig-ribba { fill: #b3261e; stroke: var(--black); stroke-width: 1; }
+.fig-kropp { fill: none; stroke: var(--accent); stroke-width: 15; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+.fig-kropp.fig-lem { stroke-width: 8; }
+.fig-huvud, .fig-hopp-huvud { fill: var(--accent); }
+.fig-tp-streck { stroke: var(--accent-2-mork); stroke-width: 1.4; }
+.fig-hopp-kropp { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+.fig-hopp-lem { fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.fig-vagg { fill: #b9ad97; stroke: var(--dampad); stroke-width: 1.4; }
+.fig-krock-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.fig-krock-bil { fill: #d6c08f; stroke: var(--black); stroke-width: 1.4; stroke-linejoin: round; }
+.fig-krock-veck { fill: none; stroke: #b3261e; stroke-width: 1.8; stroke-linejoin: miter; }
+.fig-kupe { fill: #cddbe6; stroke: var(--black); stroke-width: 1; }
+.fig-krock-hjul { fill: #3a3631; }
+.fig-krock-matt { stroke: var(--black); stroke-width: 1.4; }
+.fig-krock-namn { font-weight: 600; }
+.fig-ribba-tecken { fill: #b3261e; stroke: var(--black); stroke-width: 1; }
+/* Tryck (V A, arbetsorder 21): snön, oljan, cylindrarna och kolvarna, vattnet och klossen; krafterna i kraftpilarnas
+   guld, tryckpilarna i vattnet i indigo och lyftkraften i rött som resultanten */
+.fig-sno { fill: #f3f6f9; stroke: none; }
+.fig-sno-yta { stroke: #9fb3c4; stroke-width: 2; }
+.fig-sno-tacke { fill: #f3f6f9; opacity: .68; }
+.fig-tryck-sula { fill: #3a3631; }
+.fig-tryck-sula.fig-tryck-snosko { fill: #8a8273; stroke: var(--black); stroke-width: 1; }
+.fig-olja { fill: #e2c46f; opacity: .85; }
+.fig-cylinder { fill: none; stroke: var(--black); stroke-width: 2.2; stroke-linejoin: miter; }
+.fig-kolv { fill: #8a8273; stroke: var(--black); stroke-width: 1.2; }
+.fig-kolv-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.fig-tryck-p { font-style: italic; font-weight: 600; }
+.fig-vatten-yta { stroke: #5f87a8; stroke-width: 2; }
+.fig-kloss { fill: #d6c08f; stroke: var(--black); stroke-width: 1.4; }
+.fig-pil.fig-tryck-pil { stroke: var(--accent); stroke-width: 2.2; } .fig-pilspets.fig-tryck-pil { fill: var(--accent); }
+.fig-pil.fig-tryck-lyft { stroke: #b3261e; stroke-width: 3; } .fig-pilspets.fig-tryck-lyft { fill: #b3261e; }
+.fig-tryck-lyft-text { fill: #b3261e; font-weight: 600; }
+/* Energi och arbete (V B, arbetsorder 28): bollens bana streckad i dämpat bläck, bollen indigo (svag i topparna efter
+   studsarna); värme och ljud små röda vågor. Kraftpilarna i kraftpilarnas guld; rörelsepilarna indigo, streckade och
+   med öppen spets – de ska inte se ut som kraftpilar (grinden mäter det). */
+.fig-energi-bana { fill: none; stroke: var(--dampad); stroke-width: 1.6; stroke-dasharray: 5 5; }
+.fig-energi-boll { fill: var(--accent); stroke: var(--black); stroke-width: 1.2; }
+.fig-energi-boll.fig-energi-skugga { opacity: .3; }
+.fig-energi-vag { fill: none; stroke: #b3261e; stroke-width: 1.6; stroke-linecap: round; }
+.fig-energi-varme { fill: #b3261e; font-weight: 600; }
+.fig-energi-ord { font-weight: 600; }
+.fig-rorelse { stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 7 5; fill: none; }
+.fig-rorelse-spets { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.fig-energi-rorelse-text { fill: var(--accent); font-weight: 600; }
+.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.fig-energi-mede { fill: none; stroke: var(--black); stroke-width: 2.4; stroke-linecap: round; }
+.fig-energi-vinkel { fill: none; stroke: var(--black); stroke-width: 1.4; }
+.fig-energi-vinkel-text { font-weight: 600; }
+/* V C och V D (arbetsorder 29): lägesenergins stapel indigo, rörelseenergins guld; gungan, staven och ribban; rampen,
+   gungbrädan och taljan. Kraftpilarna i kraftpilarnas guld, vridpilarna indigo. */
+.fig-energi-stapel.fig-energi-ep { fill: var(--accent); }
+.fig-energi-stapel.fig-energi-ek { fill: var(--accent-2); stroke: var(--accent-2-mork); stroke-width: 1; }
+.fig-energi-sits { fill: #8a6a3e; stroke: var(--black); stroke-width: 1; }
+.fig-energi-stav { fill: none; stroke: #3a3631; stroke-width: 3; stroke-linecap: round; }
+.fig-energi-ribba { stroke: #b3261e; stroke-width: 3; stroke-linecap: round; }
+.fig-energi-lada { fill: #8a8273; }
+.fig-energi-ramp { fill: #e6dcc6; stroke: var(--black); stroke-width: 1.4; stroke-linejoin: round; }
+.fig-energi-vagn { fill: #8a8273; stroke: var(--black); stroke-width: 1; }
+.fig-energi-planka { fill: #c9a06a; stroke: #8a6a3e; stroke-width: 1.4; }
+.fig-energi-vridpunkt { fill: #8a8273; stroke: var(--black); stroke-width: 1.2; }
+.fig-energi-sittpunkt { fill: var(--black); }
+.fig-energi-vridbage { fill: none; stroke: var(--accent); stroke-width: 2.2; }
+.fig-energi-vridspets { fill: var(--accent); }
+.fig-energi-vrid-text { fill: var(--accent); font-weight: 600; }
+.fig-energi-rep { fill: none; stroke: #6b5a3e; stroke-width: 2; }
+.fig-energi-block { fill: #d9d4c7; stroke: var(--black); stroke-width: 1.6; }
+.fig-energi-hand { fill: var(--accent); }
+circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 4 3; }
+/* Ljud och ljus (VI, arbetsorder 30; färgerna kräver Joachims godkännande): ljusstrålar orangeröda och heldragna med en
+   liten spets, strålar som ögat följer bakåt streckade i samma färg, normalen streckad i dämpat bläck; ljudvågornas linje
+   och vågfronter blågröna; luftens molekyler mörkt sandfärgade, den markerade indigo. Förlopp: numrerade ringar i bläck.
+   Figurerna får upp till 38 % av sidhöjden (jämförelsen B14, den högsta, 42 %), så att texten (19 enheter) inte krymper
+   under 14 px men figuren lämnar plats åt stycket före den. Samma gräns i alla fönster (ingen mediaregel), så att
+   kontrollägets Chromebook-fönster bryter som Chromebooken. */
+.figur-bild svg[data-ljud], .figur-bild svg[data-ljus] { max-height: calc(var(--sh) * .38); }
+.figur-bild svg[data-ljus="jamforelse"] { max-height: calc(var(--sh) * .42); }
+.figur-bild svg[data-ljud="decibel"] { max-height: calc(var(--sh) * .62); }     /* II D1: femton rader med liggande staplar (arbetsorder 35) */
+.fig-steg-ring { fill: var(--black); }
+.fig-steg-nr { fill: var(--papper); font-weight: 600; }
+.fig-steg-start { font-weight: 600; font-style: italic; }
+.fig-ljus-strale { stroke: #c2410c; stroke-width: 2.4; stroke-linecap: round; fill: none; }
+.fig-ljus-strale.fig-ljus-svag { stroke-width: 1.4; opacity: .7; }
+.fig-ljus-spets { fill: #c2410c; }
+.fig-ljus-skenbar { stroke: #c2410c; stroke-width: 1.8; stroke-dasharray: 6 5; fill: none; opacity: .8; }
+.fig-normal { stroke: var(--dampad); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.fig-normal-text { fill: var(--dampad); }
+.fig-vinkel { fill: none; stroke: var(--black); stroke-width: 1.3; }
+.fig-ledare { stroke: var(--dampad); stroke-width: 1; }
+.fig-ljus-spegel { stroke: #4b5563; stroke-width: 3.2; stroke-linecap: round; fill: none; }
+.fig-ljus-vatten, .fig-ljud-vatten { fill: rgba(70, 130, 180, .18); }
+.fig-ljus-yta, .fig-ljud-yta { stroke: #3b6d8f; stroke-width: 1.6; }
+.fig-ljus-stralyta { fill: rgba(194, 65, 12, .08); }
+.fig-ljus-kant { fill: none; stroke: #c2410c; stroke-width: 1.4; }
+.fig-ljus-front { fill: none; stroke: #c2410c; stroke-width: 2; stroke-linecap: round; }
+.fig-ljus-strale.fig-ljus-mittstrale { stroke-width: 1.6; }
+.fig-ljus-skugga { fill: rgba(27, 42, 54, .28); }
+.fig-ljus-svart { fill: #1d2026; }
+.fig-ljus-glas, .fig-ljus-lins, .fig-ljus-prisma { fill: rgba(150, 190, 205, .4); stroke: #5d7f88; stroke-width: 1.4; }
+.fig-ljus-glaset { fill: none; stroke: #5d7f88; stroke-width: 1.6; }
+.fig-ljus-varme { fill: none; stroke: #b3261e; stroke-width: 1.6; stroke-linecap: round; }
+.fig-ljus-varme-text { fill: #b3261e; font-weight: 600; }
+.fig-ljus-skuggtext { fill: var(--dampad); }
+.fig-ljus-bild { opacity: .42; }
+.fig-ljus-stjalk { fill: none; stroke: #4d7c3a; stroke-width: 3; stroke-linecap: round; }
+.fig-ljus-kronblad { fill: #d9a3c4; stroke: #9b5a83; stroke-width: 1; }
+.fig-ljus-mitt { fill: #e0b53e; }
+.fig-ljus-lampa circle { fill: #f6e3a2; stroke: var(--black); stroke-width: 1.3; }
+.fig-ljus-lampa rect { fill: #8a8273; }
+.fig-ljus-brannpunkt, .fig-ljus-motpunkt { fill: var(--black); }
+.fig-ljus-axel { stroke: var(--dampad); stroke-width: 1; stroke-dasharray: 2 4; }
+.fig-ljus-penna { stroke: #d49a1c; stroke-width: 7; stroke-linecap: round; }
+.fig-ljus-spets-punkt { fill: #3a3631; }
+.fig-ljus-ogat { fill: #f7f1e3; stroke: var(--black); stroke-width: 1.6; }
+.fig-ljus-nathinna { fill: none; stroke: #b3261e; stroke-width: 3.5; }
+.fig-ljus-hornhinna { fill: none; stroke: #5d7f88; stroke-width: 2.4; }
+.fig-ljus-iris { stroke: #4a6b8a; stroke-width: 4; stroke-linecap: round; }
+.fig-ljus-ogonlins { fill: rgba(150, 190, 205, .55); stroke: #5d7f88; stroke-width: 1.4; }
+.fig-ljus-synnerv { fill: none; stroke: #c9a06a; stroke-width: 2; }
+.fig-ljus-stam { stroke: #7a5a3a; stroke-width: 3; }
+.fig-ljus-krona { fill: #5f8f4a; stroke: #3f6a30; stroke-width: 1; }
+.fig-ljus-vitt-kant { stroke: var(--black); stroke-width: 5.5; stroke-linecap: round; }
+.fig-ljus-vitt { stroke: #fffdf6; stroke-width: 3; stroke-linecap: round; }
+.fig-ljus-farg { stroke-width: 2.2; stroke-linecap: round; }
+.fig-farg-rott { stroke: #c62828; fill: #c62828; } .fig-farg-orange { stroke: #ef6c00; } .fig-farg-gult { stroke: #e0b000; }
+.fig-farg-gront { stroke: #2e7d32; fill: #2e7d32; } .fig-farg-blatt { stroke: #1565c0; } .fig-farg-violett { stroke: #6a1b9a; }
+.fig-farg-text-rott { fill: #c62828; font-weight: 600; } .fig-farg-text-violett { fill: #6a1b9a; font-weight: 600; }
+.fig-ljus-apple { fill: #c62828; stroke: #8e1c1c; stroke-width: 1.4; }
+.fig-ljus-blad { fill: #5f8f4a; }
+.fig-ljus-band { fill: #d9d4c7; stroke: var(--black); stroke-width: 1; }
+.fig-ljus-bandvag { fill: none; stroke: var(--black); stroke-width: 1.3; }
+.fig-ljus-punkt { fill: var(--black); }
+.fig-oga-vita { fill: #fffdf6; stroke: var(--black); stroke-width: 1.4; }
+.fig-oga-iris { fill: #4a6b8a; }
+.fig-ljud-vag, .fig-ljud-front { fill: none; stroke: #1f6f78; stroke-width: 2.2; }
+.fig-ljud-front { stroke-width: 1.8; }
+.fig-ljud-prick { fill: #7a6648; }
+.fig-ljud-tat { fill: rgba(31, 111, 120, .16); }
+.fig-ljud-markerad { fill: var(--accent); stroke: var(--papper); stroke-width: 1; }
+.fig-ljud-hjalp { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 3 4; opacity: .6; }
+.fig-ljud-hogtalare { fill: #3a3631; }
+.fig-ljud-kon { fill: #8a8273; stroke: var(--black); stroke-width: 1; }
+.fig-ljud-membran { stroke: var(--black); stroke-width: 3; }
+.fig-ljud-noll { stroke: var(--dampad); stroke-width: 1; }
+.fig-ljud-axel line, .fig-ljud-riktning line { stroke: var(--black); stroke-width: 1.6; }
+.fig-ljud-axel polygon, .fig-ljud-riktning polygon { fill: var(--black); }
+.fig-ljud-axeltext { font-weight: 600; }
+.fig-ljud-signal line, .fig-ljud-eko line { stroke: #1f6f78; stroke-width: 2.2; }
+.fig-ljud-eko line { stroke-dasharray: 6 4; }
+.fig-ljud-signal polygon, .fig-ljud-eko polygon { fill: #1f6f78; }
+.fig-ljus-energipil line { stroke: var(--dampad); } .fig-ljus-energipil polygon { fill: var(--dampad); }
+.fig-ljud-bil { fill: #f4ecd6; stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-bil-fonster { fill: #9fb8c8; }
+.fig-ljud-blixt { fill: #1565c0; }
+.fig-ljud-hjul { fill: var(--black); }
+.fig-ljud-huvud { fill: #f1dfc4; stroke: none; }
+.fig-ljud-ora, .fig-ljud-gang { fill: none; stroke: #8a5a3a; stroke-width: 2.2; stroke-linecap: round; }
+.fig-ljud-trumhinna { stroke: #b3261e; stroke-width: 3; stroke-linecap: round; }
+.fig-ljud-ben path { fill: none; stroke: #6b5a3e; stroke-width: 2; }
+.fig-ljud-ben circle, .fig-ljud-ben rect { fill: #e6dcc6; stroke: #6b5a3e; stroke-width: 1.4; }
+.fig-ljud-snacka { fill: none; stroke: #8a5a3a; stroke-width: 2.4; }
+.fig-ljud-nerv { fill: none; stroke: #c9a06a; stroke-width: 3; stroke-linecap: round; }
+.fig-ljud-skilje { stroke: var(--linje); stroke-width: 1.2; }
+.fig-ljud-fast, .fig-ljud-stall { fill: #6b5a3e; }
+.fig-ljud-strang { stroke: var(--black); stroke-width: 1.6; }
+.fig-ljud-svang { fill: none; stroke: var(--dampad); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.fig-ljud-gitarr { fill: #d9a86a; stroke: #8a5a3a; stroke-width: 1.6; }
+.fig-ljud-hal { fill: #3a3631; }
+.fig-ljud-hals { fill: #8a5a3a; }
+.fig-ljud-bat { fill: #e6dcc6; stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-hytt { fill: #d9d4c7; stroke: var(--black); stroke-width: 1.2; }
+.fig-ljud-klocka circle { fill: #fffdf6; stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-klocka line { stroke: var(--black); stroke-width: 1.4; } .fig-ljud-klocka rect { fill: var(--black); }
+.fig-ljud-fisk { fill: #6b7f8a; }
+.fig-ljud-betong { fill: #b9b4a8; stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-ballast { fill: #8a8273; }
+.fig-ljud-isomaterial { fill: #f2d98a; stroke: #b08a2e; stroke-width: 1.4; }
+.fig-ljud-fiber { fill: none; stroke: #c9a24a; stroke-width: 1.2; }
+.fig-ljud-studs { fill: none; stroke: #1f6f78; stroke-width: 1.6; stroke-linejoin: round; }
+/* Kapitel 2 Ljud och ljus, avsnitt I (arbetsorder 33): samma färger (ljudvågor blågröna, prickar bruna, markerat indigo,
+   ljusstrålar orangeröda); det rödmarkerade varvet i spiralfjädern (I A3) följer källans "rödmarkerat". */
+.fig-ljud-linjal { fill: none; stroke: #7d868e; stroke-width: 6; stroke-linecap: round; }   /* grå: guld är bara för kraftpilar (Joachim, order 33) */
+.fig-ljud-linjal.fig-ljud-spok { opacity: .35; stroke-dasharray: 5 4; stroke-width: 4; }
+.fig-ljud-bord { fill: #b98a5a; stroke: #7a5a3a; stroke-width: 1.2; }
+.fig-ljud-hand { fill: #f1dfc4; stroke: #8a5a3a; stroke-width: 1.6; }
+.fig-ljud-handlinje { fill: none; stroke: #8a5a3a; stroke-width: 1; opacity: .7; }
+.fig-ljud-varv { fill: none; stroke: #5d6770; stroke-width: 1.8; }
+.fig-ljud-varv.fig-ljud-varv-markerad { stroke: #b3261e; stroke-width: 3; }
+.fig-ljud-fjaderaxel { fill: none; stroke: #5d6770; stroke-width: 1; opacity: .6; }
+.fig-ljud-platta { fill: #8a8273; }
+.fig-ljud-glas { fill: rgba(150, 190, 205, .22); stroke: #5d7f88; stroke-width: 1.6; }
+.fig-ljud-luft { opacity: .85; }
+.fig-ljud-trad { stroke: var(--black); stroke-width: 1; }
+.fig-ljud-vackare circle { fill: #fffdf6; stroke: var(--black); stroke-width: 1.4; } .fig-ljud-vackare line { stroke: var(--black); stroke-width: 1.3; }
+.fig-ljud-vackare .fig-ljud-bjallra { fill: #9aa3ab; }
+.fig-ljud-ringer { fill: none; stroke: var(--black); stroke-width: 1.4; stroke-linecap: round; }
+.fig-ljud-ror { fill: none; stroke: #6b5a3e; stroke-width: 3; }
+.fig-ljud-pump { fill: #8a8273; stroke: var(--black); stroke-width: 1.2; }
+.fig-ljud-mittlinje { stroke: var(--dampad); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.fig-ljud-pilmatt line { stroke: var(--black); stroke-width: 1.4; } .fig-ljud-pilmatt polygon { fill: var(--black); }
+.fig-ljud-omrade { stroke: none; } .fig-ljud-omrade-0 { fill: rgba(122, 102, 72, .28); }
+.fig-ljud-omrade-1 { fill: rgba(31, 111, 120, .35); } .fig-ljud-omrade-2 { fill: rgba(74, 45, 102, .25); }
+.fig-ljud-tick { stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-stapel rect, .fig-ljud-hastighet { fill: rgba(31, 111, 120, .35); stroke: #1f6f78; stroke-width: 1.4; }
+.fig-ljud-stapel.fig-ljud-laten rect { fill: rgba(122, 102, 72, .18); stroke: #7a6648; stroke-dasharray: 4 3; }
+.fig-ljud-moln { fill: #9aa3ab; stroke: #5d6770; stroke-width: 1.2; }
+.fig-ljud-blixten { fill: #e0b53e; stroke: #8a6a1c; stroke-width: 1.2; stroke-linejoin: round; }
+.fig-ljud-mellan { fill: #f7efe0; stroke: #8a5a3a; stroke-width: 1; }
+.fig-ljud-balans path { fill: none; stroke: #8a5a3a; stroke-width: 2.4; }
+.fig-ljud-trumpet { fill: none; stroke: #8a5a3a; stroke-width: 5; stroke-linecap: round; opacity: .7; }
+.fig-ljud-klammer path { fill: none; stroke: var(--black); stroke-width: 1.4; }
+.fig-ljud-vatska { fill: rgba(70, 130, 180, .18); }
+.fig-ljud-harceller line { stroke: #b3261e; stroke-width: 1.8; stroke-linecap: round; }
+.fig-ljud-hjarna path { fill: #e9c9c0; stroke: #9b5a5a; stroke-width: 1.6; } .fig-ljud-hjarna .fig-ljud-veck { fill: none; stroke: #9b5a5a; stroke-width: 1.2; }
+.fig-ljud-skalle { fill: #f1dfc4; stroke: #8a5a3a; stroke-width: 1.6; }
+.fig-ljud-nasa { fill: #f1dfc4; stroke: #8a5a3a; stroke-width: 1.6; stroke-linejoin: round; }
+.fig-ljud-orat { fill: #e6c9a8; stroke: #8a5a3a; stroke-width: 1.4; }
+.fig-ljud-kil { fill: rgba(70, 130, 180, .14); stroke: #8a5a3a; stroke-width: 2; }
+.fig-ljud-kilstart { stroke: #8a5a3a; stroke-width: 2; }
+.fig-ljud-basilar { fill: #e9c9c0; stroke: #9b5a5a; stroke-width: 1.2; }
+.fig-ljud-plats line { stroke: var(--dampad); stroke-width: 1; }
+.fig-ljud-ovala { fill: #e9c9c0; stroke: #9b5a5a; stroke-width: 1.6; }   /* ovala fönstret (I D v2, arbetsorder 34) */
+/* Kapitel 2 Ljud och ljus, avsnitt II (arbetsorder 34): samma färger som avsnitt I; föremål i neutrala toner, guld används
+   inte. Decibelstaplarna (II D1) i en neutral grå – inga riskfärger. */
+.fig-ljud-huvudstock, .fig-ljud-kropp { fill: #b98a5a; stroke: #7a5a3a; stroke-width: 1.2; }
+.fig-ljud-band { stroke: #9aa3ab; stroke-width: 1.6; }
+.fig-ljud-sadel { fill: #e6dcc6; stroke: #6b5a3e; stroke-width: 1; }
+.fig-ljud-finger { fill: #f1dfc4; stroke: #8a5a3a; stroke-width: 1.6; }
+.fig-ljud-bage { fill: none; stroke: #1f6f78; stroke-width: 1.8; }
+.fig-ljud-strang-bage { fill: none; stroke: var(--black); stroke-width: 1.8; }
+.fig-ljud-strang-bage.fig-ljud-motsatt { stroke: var(--dampad); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.fig-ljud-nod { fill: var(--accent); }
+.fig-ljud-normalton polygon { fill: var(--black); }
+.fig-ljud-ram { stroke: #7a5a3a; stroke-width: 4; stroke-linecap: round; }
+.fig-ljud-led { fill: var(--black); }
+.fig-ljud-rep { stroke: #5d6770; stroke-width: 1.6; }
+.fig-ljud-rep.fig-ljud-spok { opacity: .35; stroke-dasharray: 4 4; }
+.fig-ljud-utslag { fill: none; stroke: #1f6f78; stroke-width: 1.6; stroke-dasharray: 2 4; stroke-linecap: round; }
+.fig-ljud-sits rect { fill: #b98a5a; stroke: #7a5a3a; stroke-width: 1; } .fig-ljud-sits circle { fill: #f1dfc4; stroke: #8a5a3a; stroke-width: 1.4; }
+.fig-ljud-lada { fill: #d9a86a; stroke: #8a5a3a; stroke-width: 1.4; }
+.fig-ljud-ladhal { fill: #3a3631; }
+.fig-ljud-gaffel { fill: none; stroke: #5d6770; stroke-width: 3; stroke-linecap: round; }
+.fig-ljud-klubba line { stroke: #7a5a3a; stroke-width: 2.4; } .fig-ljud-klubba rect { fill: #8a8273; }
+.fig-ljud-luftpelare { fill: rgba(122, 102, 72, .12); }
+.fig-ljud-flaska { fill: none; stroke: #5d7f88; stroke-width: 2; }
+.fig-ljud-vila { fill: none; stroke: var(--dampad); stroke-width: 1; stroke-dasharray: 3 3; }
+.fig-ljud-kant { fill: none; stroke: #5d7f88; stroke-width: 2.4; }
+.fig-ljud-glas2 { fill: rgba(150, 190, 205, .22); stroke: #5d7f88; stroke-width: 1.8; }
+.fig-ljud-spricka { fill: none; stroke: var(--black); stroke-width: 1.6; }
+.fig-ljud-berg { fill: #9aa3ab; stroke: #5d6770; stroke-width: 1.4; stroke-linejoin: round; }
+.fig-ljud-ekofront { stroke-dasharray: 5 4; }
+.fig-ljud-botten { fill: #d9c79a; stroke: #8a7a4a; stroke-width: 1.4; }
+.fig-ljud-kon { stroke: #1f6f78; stroke-width: 2.4; }
+.fig-ljud-plan path { fill: #5d6770; stroke: var(--black); stroke-width: .8; }
+.fig-ljud-rutlinje { stroke: var(--linje); stroke-width: 1; }
+.fig-ljud-axel-linje { stroke: var(--black); stroke-width: 1.6; }
+.fig-ljud-db, .fig-ljud-exponering { fill: rgba(93, 103, 112, .38); stroke: #5d6770; stroke-width: 1.2; }
+.fig-ljud-ruta { fill: none; stroke: var(--linje); stroke-width: 1.4; }
+.fig-ljud-vagbana { fill: #8a8273; }
+.fig-ljud-plank { fill: #b98a5a; stroke: #7a5a3a; stroke-width: 1.2; }
+.fig-ljud-hus { fill: #e6dcc6; stroke: #6b5a3e; stroke-width: 1.4; stroke-linejoin: round; }
+.fig-ljud-sovrum { fill: rgba(31, 111, 120, .18); stroke: #6b5a3e; stroke-width: 1; }
+.fig-ljud-sang { stroke: #6b5a3e; stroke-width: 3; }
+.fig-ljud-bygel { fill: none; stroke: #3a3631; stroke-width: 2.4; }
+.fig-ljud-kapa { fill: #3a3631; }
+.fig-ljud-ljudvag line { stroke: #1f6f78; stroke-width: 2.2; } .fig-ljud-ljudvag polygon { fill: #1f6f78; }
+.fig-ljud-klot { fill: none; stroke: #1f6f78; stroke-width: 1.6; }
+.fig-ljud-stralgang { stroke: var(--dampad); stroke-width: 1; stroke-dasharray: 4 3; }
+.fig-ljud-yta-liten, .fig-ljud-yta-stor rect { fill: rgba(31, 111, 120, .3); stroke: #1f6f78; stroke-width: 1.2; }
+.fig-ljud-yta-stor line { stroke: #1f6f78; stroke-width: 1; }
+.fig-ljud-kalla { fill: var(--black); }
+.fig-ljud-radie { stroke: var(--black); stroke-width: 1.2; }
+.fig-ljud-kurva polyline { fill: none; stroke-width: 2.2; } .fig-ljud-kurva circle { stroke: var(--papper); stroke-width: 1; }
+.fig-ljud-kurva[data-kurva="normal"] polyline { stroke: #1f6f78; } .fig-ljud-kurva[data-kurva="normal"] circle { fill: #1f6f78; }
+.fig-ljud-kurva[data-kurva="buller"] polyline { stroke: var(--accent); } .fig-ljud-kurva[data-kurva="buller"] circle { fill: var(--accent); }
+.fig-ljud-kurva[data-kurva="alder"] polyline { stroke: #7a6648; stroke-dasharray: 6 4; } .fig-ljud-kurva[data-kurva="alder"] circle { fill: #7a6648; }
+.fig-diagram-axel, .fig-diagram-tal, .fig-diagram-rubrik, .fig-delta-text, .fig-vektor-text, .fig-vektor-skala, .fig-yta-namn { font-size: 19px; }
+.fig-yta-namn { font-weight: 600; fill: var(--black); }   /* ytans namn i diagram_graf (arbetsorder 13) */
+.fig-diagram-rubrik { font-weight: 600; }
+.fig-delta-text { fill: var(--accent-2-mork); font-weight: 600; }
+.fig-vektor-text { font-weight: 600; fill: var(--accent-2-mork); }
+.fig-vektor-text.fig-resultant { fill: var(--accent); }
+.fig-ratvinkel { fill: none; stroke: var(--black); stroke-width: 1.4; }
+.figur-bild svg[data-diagram-graf], .figur-bild svg[data-vektor-rutnat] { max-height: calc(var(--sh) * .45); }
+/* Resulterande kraft (Kraft och rörelse IV A, arbetsorder 12): F₁ indigo, F₂ i guld (streckad när den är flyttad),
+   resultanten röd, som i skisserna; komposanterna streckade i dämpat bläck; lampan i två snören. Texten 19 enheter. */
+.fig-pil.fig-rr-f1 { stroke: var(--accent); }
+.fig-pilspets.fig-rr-f1 { fill: var(--accent); }
+.fig-pil.fig-rr-flyttad { stroke-dasharray: 7 5; }
+.fig-pil.fig-rr-resultant, .fig-pil.fig-resultant.fig-rod { stroke: #b3261e; stroke-dasharray: none; }
+.fig-pilspets.fig-rr-resultant, .fig-pilspets.fig-resultant.fig-rod, .fig-rr-noll { fill: #b3261e; }
+.fig-pil-text.fig-resultant.fig-rod { fill: #b3261e; }
+.fig-rr-text { font-size: 19px; }
+.fig-rr-text.fig-rr-f1 { fill: var(--accent); font-weight: 600; }
+.fig-rr-text.fig-rr-f2 { fill: var(--accent-2-mork); font-weight: 600; }
+.fig-rr-text.fig-rr-resultant { fill: #b3261e; font-weight: 600; }
+.fig-rr-rubrik { font-weight: 600; }
+.fig-komposant { stroke: var(--dampad); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.fig-lampa { fill: #f2d27b; stroke: #c98a3a; stroke-width: 1.2; }
+.figur-bild svg[data-resultant-rutor] { max-height: calc(var(--sh) * .45); }
+@container (max-width: 397px) {
+  .fig-paneler[data-paneler="jord_och_mane"] { flex-direction: column; align-items: center; gap: .45em; max-width: none; }
+  .figur-bild .fig-paneler[data-paneler="jord_och_mane"] svg { flex: none; width: min(100%, 199px); }
+}
+
+/* ---------- Innehållsförteckningen (sida 1 och menyn) ---------- */
+
+.innehallssida .sidinnehall { font-size: calc(var(--toc-skala, 1) * 1em); }   /* bok.js: passaInnehall */
+.titelblock { margin: 0 0 .7em; }
+.overrad { font-size: .85em; letter-spacing: .06em; font-variant-caps: all-small-caps; color: var(--accent-2-mork); margin: 0 !important; }
+.boktitel { font-family: var(--rubrik); font-weight: 400; font-size: 2em; line-height: 1.1; margin: 0; }
+.boktitel .undertitel { font-family: var(--text); font-size: .55em; color: var(--dampad); margin-left: .5em; }
+.innehall-rubrik { font-family: var(--rubrik); font-weight: 400; font-size: 1.1em; margin: 0 0 .1em;
+  padding-bottom: .2em; border-bottom: 2px solid var(--accent-2); }
+.upphov { font-size: .78em; color: var(--dampad); margin-top: 2em !important; }
+
+/* Förteckningen: bara huvudrubrikerna (avsnitten), som i en tryckt bok */
+.toc { list-style: none; margin: 0; padding: 0; }
+.toc-knapp {
+  display: flex; align-items: baseline; width: 100%; background: none; border: 0; padding: .05em 0;
+  text-align: left; cursor: pointer; color: inherit; line-height: 1.3;
+}
+.toc-a { font-family: var(--rubrik); font-size: 1.04em; margin-top: .3em; }
+.toc-nr { flex: none; width: 1.6em; font-family: var(--text); font-weight: 600; color: var(--accent-2-mork); }
+.toc-prickar { flex: 1; min-width: 1em; margin: 0 .4em; border-bottom: 1.5px dotted rgba(27, 42, 54, .35); transform: translateY(-.28em); }
+.toc-sida { flex: none; font-family: var(--text); font-variant-numeric: tabular-nums; color: var(--dampad); }
+.toc-knapp:hover .toc-titel { color: var(--accent); text-decoration: underline; text-underline-offset: .15em; }
+.toc-knapp[aria-current="page"] { background: var(--ruta); box-shadow: -.5em 0 0 var(--ruta), .4em 0 0 var(--ruta); border-radius: 2px; }
+.toc-knapp[aria-current="page"] .toc-titel::after { content: "  ← du är här"; font-family: var(--text); font-size: .8em; color: var(--accent); white-space: pre; }
+
+/* ---------- Menyn (Innehåll och inställningar) ---------- */
+
+.meny { position: fixed; inset: 0; z-index: 10; background: rgba(10, 12, 16, .45); }
+.meny[hidden] { display: none; }
+.meny-panel {
+  position: absolute; top: 0; left: 0; bottom: 0; width: min(430px, 92vw); overflow-y: auto;
+  background: var(--papper); color: var(--black); padding: 18px 26px 26px; font-size: 18px; line-height: 1.4;
+  box-shadow: 6px 0 24px rgba(0, 0, 0, .35); animation: meny-in .15s ease-out;
+}
+@keyframes meny-in { from { transform: translateX(-24px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .meny-panel { animation: none; } }
+.meny-huvud { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3em; }
+.meny-huvud h2 { font-family: var(--rubrik); font-weight: 400; font-size: 1.35em; margin: 0; }
+.stang { background: none; border: 1px solid var(--linje); border-radius: 4px; padding: 4px 10px; cursor: pointer;
+  font-family: var(--rubrik); font-size: 15px; color: var(--black); }
+.installningar { margin-top: 1.6em; padding-top: .8em; border-top: 1px solid var(--linje); font-size: .9em; }
+.installningar h3 { font-family: var(--rubrik); font-weight: 400; font-size: 1em; margin: .9em 0 .4em; }
+.installningar h3:first-child { margin-top: 0; }
+.installningar h3.underrubrik { font-family: var(--text); font-size: .9em; color: var(--dampad); margin-top: .6em; }
+.val { display: inline-flex; border: 1px solid var(--linje); border-radius: 4px; overflow: hidden; }
+.val button { background: none; border: 0; padding: 4px 12px; cursor: pointer; }
+.val button + button { border-left: 1px solid var(--linje); }
+.val button[aria-pressed="true"] { background: var(--black); color: var(--papper); }
+.tangenter { color: var(--dampad); font-size: .9em; margin: .8em 0 0; }
+.smal .meny-panel .toc-a { padding: .2em 0; }
+
+/* ---------- Ett hjälpmedel öppnat inifrån boken (bok.js: oppnaPanel) ---------- */
+
+.hm-panel { position: fixed; inset: 0; z-index: 12; background: rgba(10, 12, 16, .45); }
+.hm-panel[hidden] { display: none; }
+.hm-ruta { position: absolute; top: 0; right: 0; bottom: 0; width: min(640px, 94vw); display: flex; flex-direction: column;
+  background: var(--papper); color: var(--black); box-shadow: -6px 0 24px rgba(0, 0, 0, .35); animation: hm-in .15s ease-out; }
+@keyframes hm-in { from { transform: translateX(24px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hm-ruta { animation: none; } }
+.hm-huvud { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--linje); }
+.hm-huvud h2 { flex: 1; margin: 0; font-family: var(--rubrik); font-weight: 400; font-size: 21px; }
+.hm-flik { font-size: 15px; color: var(--accent); }
+.hm-ram { flex: 1; width: 100%; border: 0; background: #fff; }
+
+/* ---------- Kontrolläget (?kontroll) och fel ---------- */
+
+.matning { position: absolute; left: -10000px; top: 0; visibility: hidden; }
+.kontrollpanel { position: fixed; left: 10px; bottom: 10px; z-index: 20; max-width: 520px; max-height: 40vh; overflow: auto;
+  padding: 8px 12px; background: #fff8d8; color: #222; border: 1px solid #c9b25a; border-radius: 4px; font: 13px/1.35 system-ui, sans-serif; }
+.kontrollpanel.fel { background: #ffe1dc; border-color: #c96a5a; }
+.kontrollpanel .kp-fel { color: #9b1c0c; }
+.kontrollpanel .kp-varning { color: #6d5500; }
+.felmeddelande { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 30; max-width: 34em;
+  padding: 1.5em 2em; background: var(--papper); border: 1px solid var(--accent-2); border-radius: 3px; font-size: 18px; }

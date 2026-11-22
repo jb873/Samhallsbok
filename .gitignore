@@ -1,0 +1,16 @@
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.swp
+node_modules/
+STATUS.md
+TODO.md
+
+# Bokmotorn (som i Geografibok och Fysikbok)
+*.zip
+verktyg/bilder/
+Arkiv/
+
+# Claude-internt
+.claude/

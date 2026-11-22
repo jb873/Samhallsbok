@@ -1,0 +1,41 @@
+/* Bokmotorn i samhällskunskapens färger.
+ *
+ * Bokmotorn (bokskal/) är kopierad ordagrant från Fysikbok och ändras inte här. Den har fysikens färger inbyggda i
+ * bok.css; den här filen laddas efter bok.css (se mall/delkapitel/index.html) och byter bara färgerna – samma
+ * mönster som Geografibokens css/bok-geografi.css.
+ *
+ * Samhällets ENDA ämnesegna färg är plommon/aubergine (--accent). Allt annat formspråk är plattformens delade:
+ * papper, bläck, Marcellus SC, EB Garamond och mässingen (--accent-2, som i Geografi).
+ *
+ * Nyansen är vald på ögat av Joachim 2026-11-22: C, djup aubergine (verktyg/fargprov/, ?farg=c). Byts den: byt
+ * #5b2f4e och dess rgb (91, 47, 78) överallt i filen, --ruta och bannerns mörka ände.
+ *
+ * Kontrast mot papperet #ece2c8 (WCAG 2.1): --accent 8,3:1 (8,1:1 i faktarutan), --accent-2-mork 4,9:1 (geografins brass-text).
+ * --accent-2 (mässing) bara för linjer och dekor, aldrig text på papper.
+ */
+:root {
+  --accent: #5b2f4e;          /* djup aubergine – Joachims val 2026-11-22 (färgprovets C) */
+  --accent-2: #b8902a;        /* mässing (brass), plattformens delade */
+  --accent-2-mork: #785b13;   /* mässing för text på papperet (brass-text) */
+  --accent-2-ljus: #b8902a;   /* mässing på mörk botten: bannern och boklisterna */
+  /* Faktarutan: papper-ljus med en svag plommonton */
+  --ruta-ton: rgba(91, 47, 78, .07);
+  --ruta-kant: rgba(91, 47, 78, .35);
+  --ruta: #e9dfcc;            /* papper-ljus + 7 % plommon som fast färg */
+}
+
+/* Levande papper: plommon uppe till vänster, mässing nere till höger (bok.css: indigo och fysikens guld) */
+body {
+  background-image:
+    radial-gradient(ellipse at top left, rgba(91, 47, 78, .06) 0%, rgba(91, 47, 78, 0) 55%),
+    radial-gradient(ellipse at bottom right, rgba(184, 144, 42, .07) 0%, rgba(184, 144, 42, 0) 55%);
+}
+
+/* Bannern: från nästan svart plommon till accenten, som fysikens från nästan svart indigo */
+.hero-banner { background: linear-gradient(180deg, #170b14 0%, var(--accent) 100%); }
+
+/* De ställen där bok.css har fysikens indigo eller guld hårdkodat (inte i variablerna) */
+.underdel-valjare, .flik-texter, .niva-valjare { border-color: rgba(184, 144, 42, .35); }
+.niva-valjare .niva-knapp:hover { background-color: rgba(91, 47, 78, .1); }
+a.begrepp { text-decoration-color: rgba(91, 47, 78, .45); }
+.bok-lank, .bok-lank-sida { text-decoration-color: rgba(91, 47, 78, .45); }

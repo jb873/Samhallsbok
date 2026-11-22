@@ -1,0 +1,116 @@
+diff -ruN --strip-trailing-cr patch/a/README.md patch/b/README.md
+--- patch/a/README.md	2026-11-22 16:09:14.478172500 +0100
++++ patch/b/README.md	2026-11-22 16:09:37.899226800 +0100
+@@ -325,6 +325,7 @@
+ | `nastaSteg` | blocket *Nästa steg – gymnasiets fysik* under djupdykningarna | `nasta-steg` | `#nasta-<id>/…` | Nästa steg |
+ | `ovningsbocker` | fliken Öva, som då går att välja också utan hjälpmedlets adress | `ovningsbok` | `#ovning-<id>/…` | Nästa steg |
+ | `stodbocker` | inget kort, om inte `kort: true` (då i Läs, utan rubrik) | `stodbok` | `#stod-<id>/…` | inget omslag |
++| `repetitionsbocker` | först i Läs, utan rubrik (Samhällskunskap, *Inför slutprovet*: en sida per tema med `nivaer: []`) | `repetitionsbok` | `#repetition-<id>/…` | Repetition |
+ 
+ - **Posten:** `{ id, titel, fil, kort? }`. `fil` får ligga i ett annat delkapitel (`../../…`). Då finns boken på båda
+   sidorna, med var sin läsplats.
+diff -ruN --strip-trailing-cr patch/a/bokskal/bok.css patch/b/bokskal/bok.css
+--- patch/a/bokskal/bok.css	2026-11-22 16:09:14.419063700 +0100
++++ patch/b/bokskal/bok.css	2026-11-22 16:09:37.881724500 +0100
+@@ -122,7 +122,7 @@
+ /* Nästa steg (arbetsorder 11): blocket under djupdykningarna i samma stil, med indigo kant; övningsböckerna överst i
+    fliken Öva och en stödbok (på sin egen sida) i Läs, utan rubrik och linje ovanför */
+ .vill-veta-mer.nasta-steg .fordj-kort { border-left-color: var(--accent); }
+-.vill-veta-mer.stodbocker, .vill-veta-mer.ovningsbocker { margin-top: 0; padding-top: 0; border-top: none; }
++.vill-veta-mer.stodbocker, .vill-veta-mer.ovningsbocker, .vill-veta-mer.repetitionsbocker { margin-top: 0; padding-top: 0; border-top: none; }
+ /* en sida utan flikrad (flikar: false): lika mycket luft under bannern som flikraden ger */
+ .flikar-rad[hidden] + .flik-innehall { margin-top: 2.25rem; }
+ .vill-veta-mer.ovningsbocker + .flik-ram { margin-top: 1.5rem; }
+diff -ruN --strip-trailing-cr patch/a/bokskal/bok.js patch/b/bokskal/bok.js
+--- patch/a/bokskal/bok.js	2026-11-22 16:09:14.448239500 +0100
++++ patch/b/bokskal/bok.js	2026-11-22 16:09:37.880739400 +0100
+@@ -153,13 +153,15 @@
+   //   nastaSteg       Nästa steg (gymnasiets fysik): ett eget block under djupdykningarna
+   //   ovningsbocker   i fliken Öva
+   //   stodbocker      en stödbok (Matematiken i fysiken): ingen plats på avsnittssidan, bara länkmål – utan omslag
++  //   repetitionsbocker  en repetitionsbok utan nivåer (Samhällskunskap, Inför slutprovet): kortet först i Läs, utan rubrik
+   // Varje post: {id, titel, fil, kort?}. kort: false = inget kort (boken finns bara som mål för länkar från en annan bok,
+   // se bokref). Stödböckerna har inget kort om inte kort: true.
+   const SLAG = [
+     { lista: 'djupdykningar', prefix: 'djupdykning-', niva: { id: 'djupdykning', namn: 'Djupdykning' }, overrad: 'Djupdykning', omslag: true, kort: true },
+     { lista: 'nastaSteg', prefix: 'nasta-', niva: { id: 'nasta-steg', namn: 'Nästa steg' }, overrad: 'Nästa steg', omslag: true, kort: true },
+     { lista: 'ovningsbocker', prefix: 'ovning-', niva: { id: 'ovningsbok', namn: 'Övningsbok' }, overrad: 'Nästa steg', omslag: true, kort: true },
+-    { lista: 'stodbocker', prefix: 'stod-', niva: { id: 'stodbok', namn: 'Stödbok' }, overrad: null, omslag: false, kort: false }
++    { lista: 'stodbocker', prefix: 'stod-', niva: { id: 'stodbok', namn: 'Stödbok' }, overrad: null, omslag: false, kort: false },
++    { lista: 'repetitionsbocker', prefix: 'repetition-', niva: { id: 'repetitionsbok', namn: 'Repetitionsbok' }, overrad: 'Repetition', omslag: true, kort: true }
+   ];
+   const DJUPDYKNING = SLAG[0].niva;
+   let fristaendeLista = null;
+@@ -1391,9 +1393,10 @@
+     ui.nastaSteg = kortSektion('nastaSteg', 'nasta-steg', 'Nästa steg – gymnasiets fysik');
+     ui.stodbocker = kortSektion('stodbocker', 'stodbocker', null);
+     ui.ovningsbocker = kortSektion('ovningsbocker', 'ovningsbocker', null);
++    ui.repetitionsbocker = kortSektion('repetitionsbocker', 'repetitionsbocker', null);
+     ui.flikInnehall = FLIKAR.map(([id, namn]) => h('section', { class: 'flik-innehall' + (id === 'laes' ? '' : ' dold'),
+       'data-flik': id, role: 'tabpanel', 'aria-label': namn },
+-      id === 'laes' && [ui.texter, ui.nivaval, ui.lasLage, ui.stodbocker, ui.djupdykningar, ui.nastaSteg],
++      id === 'laes' && [ui.repetitionsbocker, ui.texter, ui.nivaval, ui.lasLage, ui.stodbocker, ui.djupdykningar, ui.nastaSteg],
+       id === 'ova' && ui.ovningsbocker));
+     const hero = h('header', { class: 'hero-banner' },
+       h('div', { class: 'hero-inner' },
+diff -ruN --strip-trailing-cr patch/a/verktyg/bok-grind.js patch/b/verktyg/bok-grind.js
+--- patch/a/verktyg/bok-grind.js	2026-11-22 12:54:50.000000000 +0100
++++ patch/b/verktyg/bok-grind.js	2026-11-22 16:09:37.897224700 +0100
+@@ -1822,7 +1822,7 @@
+       flik && flik.getAttribute('aria-disabled'));
+   }
+   const fsFel = [], fsBocker = [];
+-  for (const [sel, flik] of [['.nasta-steg', 'laes'], ['.ovningsbocker', 'ova'], ['.stodbocker', 'laes']]) {
++  for (const [sel, flik, overrad] of [['.nasta-steg', 'laes', 'NÄSTA STEG'], ['.ovningsbocker', 'ova', 'NÄSTA STEG'], ['.stodbocker', 'laes', null], ['.repetitionsbocker', 'laes', 'REPETITION']]) {
+     for (let i = 0; i < fsKort(sel).length; i++) {
+       const fl = $('.flik[data-flik="' + flik + '"]'); if (fl && !fl.classList.contains('aktiv')) await klicka(fl, 150);
+       const kort = fsKort(sel)[i], titel = kort.querySelector('.fordj-kort-titel').textContent.trim(), t = kort.dataset.text;
+@@ -1835,7 +1835,7 @@
+       const toc = (synlig('.scen .boktitel') || {}).textContent || '';
+       if (!oppen() || !hash.startsWith('#' + t + '/')) fsFel.push(titel + ': öppnade ' + hash);
+       if (!utanNiva) fsFel.push(titel + ': nivåväljaren syns');
+-      if (harOmslag && !stod && !omslag.includes('NÄSTA STEG')) fsFel.push(titel + ': omslaget ”' + omslag.slice(0, 90) + '”');
++      if (harOmslag && !stod && !omslag.includes(overrad)) fsFel.push(titel + ': omslaget ”' + omslag.slice(0, 90) + '”');
+       if (stod && omslag) fsFel.push(titel + ': en stödbok ska inte ha något omslag');
+       if (!toc.includes(titel)) fsFel.push(titel + ': förteckningen ”' + toc + '”');
+       spar.push(await figurKoll());
+@@ -1845,7 +1845,7 @@
+     }
+   }
+   const laes = $('.flik[data-flik="laes"]'); if (laes && !laes.classList.contains('aktiv')) await klicka(laes, 150);
+-  if (fsBocker.length) prova('fristående böcker: varje kort (Nästa steg, Öva, stödbok) öppnar sin bok – adressen, ingen nivåväljare, förteckningen med titeln, omslaget med "Nästa steg" (inte för en stödbok) – och Stäng leder tillbaka (' + fsBocker.map(b => b.titel).join(', ') + ')',
++  if (fsBocker.length) prova('fristående böcker: varje kort (Nästa steg, Öva, stödbok, repetitionsbok) öppnar sin bok – adressen, ingen nivåväljare, förteckningen med titeln, omslaget med sortens överrad (inte för en stödbok) – och Stäng leder tillbaka (' + fsBocker.map(b => b.titel).join(', ') + ')',
+     !fsFel.length, fsFel.join(' | '));
+   // Länkarna mellan böckerna: i varje bok den första länken till en annan bok – den öppnar den boken vid avsnittet, och
+   // "Tillbaka till …" leder tillbaka
+@@ -2306,7 +2306,7 @@
+   // ingen nivåväljare – och figurerna i den mäts; efteråt är texten och nivån eleven valt desamma.
+   const ddAntal = Object.keys(JSON.parse(document.body.dataset.kontroll).nivaer).filter(n => n.startsWith('djupdykning-')).length;
+   // (djupdykningarnas block: inte Nästa steg eller en stödbok, som har samma stil – arbetsorder 11)
+-  const DD_SEK = 'section[data-flik="laes"] > .vill-veta-mer:not(.nasta-steg):not(.stodbocker)';
++  const DD_SEK = 'section[data-flik="laes"] > .vill-veta-mer:not(.nasta-steg):not(.stodbocker):not(.repetitionsbocker)';
+   const ddKort = () => $$(DD_SEK + ':not([hidden]) .fordj-kort');
+   if (ddAntal || ddKort().length) {
+     const sek = $(DD_SEK);
+diff -ruN --strip-trailing-cr patch/a/verktyg/provbok/delkapitel.js patch/b/verktyg/provbok/delkapitel.js
+--- patch/a/verktyg/provbok/delkapitel.js	2026-11-22 16:09:14.502938100 +0100
++++ patch/b/verktyg/provbok/delkapitel.js	2026-11-22 16:09:37.898225600 +0100
+@@ -29,6 +29,7 @@
+   nastaSteg: [{ id: 'prov-nasta', titel: 'Provbok · Nästa steg', fil: 'innehall/nasta/textbok.js' }],
+   ovningsbocker: [{ id: 'prov-ovning', titel: 'Provbok · Nästa steg – övningsbok', fil: 'innehall/nasta/ovningsbok.js' }],
+   stodbocker: [{ id: 'prov-matte', titel: 'Provbok · Matematik', fil: 'innehall/nasta/matte.js' }],
++  repetitionsbocker: [{ id: 'prov-repetition', titel: 'Provbok · Repetition', fil: 'innehall/repetition/prov.js' }],
+   hjalpmedel: {
+     forelasning:    { href: null },
+     ova:            { href: 'hjalpmedel.html?vad=ova&avsnitt={avsnitt}' },
+diff -ruN --strip-trailing-cr patch/a/verktyg/provbok/innehall/repetition/prov.js patch/b/verktyg/provbok/innehall/repetition/prov.js
+--- patch/a/verktyg/provbok/innehall/repetition/prov.js	1970-01-01 01:00:00.000000000 +0100
++++ patch/b/verktyg/provbok/innehall/repetition/prov.js	2026-11-22 16:09:37.998575100 +0100
+@@ -0,0 +1,7 @@
++/* PROVDATA för verktyg/bok-grind.js – inte elevinnehåll. En repetitionsbok: en bok utan nivåer. */
++Bok.niva('repetitionsbok', {
++  avsnitt: [
++    { id: 'inledning', titel: 'Inledning', numrerad: false, block: [{ typ: 'text', text: 'Provtext.' }] },
++    { id: 'repetition', titel: 'Provavsnitt', block: [{ typ: 'rubrik', text: 'Provrubrik' }, { typ: 'text', text: 'Provtext.' }] }
++  ]
++});
