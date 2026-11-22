@@ -27,7 +27,7 @@ Samhällsboken är en **läsebok** i Alphaskolans lärplattform, i geografi/hist
 
 - **Innehållsramen** är Historiabokens (`jb873/Historiabok`, den här filen bygger på dess CLAUDE.md).
 - **Referensimplementationen** att kopiera komponenter rakt av från är Geografibokens (`jb873/Geografibok`).
-- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 9247345 (2026-11-22) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
+- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 3c3cc86 (2026-11-22, med repetitionsboken) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
 - **Enkällig motor:** motorn ändras aldrig här. Ändringar görs i Fysikbok och kopieras hit byte för byte (se `PLATTFORMS-ANDRINGAR.md`).
 
 ---
@@ -71,7 +71,7 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
 
 ### Beslutat (Joachim, 2026-11-22)
 - **Motorn:** Fysiks (se ovan).
-- **Repetitionsböckerna:** en nivålös bok av en femte sort fristående bok, *repetitionsbok* (`repetitionsbocker` i `delkapitel.js`, adress `#repetition-<id>`, omslagets överrad "Repetition", kortet först i Läs utan rubrik). Sorten bor i Fysiks motor; ändringen görs i Fysikbok först och committas där, och motorn kopieras sedan hit.
+- **Repetitionsböckerna:** en nivålös bok av en femte sort fristående bok, *repetitionsbok* (`repetitionsbocker` i `delkapitel.js`, adress `#repetition-<id>`, omslagets överrad "Repetition", kortet först i Läs utan rubrik). Sorten bor i Fysiks motor (Fysikbok 3c3cc86) och är kopierad hit.
 - **Mappform:** Fysiks, två mappar djupt: `infor-slutprovet/index.html` (kapitelindex) och `infor-slutprovet/<tema>/` (en sida per tema, mallen ordagrant).
 - **Prefix:** `sam`. Varje `id` i `delkapitel.js` börjar med `sam-`.
 - **Omslag:** inget nu (ingen `kapitel`-rad, inget motiv).
@@ -120,14 +120,14 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 
 | Sökväg | Vad | Källa (ordagrant) |
 |---|---|---|
-| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 9247345: `bokskal/`, `README.md` |
+| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 3c3cc86: `bokskal/`, `README.md` |
 | `mall/delkapitel/` | mallen för en bok-sida | Fysikbok `mall/delkapitel/`; `index.html` med titeln och `css/bok-samhalle.css` (som Geografis mall) |
 | `css/bok-samhalle.css` | samhällets färg ovanpå motorn | Geografis `css/bok-geografi.css` som mönster |
 | `verktyg/fargprov/` | färgprovet A/B/C (inte elevinnehåll; grinden letar inte i `verktyg/`) | nytt |
 | `mall/nav-skal/startsida.html` | nav-skal: bokens startsida (`.kapitel-kort`, tonat = `dimmad`) | Geografibok `index.html` |
 | `mall/nav-skal/kapitelindex.html` | nav-skal: kapitelindex | Geografibok `delkapitel/ekonomisk-geografi/index.html` |
 | `css/geografi.css` | plattformens delade designsystem (tokens, komponenter) | Geografibok `css/geografi.css` |
-| `verktyg/bok-grind.js`, `verktyg/provbok*/`, `verktyg/provkapitel.js` | motorns verifiering och dess provdata | Fysikbok 9247345 `verktyg/` |
+| `verktyg/bok-grind.js`, `verktyg/provbok*/`, `verktyg/provkapitel.js` | motorns verifiering och dess provdata | Fysikbok 3c3cc86 `verktyg/` |
 | `doc/KOMPONENTER-INNEHALL-HISTORIA-v1.10.md` | komponenter för innehållsproducenter | Historiabok `doc/` |
 | `doc/LEVERANSGUIDE-INNEHALL v2.1.md` | leveransguide för innehållsproducenter | Historiabok `doc/` (identisk med Geografis) |
 | `doc/avsnitts-scaffold-mall.html` | komponent-template (avsnitts-scaffold) | Historiabok `doc/` |

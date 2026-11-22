@@ -38,8 +38,7 @@
 
 | Datum | Typ | Var upptäckt | Observation | Förslag |
 |---|---|---|---|---|
-| 2026-11-22 | C | Samhällsboken, repetitionsboken | En femte sort fristående bok (*repetitionsbok*) behövs i motorn, och motorn ska vara enkällig (Fysikbok). Uppmätt tillägg: `bok.js` +5/−2 rader (en rad i `SLAG`, ett kortblock, dess plats först i Läs, en kommentar), `bok.css` 1 rad, `bok-grind.js` 4 rader (sorten i rundan; omslagsprovet läser sortens överrad i stället för "NÄSTA STEG"; djupdykningsblocket utesluter sorten), provboken +1 rad och en provfil, README +1 tabellrad. Provkört i scratch: sida utan nivåer, fylld bok och tom bok ("kommer"), kontrolläget grönt. | (1) Patchen läggs i Fysikbok först (en egen order, efter Fysiks pågående ocommittade arbete i `README.md` och `bok-grind.js`; patchen går in rent ovanpå det), Fysiks grind körs, commit i Fysikbok; Samhällsboken kopierar sedan `bokskal/` byte för byte från den committen. Rekommenderas. (2) Portabelt tillägg som Fysik adopterar: går inte utan att motorn först får ett register-API för sorter (`SLAG` är en konstant i motorns stängda funktion) — större ändring, samma väg via Fysikbok. |
-| 2026-11-22 | C | Samhällsboken, grinden | Fysiks `bok-grind.js` blandar motorprov och Fysiks eget innehåll: startsidans kapitel och Nästa steg (hårdkodade Fysik-mappar), källfilerna `STROM_MAPPAR`/`STROM_KALLOR`, negativa prov mot `rorelse_och_kraft` och webbadressen `jb873.github.io/Fysikbok`. Den går inte att köra rakt av i en annan bok, och Geografi och Samhälle får då var sin variant av grinden. | Dela grinden i en motordel (bokskal, provböckerna, varje delkapitel som hittas) som följer med motorn, och en bokdel per bok (startsida, källor, webbadress). Till dess: Samhällsboken kör inte grinden; kontrolläget (`?kontroll`) används per sida. **Joachim 2026-11-22: rätt och nödvändigt, men ett eget spår.** |
+| 2026-11-22 | C | Samhällsboken, grinden | Fysiks `bok-grind.js` blandar motorprov och Fysiks eget innehåll: startsidans kapitel och Nästa steg (hårdkodade Fysik-mappar), källfilerna `STROM_MAPPAR`/`STROM_KALLOR`, negativa prov mot `rorelse_och_kraft` och webbadressen `jb873.github.io/Fysikbok`. Den går inte att köra rakt av i en annan bok, och Geografi och Samhälle får då var sin variant av grinden. | Dela grinden i en motordel (bokskal, provböckerna, varje delkapitel som hittas) som följer med motorn, och en bokdel per bok (startsida, källor, webbadress). Till dess: kontrolläget (`?kontroll`) används per sida. **Joachim 2026-11-22: rätt och nödvändigt, men ett eget spår.** Nattordern 2026-11-22: `node verktyg/bok-grind.js --bara=<tema>` går att köra här – temasidornas prov blir gröna, men startsidans prov (Fysiks kapitel och Nästa steg) blir alltid röda. |
 
 *(Tom rad ovan är till för nya poster — fyll på underifrån)*
 
@@ -55,8 +54,7 @@
 
 | Datum | Beslut | Påverkar | Status |
 |---|---|---|---|
-| 2026-11-22 | Fysiks bokmotor är standarden för nya böcker, inte Geografis kopia (Geografis tillägg `villVetaMer`, `bild`, `fundera` finns inte i Fysiks) | Samhällsboken, framtida böcker | Samhällsboken har Fysikbok 9247345 |
-| 2026-11-22 | Repetitionstema = nivålös *repetitionsbok*, en femte sort fristående bok i Fysiks motor (alternativ C) | Fysikbok (motorn), Samhällsboken | Godkänt: i Fysikbok först, committat där, kopierat hit |
+| 2026-11-22 | Fysiks bokmotor är standarden för nya böcker, inte Geografis kopia (Geografis tillägg `villVetaMer`, `bild`, `fundera` finns inte i Fysiks) | Samhällsboken, framtida böcker | Samhällsboken har Fysikbok 3c3cc86 |
 | 2026-11-22 | Samhällsbokens sidor ligger i Fysiks form, två mappar djupt: `infor-slutprovet/<tema>/` | Samhällsboken | Gäller |
 | 2026-11-22 | Samhällets signaturfärg: plommon/aubergine, enda ämnesegna färgen; nyans C, djup aubergine `#5b2f4e`, vald på ögat i `verktyg/fargprov/` | Samhällsboken | Gäller (`css/bok-samhalle.css`) |
 
@@ -74,6 +72,7 @@
 
 | Datum | Vad |
 |---|---|
+| 2026-11-22 | Repetitionstema = nivålös *repetitionsbok*, en femte sort fristående bok i Fysiks motor (alternativ C): i Fysikbok 3c3cc86 (committad och pushad där), kopierad hit byte för byte |
 
 ---
 
