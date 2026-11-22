@@ -5,7 +5,7 @@
 
 **Senast uppdaterad:** 2026-11-22
 **Plattformsversion:** Alphaskolans lärplattform v0.3 (Lager 1) + Lager 2-3-utökning v0.1
-**Bok-status:** Nystartad 2026-11-22. Ramen är inkopierad (Fysiks motor), färgprovet finns. Inget innehåll är byggt: de sex böckerna väntar på repetitionsboken i motorn. Se *Obeslutat* nedan.
+**Bok-status:** 2026-11-22 (nattordern): motorn är Fysikbok 3c3cc86 med repetitionsboken. Fyra av sex repetitionsböcker i *Inför slutprovet* är byggda (I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt, V Media). IV Beslutsfattande och VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
 
 ---
 
@@ -84,9 +84,9 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
 1. **NP-liknande frågor per tema** (senare fas): var de bor på temasidan (Öva-flik eller en övningsbok) beslutas när de beställs.
 
 ### Sidorna
-- `index.html` — startsidan: de sex kapitlen tonade ("Kommer senare") och blocket *Inför slutprovet*.
-- `infor-slutprovet/index.html` — kapitelindexet: sex kort, tonade ("Kommer snart") tills boken har en sammanfattning. Då byts kortet mot `<a class="kapitel-kort" href="<tema>/index.html#repetition-<tema>">`.
-- `infor-slutprovet/<tema>/` — temasidan: mallen ordagrant, `delkapitel.js` och boken i `innehall/repetition.js` (`Bok.niva('repetitionsbok', …)`, tom = "kommer").
+- `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till den tills det fulla kapitlet finns (nattordern 2026-11-22: I, II, III och V). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
+- `infor-slutprovet/index.html` — kapitelindexet: sex kort, tonade ("Kommer snart") tills boken har en sammanfattning. Då byts kortet mot `<a class="kapitel-kort" href="<tema>/index.html#repetition-<tema>">`, här och på startsidan.
+- `infor-slutprovet/<tema>/` — temasidan: mallen ordagrant, `delkapitel.js` och boken i `innehall/repetition.js` (`Bok.niva('repetitionsbok', …)`, tom = "kommer"), skriven av `verktyg/md-till-repetitionsbok.js` ur `kallor/<tema>.md` (se *Textstil*).
 
 ### Böckerna och kapitlen (arbetsnamn)
 Kapitlet **Inför slutprovet** presenterar sex bläddringsbara böcker, en per tema, som repeterar temat. Varje bok står som "kommer" tills sammanfattningen finns. Böckerna är sammanfattnings-/repetitionstext — inte tre-nivå-texter, flipcards eller elevbok.
@@ -99,7 +99,7 @@ De sex temana (arbetsnamn, kan justeras):
 5. Media
 6. Samhälls- och privatekonomi
 
-Startsidan listar de sex temana; de fulla kapitlen byggs senare och är tonade ("kommer senare").
+Startsidan listar de sex temana. De fulla kapitlen byggs senare; till dess länkar ett tema till sin repetitionsbok, eller är tonat ("Kommer senare").
 
 **Senare fas (bygg INTE nu):** NP-liknande frågor per tema, utifrån analys av offentliga nationella prov. Plats lämnas för dem, men inget byggs förrän Joachim beställer det.
 
@@ -147,6 +147,9 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 | `doc/KOMPONENTER-INNEHALL-HISTORIA-v1.10.md` | komponenter för innehållsproducenter | Historiabok `doc/` |
 | `doc/LEVERANSGUIDE-INNEHALL v2.1.md` | leveransguide för innehållsproducenter | Historiabok `doc/` (identisk med Geografis) |
 | `doc/avsnitts-scaffold-mall.html` | komponent-template (avsnitts-scaffold) | Historiabok `doc/` |
+| `kallor/original/` | Joachims sammanfattningar, ordagrant som de levererades | Joachim (Hämtade filer, 2026-11-22) |
+| `kallor/<tema>.md` | sammanfattningarna i textstilen (källan till böckerna) | `kallor/original/` + stilbearbetningen |
+| `verktyg/md-till-repetitionsbok.js` | för in `kallor/<tema>.md` i temats `innehall/repetition.js` | nytt, som Fysiks `verktyg/kap3-omvandlare.js` |
 
 Mallarna i `mall/nav-skal/` är referenser, inte sidor i boken: de pekar fortfarande på Geografis innehåll och sökvägar.
 
