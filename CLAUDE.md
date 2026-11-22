@@ -103,6 +103,22 @@ Startsidan listar de sex temana; de fulla kapitlen byggs senare och är tonade (
 
 **Senare fas (bygg INTE nu):** NP-liknande frågor per tema, utifrån analys av offentliga nationella prov. Plats lämnas för dem, men inget byggs förrän Joachim beställer det.
 
+### Textstil (Joachim, 2026-11-22)
+Standarden för bokens texter, först repetitionsböckerna i *Inför slutprovet*. Följ den.
+- **Löpande prosa, inte punktlista.** Fyllda sidor, få rubriker.
+- **Underrubriker är påståenden, inte etiketter.** Korta, runt sex per text.
+- **Inga numrerade rubriker.**
+- **Nyckelbegrepp i fetstil vid första förekomst** – bara de centrala. Funktionellt.
+- **Ca 1500–2000 ord per tema.**
+- Bearbetning av Joachims text ändrar **stil, inte innehåll eller fakta**: hans ord och sakuppgifter står kvar.
+
+Så bärs standarden i bokmotorn (repetitionsböckerna):
+- **Källan** är `kallor/<tema>.md`, Joachims text i textstilen; hans original ligger ordagrant i `kallor/original/`. `node verktyg/md-till-repetitionsbok.js [tema]` skriver `infor-slutprovet/<tema>/innehall/repetition.js`. Skriv aldrig i den filen för hand.
+- **`##`** blir ett avsnitt utan nummer (`numrerad: false`). Avsnitten står i innehållsförteckningen och sidhuvudet. Varje avsnitt börjar på ny sida, så boken har få avsnitt (2–3, som Fysiks texter), och då flödar texten och sidorna fylls.
+- **`###`** blir påståenderubriken i texten (`rubrik`). Om ett avsnitt saknar `###` står avsnittets namn som rubrik först.
+- **`**ord**`** blir `*ord*`, motorns enda markering (fetstil i accentfärgen). Kursiv finns inte i motorn och blir vanlig text.
+- **Motorn delar aldrig ett stycke.** Ett stycke på 8–10 rader som inte ryms flyttar till nästa sida. Sidorna blir därför fyllda till ungefär 55–90 %.
+
 ### Klassnamn
 Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-kort`, `.skatt-knapp`.
 
@@ -110,7 +126,7 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 1. Packning-upp av kausala kedjor — INTE bullet-listor som dominerande format
 2. Bildguider FÖRE bilder (advance organizer)
 3. Djupdykningar i "Vill du veta mer?"-sektion längst ner i Läs-fliken
-4. Differentiering: tre textnivåer per avsnitt (gäller de fulla kapitlen; repetitionsböckerna i *Inför slutprovet* är ett beslut som återstår, se *Obeslutat* 1)
+4. Differentiering: tre textnivåer per avsnitt (gäller de fulla kapitlen; repetitionsböckerna i *Inför slutprovet* är nivålösa, se *Beslutat*)
 5. Stödord och startfraser på flipcards-redogörelsekort
 6. Inga skuldläggningar — alltid positiv inramning
 
