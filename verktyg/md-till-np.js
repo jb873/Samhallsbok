@@ -12,8 +12,9 @@
  *
  * Texten förs över ordagrant (**fet** blir *fet*, *kursiv* vanlig text). Ett stycke med flera rader i källan står kvar
  * rad för rad (blocket rader). Ur uppgiftens huvud tas bara källan ("Källa: vt 2017, delprov A, uppgift A10"); typ,
- * nivå och Joachims anteckningar är inte elevtext. Bildraderna ("[Bild: …]") förs inte in: bilderna finns i PDF:en,
- * och en bok med vänster- och högersidor får inte ha figurer (gränsen för efterpasset).
+ * nivå och Joachims anteckningar är inte elevtext. En bildrad ("[Bild: …]") blir uppgiftens bild (slag 'bild', ingen
+ * figur – arbetsorder 2026-11-24) där den står, före "Tips i provet" som på NP, men bara om bilden finns i BILDER nedan;
+ * annars förs raden inte in.
  *   lucktext        → 'lucktext' (godkända svar: facit och dess bestämda form, BESTAMD nedan)
  *   stämmer/stämmer inte, Ja/Nej → 'tvaval' (Stämmer/Ja = 0, Stämmer inte/Nej = 1)
  *   öppen           → 'oppen': skrivmodellen och prompten (uppgiftens text, A-kriteriet ur NP:s matris, skrivmodellen)
@@ -49,6 +50,10 @@ const BESTAMD = {
   'integration': ['integrationen'], 'segregation': ['segregationen'], 'migrationsverket': [], 'emigration': ['emigrationen']
 };
 const liten = s => s.toLowerCase();
+// Uppgifternas bilder (arbetsorder 2026-11-24), i temasidans bilder/. Bara godkända bilder: uppgift 3 har ingen (© UNHCR,
+// publiceras inte), och uppgift 6 väntar på en karta som visar var folk bor (NP-PDF:ens bild är bara Sveriges kontur).
+// En post: nr: {fil: 'bilder/…', bredd, hojd (pixlar), beskrivning, kalla}
+const BILDER = { 'individ-migration-minoriteter': {} }[TEMA] || {};
 
 const avsnitt = [];
 for (const u of uppgifter) {
@@ -60,7 +65,7 @@ for (const u of uppgifter) {
   const kalla = (huvud.find(r => /^- \*\*Källa:\*\*/.test(r)) || '').replace(/^- \*\*Källa:\*\*\s*/, '');
   kolla(kalla, `uppgift ${u.nr}: ingen källa`);
   const elev = huvudOchElev.split('\n').filter(r => !/^- \*\*[^*]+:\*\*/.test(r)).join('\n');
-  const stycken = elev.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean).filter(s => !/^\[Bild: .*\]$/.test(s));
+  const stycken = elev.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
   const id = `${PREFIX[TEMA]}-u${u.nr}`, block = [{ typ: 'text', text: `Källa: ${kalla}` }];
   const radlista = s => s.split('\n').map(x => x.trim());
   const arLucka = s => /^\d+\. .*______/.test(s), arPastaenden = s => radlista(s).every(x => /^[a-z]\) /.test(x)), arLista = s => radlista(s).every(x => /^- /.test(x));
@@ -69,7 +74,9 @@ for (const u of uppgifter) {
   const prompttext = [];                               // uppgiftens text till AI-mallen: elevdelen utan källan
 
   for (const s of stycken) {
-    if (/^\*Tips i provet:\*/.test(s)) {
+    if (/^\[Bild: .*\]$/.test(s)) {                  // uppgiftens bild, där den står (eller ingenting)
+      if (BILDER[u.nr]) block.push({ typ: 'uppgift', id: `${id}-bild`, slag: 'bild', bild: BILDER[u.nr] });
+    } else if (/^\*Tips i provet:\*/.test(s)) {
       block.push({ typ: 'ruta', rubrik: 'Tips i provet:', text: stil(s.replace(/^\*Tips i provet:\*\s*/, '')) });
       prompttext.push(ren(s));
     } else if (/^Begrepp: /.test(s)) ordbank = s.replace(/^Begrepp: /, '').split(',').map(x => x.trim());
