@@ -17,9 +17,11 @@ Bok.delkapitel({
 
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-individ-migration-minoriteter
   repetitionsbocker: [
-    { id: 'individ-migration-minoriteter', titel: 'Individ, migration och minoriteter', fil: 'innehall/repetition.js' }
+    { id: 'individ-migration-minoriteter', titel: 'Individ, migration och minoriteter', fil: 'innehall/repetition.js' },
+    // Övningsboken (Joachims beslut 2026-11-23: en egen bok bredvid repetitionsboken): NP-liknande uppgifter, motorns
+    // övningar ({typ: 'uppgift'}). Skrivs av verktyg/md-till-uppgifter.js. Adressen: index.html#repetition-ova-individ-migration-minoriteter
+    { id: 'ova-individ-migration-minoriteter', titel: 'Öva inför slutprovet: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' }
   ],
 
-  // NP-liknande frågor per tema (senare fas, inte byggd): plats här på temasidan.
   hjalpmedel: {}
 });
