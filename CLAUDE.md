@@ -5,7 +5,7 @@
 
 **Senast uppdaterad:** 2026-11-22
 **Plattformsversion:** Alphaskolans lärplattform v0.3 (Lager 1) + Lager 2-3-utökning v0.1
-**Bok-status:** 2026-11-23: motorn är Fysikbok 6297bbf, med repetitionsboken och övningarna (blocktypen `uppgift`). Tema I har en övningsbok bredvid repetitionsboken. 2026-11-22 (nattordern): Fyra av sex repetitionsböcker i *Inför slutprovet* är byggda (I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt, V Media). IV Beslutsfattande och VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
+**Bok-status:** 2026-11-23: motorn är Fysikbok 6297bbf, med repetitionsboken och övningarna (blocktypen `uppgift`). Tema I har en övningsbok bredvid repetitionsboken. Fem av sex repetitionsböcker i *Inför slutprovet* är byggda: I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt och V Media (nattordern 2026-11-22), och IV Beslutsfattande (2026-11-24, Joachims text oförändrad, inklusive "Det här har ändrats sedan boken skrevs"). VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
 
 ---
 
@@ -92,7 +92,7 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
 1. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
 
 ### Sidorna
-- `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till sin temasida, `infor-slutprovet/<tema>/index.html` (nattordern 2026-11-22: I, II, III och V; temasidan är ingången sedan 2026-11-24). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
+- `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till sin temasida, `infor-slutprovet/<tema>/index.html` (nattordern 2026-11-22: I, II, III och V; IV 2026-11-24; temasidan är ingången sedan 2026-11-24). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
 - `infor-slutprovet/index.html` — kapitelindexet: sex kort, tonade ("Kommer snart") tills boken har en sammanfattning. Då byts kortet mot `<a class="kapitel-kort" href="<tema>/index.html">` (temasidan), här och på startsidan.
 - `infor-slutprovet/<tema>/` — temasidan, ingången till temat: överst korten Läsa (repetitionsboken) och Öva (övningsboken, där den finns). Mallen ordagrant, `delkapitel.js` och boken i `innehall/repetition.js` (`Bok.niva('repetitionsbok', …)`, tom = "kommer"), skriven av `verktyg/md-till-repetitionsbok.js` ur `kallor/<tema>.md` (se *Textstil*).
 
@@ -155,8 +155,8 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 | `doc/KOMPONENTER-INNEHALL-HISTORIA-v1.10.md` | komponenter för innehållsproducenter | Historiabok `doc/` |
 | `doc/LEVERANSGUIDE-INNEHALL v2.1.md` | leveransguide för innehållsproducenter | Historiabok `doc/` (identisk med Geografis) |
 | `doc/avsnitts-scaffold-mall.html` | komponent-template (avsnitts-scaffold) | Historiabok `doc/` |
-| `kallor/original/` | Joachims sammanfattningar, ordagrant som de levererades | Joachim (Hämtade filer, 2026-11-22) |
-| `kallor/<tema>.md` | sammanfattningarna i textstilen (källan till böckerna) | `kallor/original/` + stilbearbetningen |
+| `kallor/original/` | Joachims sammanfattningar, ordagrant som de levererades | Joachim (Hämtade filer, 2026-11-22; beslutsfattande 2026-11-24) |
+| `kallor/<tema>.md` | sammanfattningarna i textstilen (källan till böckerna) | `kallor/original/` + stilbearbetningen (beslutsfattande.md: en ordagrann kopia, texten var redan i textstilen) |
 | `verktyg/md-till-repetitionsbok.js` | för in `kallor/<tema>.md` i temats `innehall/repetition.js` | nytt, som Fysiks `verktyg/kap3-omvandlare.js` |
 | `kallor/ovningar/ai-mall.txt` | AI-mallen för återkoppling på öppna svar, en mall för alla uppgifter; avsnittet med A-exemplet utbytt mot skrivmodellen (beslutet 2026-11-23) | Joachim (arbetsordern) |
 | `verktyg/md-till-uppgifter.js` | för in Del B och Del C ur Joachims samlade material (Hämtade filer, inte i repot) i temats `innehall/ovningar.js`; läser aldrig A-exemplen och stoppar om en mening ur ett A-exempel skulle hamna i boken | nytt |
