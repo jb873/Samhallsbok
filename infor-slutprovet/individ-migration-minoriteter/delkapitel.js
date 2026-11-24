@@ -22,7 +22,11 @@ Bok.delkapitel({
     { id: 'individ-migration-minoriteter', titel: 'Läsa: Individ, migration och minoriteter', fil: 'innehall/repetition.js' },
     // Övningsboken (Joachims beslut 2026-11-23: en egen bok bredvid repetitionsboken): NP-liknande uppgifter, motorns
     // övningar ({typ: 'uppgift'}). Skrivs av verktyg/md-till-uppgifter.js. Adressen: index.html#repetition-ova-individ-migration-minoriteter
-    { id: 'ova-individ-migration-minoriteter', titel: 'Öva: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' }
+    { id: 'ova-individ-migration-minoriteter', titel: 'Öva: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' },
+    // Nationella prov-boken (arbetsorder 2026-11-24): de sju riktiga NP-uppgifterna, interaktiva, skild från Öva-boken.
+    // Etiketten "Nationella prov" är ett arbetsnamn som Joachim bekräftar. Skrivs av verktyg/md-till-np.js.
+    // Adressen: index.html#repetition-np-individ-migration-minoriteter
+    { id: 'np-individ-migration-minoriteter', titel: 'Nationella prov: Individ, migration och minoriteter', fil: 'innehall/nationella-prov.js' }
   ],
 
   hjalpmedel: {}
