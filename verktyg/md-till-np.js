@@ -44,7 +44,7 @@ const JA_NEJ_NYCKLAR = {
     Nej: ['kepsförbud', 'välja skola', 'sänkt betyg', 'lunchalternativ', 'slutat på skolan'] } }
 }[TEMA] || {};
 // Godkända svar i lucktexten utöver facit: bestämd form (som Öva-boken; stora och små bokstäver sköter motorn).
-// BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-24).
+// BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-24. Ändra den bara på hans beslut.
 const BESTAMD = {
   'asyl': ['asylen'], 'flykting': ['flyktingen'], 'visum': ['visumet'], 'migration': ['migrationen'],
   'integration': ['integrationen'], 'segregation': ['segregationen'], 'migrationsverket': [], 'emigration': ['emigrationen']

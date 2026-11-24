@@ -24,7 +24,7 @@ Bok.delkapitel({
     // övningar ({typ: 'uppgift'}). Skrivs av verktyg/md-till-uppgifter.js. Adressen: index.html#repetition-ova-individ-migration-minoriteter
     { id: 'ova-individ-migration-minoriteter', titel: 'Öva: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' },
     // Nationella prov-boken (arbetsorder 2026-11-24): de sju riktiga NP-uppgifterna, interaktiva, skild från Öva-boken.
-    // Etiketten "Nationella prov" är ett arbetsnamn som Joachim bekräftar. Skrivs av verktyg/md-till-np.js.
+    // Etiketten "Nationella prov" är bekräftad av Joachim (2026-11-24). Skrivs av verktyg/md-till-np.js.
     // Adressen: index.html#repetition-np-individ-migration-minoriteter
     { id: 'np-individ-migration-minoriteter', titel: 'Nationella prov: Individ, migration och minoriteter', fil: 'innehall/nationella-prov.js' }
   ],
