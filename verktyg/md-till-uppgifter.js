@@ -5,8 +5,9 @@
  *   node verktyg/md-till-uppgifter.js "<Hämtade filer>/Samlat_material_Individ_migration_minoriteter.md" [tema]
  *
  * Ur Joachims samlade material läses bara Del B (de NP-liknande uppgifterna, elevdelen och bedömningsanvisningen) och
- * Del C (skrivmodellen). Del A (original-NP) och Del D läses inte. A-exemplen läses aldrig: de stannar i källmaterialet
- * (Joachims beslut 2026-11-23) och finns varken i prompten eller i källkoden. Källfilen läggs inte i repot.
+ * Del C (skrivmodellen). Del A (original-NP, se verktyg/md-till-np.js) och Del D läses inte. A-exemplen läses aldrig: de
+ * stannar i källmaterialet (Joachims beslut 2026-11-23) och finns varken i prompten eller i källkoden. Källfilen läggs
+ * inte i repot. Det gemensamma med Nationella prov-boken står i verktyg/uppgifter-gemensamt.js.
  *
  * Texten förs över ordagrant: **fet** blir *fet* (motorns enda markering), *kursiv* blir vanlig text.
  *   Ja/Nej och Stämmer/Stämmer inte → slag 'tvaval' (facit: Ja = 0, Nej = 1; Stämmer = 0, Stämmer inte = 1)
@@ -16,42 +17,16 @@
  * Varje uppgift blir ett numrerat avsnitt (ny sida per uppgift). Stoppar med fel om något inte stämmer. */
 'use strict';
 const fs = require('fs'), path = require('path');
-const ROT = path.join(__dirname, '..');
+const G = require('./uppgifter-gemensamt.js');
+const { ROT, kolla, stil, ren, celler, tabellrader } = G;
 const [KALLA, TEMA = 'individ-migration-minoriteter'] = process.argv.slice(2);
 const PREFIX = { 'individ-migration-minoriteter': 'sam-imm' };   // övningarnas id (elevens svar sparas på dem – byt aldrig)
 const UT = path.join(ROT, 'infor-slutprovet', TEMA, 'innehall', 'ovningar.js');
-const MALL = fs.readFileSync(path.join(ROT, 'kallor', 'ovningar', 'ai-mall.txt'), 'utf8').replace(/\r\n/g, '\n').trim();
-const PLATSHALLARE = '[klistras in av eleven]';
-const HJALP = 'Klistra in i skolans Google-AI i Classroom. Det du har skrivit i rutan följer med.';
 if (!KALLA || !PREFIX[TEMA]) { console.error('Ange källfilen (Samlat_material_….md) och ett tema med prefix i PREFIX.'); process.exit(1); }
 
-const fel = [];
-const kolla = (villkor, text) => { if (!villkor) fel.push(text); };
 const md = fs.readFileSync(KALLA, 'utf8').replace(/\r\n/g, '\n');
-const del = (fran, till) => { const a = md.indexOf(fran), b = md.indexOf(till, a + 1); kolla(a >= 0 && b > a, `hittar inte ${fran}`); return md.slice(a, b); };
-const delB = del('\n# Del B', '\n# Del C'), delC = del('\n# Del C', '\n# Del D');
-
-const stil = s => s.replace(/\*\*(.+?)\*\*/g, '\u0000$1\u0001').replace(/\*(.+?)\*/g, '$1').replace(/[\u0000\u0001]/g, '*').trim();
-const ren = s => s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').trim();   // utan märkning (prompten)
-const celler = rad => rad.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
-const tabellrader = text => text.split('\n').filter(r => /^\|/.test(r) && !/^\|[-\s|]+\|$/.test(r));
-
-/* ---------- Del C: skrivmodellen. Eleven ser Redogöra och Resonera, inte bedömnings- och nivådelarna (beslut 6). ---------- */
-const modell = [];
-for (const rad of delC.split('\n')) {
-  const rubrik = rad.match(/^\*\*(.+?)\*\*\s*(\(.*\))?\s*$/);
-  if (rubrik) { modell.push({ rubrik: rubrik[1], vad: rubrik[2] ? rubrik[2].slice(1, -1) : null, punkter: [] }); continue; }
-  const p = rad.match(/^(\s*)- (.+)$/);
-  if (p && modell.length) {
-    const lista = modell[modell.length - 1].punkter;
-    if (p[1].length) lista[lista.length - 1].under.push(p[2]); else lista.push({ text: p[2], under: [] });
-  }
-}
-kolla(modell.length === 4 && /^Redogöra/.test(modell[0].rubrik) && /^Resonera/.test(modell[1].rubrik), 'Del C: väntade fyra avsnitt (Redogöra, Resonera, Koppling, Nivåerna)');
-const tillBok = delar => delar.map(d => ({ rubrik: d.rubrik, vad: d.vad,
-  punkter: d.punkter.map(p => Object.assign({ text: stil(p.text) }, p.under.length ? { under: p.under.map(stil) } : {})) }));
-const tillPrompt = delar => delar.map(d => [d.rubrik + (d.vad ? ` (${d.vad})` : ''),
-  ...d.punkter.flatMap(p => [`- ${ren(p.text)}`, ...p.under.map(x => `  - ${ren(x)}`)])].join('\n')).join('\n\n');
+const delB = G.delAv(md, '\n# Del B', '\n# Del C'), delC = G.delAv(md, '\n# Del C', '\n# Del D');
+const modell = G.lasModell(delC);
 
 /* ---------- Del B: uppgifterna ---------- */
 const bitar = delB.split(/\n## Uppgift (\d+) – (.+)\n/).slice(1);
@@ -99,12 +74,7 @@ for (const u of uppgifter) {
     const rader = tabell.slice(1).map(r => { const c = celler(r); return slag === 'janej' ? { text: stil(c[2]) } : { etikett: c[0], text: stil(c[1]) }; });
     if (slag === 'janej') {
       const n = JA_NEJ_NYCKLAR[u.nr];
-      kolla(n, `uppgift ${u.nr}: inga nyckelord för facit`);
-      if (n) [['Ja', 0], ['Nej', 1]].forEach(([kol, v]) => n[kol].forEach(ord => {
-        const tr = rader.map((r, k) => r.text.includes(ord) ? k : -1).filter(k => k >= 0);
-        kolla(tr.length === 1, `uppgift ${u.nr}: nyckelordet ”${ord}” träffar ${tr.length} rader`);
-        if (tr.length === 1) rader[tr[0]].svar = v;
-      }));
+      G.facitMedNycklar(u.nr, rader, n);
       const ja = (bedom.match(/^- Ja: (.+)$/m) || [])[1], nej = (bedom.match(/^- Nej: (.+)$/m) || [])[1];
       kolla(n && ja && ja.split(';').length === n.Ja.length && nej && nej.split(';').length === n.Nej.length, `uppgift ${u.nr}: facit och nyckelord har olika antal`);
     } else {
@@ -140,29 +110,16 @@ for (const u of uppgifter) {
     const kriterium = matris.length === 2 ? ren(celler(matris[1])[2]) : '';
     const uppgiftText = stycken.filter(s => !/^\*Uppgiften ger möjlighet/.test(s)).map(s => /^>/.test(s)
       ? s.split('\n').map(x => ren(x.replace(/^>\s?/, ''))).join('\n') : ren(s.split('\n').join(' '))).join('\n\n');
-    const delar = /^Resonera /m.test(elev) ? modell.slice(0, 2) : modell.slice(0, 1);
-    const prompt = MALL.replace('[uppgiftens text]', () => uppgiftText).replace('[A-kriteriet]', () => kriterium).replace('[skrivmodellen]', () => tillPrompt(delar));
-    kolla(!/\[(uppgiftens text|A-kriteriet|skrivmodellen|A-exemplet)\]/.test(prompt) && prompt.split(PLATSHALLARE).length === 2, `uppgift ${u.nr}: prompten blev inte ifylld`);
-    // Uppslaget (väg 3, Joachims order 2026-11-24): skrivmodellen på en vänstersida och svarsrutan överst på högersidan
-    // bredvid (b). Motorn lägger in en utfyllnadssida "Fortsätter på nästa sida" om det behövs.
-    block.push({ typ: 'uppgift', id, slag: 'oppen', skrivmodell: tillBok(delar), prompt, platshallare: PLATSHALLARE, hjalp: HJALP,
-      till: { skrivmodell: 'vanster', svar: 'hoger' } });
+    block.push(G.oppenUppgift(id, u.nr, uppgiftText, kriterium, G.modellFor(modell, elev)));
   }
   // En kryssuppgift (tvåval) tar flera sidor och börjar på en vänstersida (c, väg 3): avsnittets till
   avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'janej' || slag === 'stammer' ? { till: 'vanster' } : {}, { block }));
 }
 
-// A-exemplen får aldrig följa med: ingen mening ur ett A-exempel i källan får stå i boken
-const aExempel = [...delB.matchAll(/\*\*A-exempel[^\n]*\n([\s\S]*?)\n\n\*Kommentar/g)].map(m => m[1]);
-const ut = JSON.stringify({ avsnitt }, null, 1);
-aExempel.forEach((ex, k) => ex.split('\n').map(r => r.replace(/^>\s?/, '').trim()).filter(r => r.length > 30)
-  .forEach(r => kolla(!ut.includes(r.slice(0, 40)), `A-exempel ${k + 1} står i boken: ”${r.slice(0, 40)}…”`)));
-kolla(aExempel.length === 3, `väntade tre A-exempel i Del B (för kontrollen), fick ${aExempel.length}`);
-
-if (fel.length) { console.error(fel.join('\n')); process.exit(1); }
-fs.writeFileSync(UT, `/* GENERERAD av verktyg/md-till-uppgifter.js ur Joachims samlade material (Del B och Del C) – skriv inte i den här
+const bok = G.skrivBok(UT, `/* GENERERAD av verktyg/md-till-uppgifter.js ur Joachims samlade material (Del B och Del C) – skriv inte i den här
  * filen för hand. Övningsboken till temat: övningarna ({typ: 'uppgift'}) beskrivs i bokskal/README.md (Övningar).
- * Facit står här (rättningen sker i webbläsaren; det är övningar, inte prov) men ritas aldrig. A-exemplen står inte här. */
-Bok.niva('repetitionsbok', ${ut});
-`);
+ * Facit står här (rättningen sker i webbläsaren; det är övningar, inte prov) men ritas aldrig. A-exemplen står inte här. */`, avsnitt);
+G.aExempelSparr([...delB.matchAll(/\*\*A-exempel[^\n]*\n([\s\S]*?)\n\n\*Kommentar/g)].map(m => m[1]), bok.json, 3);
+G.stoppaVidFel();
+bok.skriv();
 console.log(`${path.relative(ROT, UT)}: ${avsnitt.length} uppgifter`);
