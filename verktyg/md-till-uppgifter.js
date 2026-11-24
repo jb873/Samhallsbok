@@ -143,9 +143,13 @@ for (const u of uppgifter) {
     const delar = /^Resonera /m.test(elev) ? modell.slice(0, 2) : modell.slice(0, 1);
     const prompt = MALL.replace('[uppgiftens text]', () => uppgiftText).replace('[A-kriteriet]', () => kriterium).replace('[skrivmodellen]', () => tillPrompt(delar));
     kolla(!/\[(uppgiftens text|A-kriteriet|skrivmodellen|A-exemplet)\]/.test(prompt) && prompt.split(PLATSHALLARE).length === 2, `uppgift ${u.nr}: prompten blev inte ifylld`);
-    block.push({ typ: 'uppgift', id, slag: 'oppen', skrivmodell: tillBok(delar), prompt, platshallare: PLATSHALLARE, hjalp: HJALP });
+    // Uppslaget (väg 3, Joachims order 2026-11-24): skrivmodellen på en vänstersida och svarsrutan överst på högersidan
+    // bredvid (b). Motorn lägger in en utfyllnadssida "Fortsätter på nästa sida" om det behövs.
+    block.push({ typ: 'uppgift', id, slag: 'oppen', skrivmodell: tillBok(delar), prompt, platshallare: PLATSHALLARE, hjalp: HJALP,
+      till: { skrivmodell: 'vanster', svar: 'hoger' } });
   }
-  avsnitt.push({ id: `uppgift-${u.nr}`, titel: u.titel, block });
+  // En kryssuppgift (tvåval) tar flera sidor och börjar på en vänstersida (c, väg 3): avsnittets till
+  avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'janej' || slag === 'stammer' ? { till: 'vanster' } : {}, { block }));
 }
 
 // A-exemplen får aldrig följa med: ingen mening ur ett A-exempel i källan får stå i boken
