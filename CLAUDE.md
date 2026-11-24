@@ -5,7 +5,7 @@
 
 **Senast uppdaterad:** 2026-11-22
 **Plattformsversion:** Alphaskolans lärplattform v0.3 (Lager 1) + Lager 2-3-utökning v0.1
-**Bok-status:** 2026-11-22 (nattordern): motorn är Fysikbok 3c3cc86 med repetitionsboken. Fyra av sex repetitionsböcker i *Inför slutprovet* är byggda (I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt, V Media). IV Beslutsfattande och VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
+**Bok-status:** 2026-11-23: motorn är Fysikbok 6297bbf, med repetitionsboken och övningarna (blocktypen `uppgift`). Tema I har en övningsbok bredvid repetitionsboken. 2026-11-22 (nattordern): Fyra av sex repetitionsböcker i *Inför slutprovet* är byggda (I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt, V Media). IV Beslutsfattande och VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
 
 ---
 
@@ -27,7 +27,7 @@ Samhällsboken är en **läsebok** i Alphaskolans lärplattform, i geografi/hist
 
 - **Innehållsramen** är Historiabokens (`jb873/Historiabok`, den här filen bygger på dess CLAUDE.md).
 - **Referensimplementationen** att kopiera komponenter rakt av från är Geografibokens (`jb873/Geografibok`).
-- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 3c3cc86 (2026-11-22, med repetitionsboken) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
+- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 6297bbf (2026-11-24, med repetitionsboken och övningarna) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
 - **Enkällig motor:** motorn ändras aldrig här. Ändringar görs i Fysikbok och kopieras hit byte för byte (se `PLATTFORMS-ANDRINGAR.md`).
 
 ---
@@ -79,9 +79,14 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
 - **Signaturfärg:** plommon/aubergine, samhällets enda ämnesegna färg; allt annat formspråk är plattformens delade (papper, bläck, typsnitt, mässing). Den bor i [`css/bok-samhalle.css`](css/bok-samhalle.css), som laddas efter motorn (Geografis mönster med `bok-geografi.css`).
   **Nyansen är C, djup aubergine `#5b2f4e`** (8,3:1 mot papperet), vald på ögat i färgprovet [`verktyg/fargprov/index.html`](verktyg/fargprov/index.html) (A `#7d4a6c`, B `#6e3d5e`, C `#5b2f4e`).
 - **Grinden:** kontrolläget (`?kontroll`) körs per sida. Delningen av grinden (en motordel som följer med motorn och en del per bok) är ett eget spår, inte här.
+- **Övningarna (Joachim, 2026-11-23):** NP-liknande uppgifter per tema i en egen bok bredvid repetitionsboken på temasidan (`repetitionsbocker`, adress `#repetition-ova-<tema>`), byggda med motorns delade övningskomponent, blocktypen `uppgift` (se `bokskal/README.md`, *Övningar*; i motorn sedan Fysikbok 6297bbf). Bara tre slutna typer: lucktext, Ja/Nej och stämmer/stämmer inte. Efter Rätta: ✓/✗ per rad och antal rätt, utan facit och utan E/C/A. Lucktexten: eleven skriver, generöst rättat (stora och små bokstäver, bestämd form). De öppna: uppgiften, skrivmodellen (Redogöra, och Resonera för resonera-uppgifter; inte bedömnings- och nivådelarna), en svarsruta och en knapp som kopierar AI-mallen med svaret ifyllt.
+  - **A-exemplen publiceras aldrig:** varken i prompten eller i källkoden. AI:n bedömer mot A-kriteriet och skrivmodellen. Facit i källkoden är accepterat (övningar, inte prov).
+  - **Del A (original-NP)** publiceras bara om Joachim säger till och ligger inte i repot.
+  - Strular fri-texten i lucktexten byts den mot att välja bland begreppen.
 
 ### Obeslutat (Regel 0 — fråga Joachim, gissa inte)
-1. **NP-liknande frågor per tema** (senare fas): var de bor på temasidan (Öva-flik eller en övningsbok) beslutas när de beställs.
+1. **Böjningslistan i lucktexten** (godkända bestämda former, `BESTAMD` i `verktyg/md-till-uppgifter.js`): preliminär tills Joachim bekräftar den.
+2. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
 
 ### Sidorna
 - `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till den tills det fulla kapitlet finns (nattordern 2026-11-22: I, II, III och V). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
@@ -101,7 +106,7 @@ De sex temana (arbetsnamn, kan justeras):
 
 Startsidan listar de sex temana. De fulla kapitlen byggs senare; till dess länkar ett tema till sin repetitionsbok, eller är tonat ("Kommer senare").
 
-**Senare fas (bygg INTE nu):** NP-liknande frågor per tema, utifrån analys av offentliga nationella prov. Plats lämnas för dem, men inget byggs förrän Joachim beställer det.
+**NP-liknande frågor per tema:** beställda 2026-11-23, byggda för tema I (se *Beslutat*, Övningarna). De andra temana när materialet finns.
 
 ### Textstil (Joachim, 2026-11-22)
 Standarden för bokens texter, först repetitionsböckerna i *Inför slutprovet*. Följ den.
@@ -136,7 +141,7 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 
 | Sökväg | Vad | Källa (ordagrant) |
 |---|---|---|
-| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 3c3cc86: `bokskal/`, `README.md` |
+| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 6297bbf: `bokskal/`, `README.md` |
 | `mall/delkapitel/` | mallen för en bok-sida | Fysikbok `mall/delkapitel/`; `index.html` med titeln och `css/bok-samhalle.css` (som Geografis mall) |
 | `css/bok-samhalle.css` | samhällets färg ovanpå motorn | Geografis `css/bok-geografi.css` som mönster |
 | `verktyg/fargprov/` | färgprovet A/B/C (inte elevinnehåll; grinden letar inte i `verktyg/`) | nytt |
@@ -150,6 +155,9 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 | `kallor/original/` | Joachims sammanfattningar, ordagrant som de levererades | Joachim (Hämtade filer, 2026-11-22) |
 | `kallor/<tema>.md` | sammanfattningarna i textstilen (källan till böckerna) | `kallor/original/` + stilbearbetningen |
 | `verktyg/md-till-repetitionsbok.js` | för in `kallor/<tema>.md` i temats `innehall/repetition.js` | nytt, som Fysiks `verktyg/kap3-omvandlare.js` |
+| `kallor/ovningar/ai-mall.txt` | AI-mallen för återkoppling på öppna svar, en mall för alla uppgifter; avsnittet med A-exemplet utbytt mot skrivmodellen (beslutet 2026-11-23) | Joachim (arbetsordern) |
+| `verktyg/md-till-uppgifter.js` | för in Del B och Del C ur Joachims samlade material (Hämtade filer, inte i repot) i temats `innehall/ovningar.js`; läser aldrig A-exemplen och stoppar om en mening ur ett A-exempel skulle hamna i boken | nytt |
+| `infor-slutprovet/<tema>/innehall/ovningar.js` | temats övningsbok (genererad, skriv inte för hand) | `verktyg/md-till-uppgifter.js` |
 
 Mallarna i `mall/nav-skal/` är referenser, inte sidor i boken: de pekar fortfarande på Geografis innehåll och sökvägar.
 

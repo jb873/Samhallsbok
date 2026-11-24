@@ -41,6 +41,7 @@
 | 2026-11-22 | C | Samhällsboken, grinden | Fysiks `bok-grind.js` blandar motorprov och Fysiks eget innehåll: startsidans kapitel och Nästa steg (hårdkodade Fysik-mappar), källfilerna `STROM_MAPPAR`/`STROM_KALLOR`, negativa prov mot `rorelse_och_kraft` och webbadressen `jb873.github.io/Fysikbok`. Den går inte att köra rakt av i en annan bok, och Geografi och Samhälle får då var sin variant av grinden. | Dela grinden i en motordel (bokskal, provböckerna, varje delkapitel som hittas) som följer med motorn, och en bokdel per bok (startsida, källor, webbadress). Till dess: kontrolläget (`?kontroll`) används per sida. **Joachim 2026-11-22: rätt och nödvändigt, men ett eget spår.** Nattordern 2026-11-22: `node verktyg/bok-grind.js --bara=<tema>` går att köra här – temasidornas prov blir gröna, men startsidans prov (Fysiks kapitel och Nästa steg) blir alltid röda. |
 | 2026-11-22 | B | Samhällsboken, grinden (nattordern) | Grindens prov "hubb (allt kommer)" förutsätter en sida med nivåer: Läs ska säga "Texterna kommer." och varje nivåknapp vara tonad. En nivålös sida med bara en tom repetitionsbok (`nivaer: []`, `flikar: false`; Samhällets IV och VI) blir därför röd i 2 av 5 prov, fast kontrolläget är grönt och kortet är tonat och inte går att öppna. De fyra byggda temasidorna är gröna i alla fyra lägen. | I Fysikbok (enkällig motor och grind): när sidan inte har några nivåer prövar `HUBB_KOMMER` i stället att varje fristående boks kort är tonat ("kommer") och inte öppnar någon bok. Rör inte grinden här. |
 
+
 *(Tom rad ovan är till för nya poster — fyll på underifrån)*
 
 ### Exempel på hur en post fylls i:
@@ -73,6 +74,7 @@
 
 | Datum | Vad |
 |---|---|
+| 2026-11-23 | Läsböckernas delade övningskomponent, blocktypen `uppgift` (tvåval, lucktext och öppen uppgift med AI-mallen att kopiera), beslutad av Joachim 2026-11-23: i Fysikbok 6297bbf (committad och pushad där), kopierad hit byte för byte. Beslut och bygge: `doc/FORSLAG-UPPGIFTER.md`. Kemis *Testa dig själv* ingår inte (beslut 2: bara de tre typerna). |
 | 2026-11-22 | Repetitionstema = nivålös *repetitionsbok*, en femte sort fristående bok i Fysiks motor (alternativ C): i Fysikbok 3c3cc86 (committad och pushad där), kopierad hit byte för byte |
 
 ---
