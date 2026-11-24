@@ -5,7 +5,7 @@
 
 **Senast uppdaterad:** 2026-11-22
 **Plattformsversion:** Alphaskolans lärplattform v0.3 (Lager 1) + Lager 2-3-utökning v0.1
-**Bok-status:** 2026-11-23: motorn är Fysikbok 6297bbf, med repetitionsboken och övningarna (blocktypen `uppgift`). Tema I har en övningsbok bredvid repetitionsboken. Fem av sex repetitionsböcker i *Inför slutprovet* är byggda: I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt och V Media (nattordern 2026-11-22), och IV Beslutsfattande (2026-11-24, Joachims text oförändrad, inklusive "Det här har ändrats sedan boken skrevs"). VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
+**Bok-status:** 2026-11-24: motorn är Fysikbok bdc9e15, med repetitionsboken, övningarna (blocktypen `uppgift`) och vänster- och högersidor (efterpasset, väg 3). Tema I har en övningsbok bredvid repetitionsboken. Fem av sex repetitionsböcker i *Inför slutprovet* är byggda: I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt och V Media (nattordern 2026-11-22), och IV Beslutsfattande (2026-11-24, Joachims text oförändrad, inklusive "Det här har ändrats sedan boken skrevs"). VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
 
 ---
 
@@ -27,7 +27,7 @@ Samhällsboken är en **läsebok** i Alphaskolans lärplattform, i geografi/hist
 
 - **Innehållsramen** är Historiabokens (`jb873/Historiabok`, den här filen bygger på dess CLAUDE.md).
 - **Referensimplementationen** att kopiera komponenter rakt av från är Geografibokens (`jb873/Geografibok`).
-- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 6297bbf (2026-11-24, med repetitionsboken och övningarna) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
+- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok bdc9e15 (2026-11-24, med repetitionsboken, övningarna och efterpasset) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
 - **Enkällig motor:** motorn ändras aldrig här. Ändringar görs i Fysikbok och kopieras hit byte för byte (se `PLATTFORMS-ANDRINGAR.md`).
 
 ---
@@ -83,6 +83,8 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
 - **Temasidan är ingången (Joachim, 2026-11-24):** "Temasidan är ingången. Startsidans kort leder till temasidan. Överst på temasidan väljer eleven Läsa (repetitionsboken) eller Öva (övningsboken, där den finns)."
   - Så är det byggt, utan något nytt i motorn: startsidans och kapitelindexets kort går till `<tema>/index.html`. Överst på temasidan står motorns kort för fristående böcker; repetitionsboken heter "Läsa: <tema>" och övningsboken "Öva: <tema>", och kortet visar titeln.
   - Senare (inte nu): Läsa och Öva som lägen i samma bok, en växel inne i boken. Det är en medveten ändring i motorn som beställs för sig.
+- **Uppslaget i övningsboken (Joachim, 2026-11-24, väg 3):** motorns efterpass styr vänster- och högersidor (`till`, se `bokskal/README.md`, *Vänster- och högersidor*). Kryssuppgifterna (tvåval) börjar på en vänstersida; i de öppna står skrivmodellen till vänster och svarsrutan överst till höger. Där en sida annars hamnar fel står en utfyllnadssida "Fortsätter på nästa sida", och samma rad står längst ned på en högersida där uppgiften fortsätter. Eleven ska aldrig tro att uppgifterna tagit slut. Gränsen: en bok med `till` får inte ha figurer eller formler.
+  - Inte nu: lucktexten helt på ett uppslag (a). Väljs när det mätts om ett smalare fält räcker.
   - **A-exemplen publiceras aldrig:** varken i prompten eller i källkoden. AI:n bedömer mot A-kriteriet och skrivmodellen. Facit i källkoden är accepterat (övningar, inte prov).
   - **Del A (original-NP)** publiceras bara om Joachim säger till och ligger inte i repot.
   - Strular fri-texten i lucktexten byts den mot att välja bland begreppen.
@@ -144,7 +146,7 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 
 | Sökväg | Vad | Källa (ordagrant) |
 |---|---|---|
-| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 6297bbf: `bokskal/`, `README.md` |
+| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok bdc9e15: `bokskal/`, `README.md` |
 | `mall/delkapitel/` | mallen för en bok-sida | Fysikbok `mall/delkapitel/`; `index.html` med titeln och `css/bok-samhalle.css` (som Geografis mall) |
 | `css/bok-samhalle.css` | samhällets färg ovanpå motorn | Geografis `css/bok-geografi.css` som mönster |
 | `verktyg/fargprov/` | färgprovet A/B/C (inte elevinnehåll; grinden letar inte i `verktyg/`) | nytt |
