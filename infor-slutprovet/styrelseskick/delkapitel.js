@@ -19,7 +19,12 @@ Bok.delkapitel({
   // (övningsboken, "Öva: …", där den finns). Korten är motorns kort för fristående böcker; titeln är kortets text.
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-styrelseskick
   repetitionsbocker: [
-    { id: 'styrelseskick', titel: 'Läsa: Styrelseskick', fil: 'innehall/repetition.js' }
+    { id: 'styrelseskick', titel: 'Läsa: Styrelseskick', fil: 'innehall/repetition.js' },
+    // Övningsboken och Nationella prov-boken (arbetsorder 2026-11-24), som på tema I: de sex egna NP-liknande uppgifterna
+    // (verktyg/md-till-uppgifter.js) och de åtta riktiga NP-uppgifterna (verktyg/md-till-np.js). id:n är nycklarna för det
+    // eleven sparat – byt dem aldrig. Adresserna: #repetition-ova-styrelseskick och #repetition-np-styrelseskick
+    { id: 'ova-styrelseskick', titel: 'Öva: Styrelseskick', fil: 'innehall/ovningar.js' },
+    { id: 'np-styrelseskick', titel: 'Nationella prov: Styrelseskick', fil: 'innehall/nationella-prov.js' }
   ],
 
   // NP-liknande frågor per tema (senare fas, inte byggd): plats här på temasidan.
