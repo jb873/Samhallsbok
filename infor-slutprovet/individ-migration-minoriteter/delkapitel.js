@@ -15,12 +15,14 @@ Bok.delkapitel({
   nivaer: [],
   flikar: false,
 
+  // Temasidan är ingången (Joachim 2026-11-24): överst väljer eleven Läsa (repetitionsboken, titeln "Läsa: …") eller Öva
+  // (övningsboken, "Öva: …", där den finns). Korten är motorns kort för fristående böcker; titeln är kortets text.
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-individ-migration-minoriteter
   repetitionsbocker: [
-    { id: 'individ-migration-minoriteter', titel: 'Individ, migration och minoriteter', fil: 'innehall/repetition.js' },
+    { id: 'individ-migration-minoriteter', titel: 'Läsa: Individ, migration och minoriteter', fil: 'innehall/repetition.js' },
     // Övningsboken (Joachims beslut 2026-11-23: en egen bok bredvid repetitionsboken): NP-liknande uppgifter, motorns
     // övningar ({typ: 'uppgift'}). Skrivs av verktyg/md-till-uppgifter.js. Adressen: index.html#repetition-ova-individ-migration-minoriteter
-    { id: 'ova-individ-migration-minoriteter', titel: 'Öva inför slutprovet: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' }
+    { id: 'ova-individ-migration-minoriteter', titel: 'Öva: Individ, migration och minoriteter', fil: 'innehall/ovningar.js' }
   ],
 
   hjalpmedel: {}

@@ -65,7 +65,7 @@ const JA_NEJ_NYCKLAR = {
     Nej: ['betala skatt', 'egna lagar', 'förtur', 'inte behöver följa'] } }
 }[TEMA] || {};
 // Godkända svar i lucktexten utöver facit: bestämd form (Joachims beslut 4: var generös; stora och små bokstäver spelar
-// ingen roll – det sköter motorn). BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses.
+// ingen roll – det sköter motorn). BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-24. Ändra den bara på hans beslut.
 const BESTAMD = {
   'födelseöverskott': ['födelseöverskottet'], 'urbanisering': ['urbaniseringen'], 'assimilation': ['assimilationen'],
   'flykting': ['flyktingen'], 'fri rörlighet': ['fri rörligheten', 'fria rörligheten'], 'socialt arv': ['sociala arvet'],

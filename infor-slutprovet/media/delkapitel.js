@@ -15,9 +15,11 @@ Bok.delkapitel({
   nivaer: [],
   flikar: false,
 
+  // Temasidan är ingången (Joachim 2026-11-24): överst väljer eleven Läsa (repetitionsboken, titeln "Läsa: …") eller Öva
+  // (övningsboken, "Öva: …", där den finns). Korten är motorns kort för fristående böcker; titeln är kortets text.
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-media
   repetitionsbocker: [
-    { id: 'media', titel: 'Media', fil: 'innehall/repetition.js' }
+    { id: 'media', titel: 'Läsa: Media', fil: 'innehall/repetition.js' }
   ],
 
   // NP-liknande frågor per tema (senare fas, inte byggd): plats här på temasidan.
