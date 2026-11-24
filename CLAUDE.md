@@ -85,13 +85,16 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
   - Senare (inte nu): Läsa och Öva som lägen i samma bok, en växel inne i boken. Det är en medveten ändring i motorn som beställs för sig.
 - **Uppslaget i övningsboken (Joachim, 2026-11-24, väg 3):** motorns efterpass styr vänster- och högersidor (`till`, se `bokskal/README.md`, *Vänster- och högersidor*). Kryssuppgifterna (tvåval) börjar på en vänstersida; i de öppna står skrivmodellen till vänster och svarsrutan överst till höger. Där en sida annars hamnar fel står en utfyllnadssida "Fortsätter på nästa sida", och samma rad står längst ned på en högersida där uppgiften fortsätter. Eleven ska aldrig tro att uppgifterna tagit slut. Gränsen: en bok med `till` får inte ha figurer eller formler.
   - Inte nu: lucktexten helt på ett uppslag (a). Väljs när det mätts om ett smalare fält räcker.
+- **Nationella prov-boken (Joachim, 2026-11-24):** de sju riktiga NP-uppgifterna (Del A ur det samlade materialet, ordagrant med NP:s facit) i en egen interaktiv bok, skild från Öva-boken, som ett tredje kort på temasidan (tema I). Samma övningskomponent, inga nya typer, inget nytt i motorn; samma uppslag (väg 3). De slutna rättas mot NP:s facit (gränserna E/C/A används inte: eleven ser antal rätt, aldrig nivå). De öppna: skrivmodellen, A-kriteriet ur NP:s matris och samma AI-mall som Öva-boken. **NP:s A-exempel publiceras aldrig** (prompt, källkod eller historik); verktyget stoppar om en rad ur något A-exempel skulle stå i boken. Uppgift 6–7 (befolkning, gränsar mot geografi) är med tills Joachim säger annat. Bilderna i Del A förs inte in (de finns i PDF:en; en bok med `till` får inte ha figurer).
   - **A-exemplen publiceras aldrig:** varken i prompten eller i källkoden. AI:n bedömer mot A-kriteriet och skrivmodellen. Facit i källkoden är accepterat (övningar, inte prov).
   - **Del A (original-NP)** publiceras bara om Joachim säger till och ligger inte i repot.
   - Strular fri-texten i lucktexten byts den mot att välja bland begreppen.
   - **Böjningslistan** (godkända bestämda former, `BESTAMD` i `verktyg/md-till-uppgifter.js`) är bekräftad och låst (Joachim, 2026-11-24). Ändras bara på hans beslut.
 
 ### Obeslutat (Regel 0 — fråga Joachim, gissa inte)
-1. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
+1. **Etiketten "Nationella prov"** på tema I:s tredje kort är ett arbetsnamn; Joachim bekräftar den.
+2. **Böjningslistan i Nationella prov-bokens lucktext** (`BESTAMD` i `verktyg/md-till-np.js`): asylen, flyktingen, visumet, migrationen, integrationen, segregationen, emigrationen; Migrationsverket bara som det står. Preliminär tills Joachim bekräftar den.
+3. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
 
 ### Sidorna
 - `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till sin temasida, `infor-slutprovet/<tema>/index.html` (nattordern 2026-11-22: I, II, III och V; IV 2026-11-24; temasidan är ingången sedan 2026-11-24). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
@@ -163,6 +166,9 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 | `kallor/ovningar/ai-mall.txt` | AI-mallen för återkoppling på öppna svar, en mall för alla uppgifter; avsnittet med A-exemplet utbytt mot skrivmodellen (beslutet 2026-11-23) | Joachim (arbetsordern) |
 | `verktyg/md-till-uppgifter.js` | för in Del B och Del C ur Joachims samlade material (Hämtade filer, inte i repot) i temats `innehall/ovningar.js`; läser aldrig A-exemplen och stoppar om en mening ur ett A-exempel skulle hamna i boken | nytt |
 | `infor-slutprovet/<tema>/innehall/ovningar.js` | temats övningsbok (genererad, skriv inte för hand) | `verktyg/md-till-uppgifter.js` |
+| `verktyg/md-till-np.js` | för in Del A (de riktiga NP-uppgifterna) och Del C i temats `innehall/nationella-prov.js`; läser aldrig A-exemplen in i boken | nytt (2026-11-24) |
+| `verktyg/uppgifter-gemensamt.js` | det som de två övningsverktygen delar: märkningen, skrivmodellen, prompten, facit med nyckelord och spärren mot A-exemplen | nytt (2026-11-24) |
+| `infor-slutprovet/<tema>/innehall/nationella-prov.js` | temats Nationella prov-bok (genererad, skriv inte för hand) | `verktyg/md-till-np.js` |
 
 Mallarna i `mall/nav-skal/` är referenser, inte sidor i boken: de pekar fortfarande på Geografis innehåll och sökvägar.
 
