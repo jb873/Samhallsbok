@@ -23,7 +23,7 @@ Bok.niva('repetitionsbok', {
     {
      "typ": "uppgift",
      "id": "sam-imm-u1",
-     "slag": "tvaval",
+     "slag": "kryss",
      "kolumner": [
       "Ja",
       "Nej"
@@ -185,7 +185,7 @@ Bok.niva('repetitionsbok', {
     {
      "typ": "uppgift",
      "id": "sam-imm-u3",
-     "slag": "tvaval",
+     "slag": "kryss",
      "kolumner": [
       "Stämmer",
       "Stämmer inte"

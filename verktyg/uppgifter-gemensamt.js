@@ -78,5 +78,8 @@ function skrivBok(ut, huvud, avsnitt) {
   return { json, skriv: () => fs.writeFileSync(ut, `${huvud}\nBok.niva('repetitionsbok', ${json});\n`) };
 }
 
-module.exports = { ROT, PLATSHALLARE, HJALP, MALL, fel, kolla, stoppaVidFel, stil, ren, celler, tabellrader, delAv,
+// Skrivmodellen (Del C ur Joachims samlade material, ordagrant): samma för alla teman och båda böckerna
+const SKRIVMODELL = fs.readFileSync(path.join(ROT, 'kallor', 'ovningar', 'skrivmodell.md'), 'utf8').replace(/\r\n/g, '\n');
+
+module.exports = { ROT, PLATSHALLARE, HJALP, MALL, SKRIVMODELL, fel, kolla, stoppaVidFel, stil, ren, celler, tabellrader, delAv,
   lasModell, modellFor, tillBok, tillPrompt, oppenUppgift, facitMedNycklar, aExempelSparr, skrivBok };
