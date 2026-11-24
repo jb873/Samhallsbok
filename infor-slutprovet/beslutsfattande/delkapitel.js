@@ -1,6 +1,6 @@
 /* Inför slutprovet, tema 4: Beslutsfattande. En repetitionsbok utan nivåer (repetitionsbocker, Fysiks motor sedan
- * 2026-11-22). Sidan har bara boken: inga texter, nivåer eller flikar (nivaer: [], flikar: false). Boken är tom och
- * visas som "kommer" tills sammanfattningen finns i innehall/repetition.js. Bara data; motorn är bokskal/.
+ * 2026-11-22). Sidan har bara boken: inga texter, nivåer eller flikar (nivaer: [], flikar: false). Boken (Läsa) är byggd
+ * 2026-11-24 ur kallor/beslutsfattande.md (verktyg/md-till-repetitionsbok.js); ingen övningsbok än. Bara data; motorn är bokskal/.
  * Fälten beskrivs i bokskal/README.md (Fristående böcker). ELEVTEXT: titel och undertitel sätter Joachim. */
 Bok.delkapitel({
   id: 'sam-infor-slutprovet-beslutsfattande',   // nyckeln för det eleven sparat – byt det aldrig
