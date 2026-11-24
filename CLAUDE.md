@@ -80,18 +80,21 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
   **Nyansen är C, djup aubergine `#5b2f4e`** (8,3:1 mot papperet), vald på ögat i färgprovet [`verktyg/fargprov/index.html`](verktyg/fargprov/index.html) (A `#7d4a6c`, B `#6e3d5e`, C `#5b2f4e`).
 - **Grinden:** kontrolläget (`?kontroll`) körs per sida. Delningen av grinden (en motordel som följer med motorn och en del per bok) är ett eget spår, inte här.
 - **Övningarna (Joachim, 2026-11-23):** NP-liknande uppgifter per tema i en egen bok bredvid repetitionsboken på temasidan (`repetitionsbocker`, adress `#repetition-ova-<tema>`), byggda med motorns delade övningskomponent, blocktypen `uppgift` (se `bokskal/README.md`, *Övningar*; i motorn sedan Fysikbok 6297bbf). Bara tre slutna typer: lucktext, Ja/Nej och stämmer/stämmer inte. Efter Rätta: ✓/✗ per rad och antal rätt, utan facit och utan E/C/A. Lucktexten: eleven skriver, generöst rättat (stora och små bokstäver, bestämd form). De öppna: uppgiften, skrivmodellen (Redogöra, och Resonera för resonera-uppgifter; inte bedömnings- och nivådelarna), en svarsruta och en knapp som kopierar AI-mallen med svaret ifyllt.
+- **Temasidan är ingången (Joachim, 2026-11-24):** "Temasidan är ingången. Startsidans kort leder till temasidan. Överst på temasidan väljer eleven Läsa (repetitionsboken) eller Öva (övningsboken, där den finns)."
+  - Så är det byggt, utan något nytt i motorn: startsidans och kapitelindexets kort går till `<tema>/index.html`. Överst på temasidan står motorns kort för fristående böcker; repetitionsboken heter "Läsa: <tema>" och övningsboken "Öva: <tema>", och kortet visar titeln.
+  - Senare (inte nu): Läsa och Öva som lägen i samma bok, en växel inne i boken. Det är en medveten ändring i motorn som beställs för sig.
   - **A-exemplen publiceras aldrig:** varken i prompten eller i källkoden. AI:n bedömer mot A-kriteriet och skrivmodellen. Facit i källkoden är accepterat (övningar, inte prov).
   - **Del A (original-NP)** publiceras bara om Joachim säger till och ligger inte i repot.
   - Strular fri-texten i lucktexten byts den mot att välja bland begreppen.
+  - **Böjningslistan** (godkända bestämda former, `BESTAMD` i `verktyg/md-till-uppgifter.js`) är bekräftad och låst (Joachim, 2026-11-24). Ändras bara på hans beslut.
 
 ### Obeslutat (Regel 0 — fråga Joachim, gissa inte)
-1. **Böjningslistan i lucktexten** (godkända bestämda former, `BESTAMD` i `verktyg/md-till-uppgifter.js`): preliminär tills Joachim bekräftar den.
-2. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
+1. **Övningar för de andra temana:** byggs när materialet finns (samma verktyg; ett prefix per tema i `PREFIX`).
 
 ### Sidorna
-- `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till den tills det fulla kapitlet finns (nattordern 2026-11-22: I, II, III och V). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
-- `infor-slutprovet/index.html` — kapitelindexet: sex kort, tonade ("Kommer snart") tills boken har en sammanfattning. Då byts kortet mot `<a class="kapitel-kort" href="<tema>/index.html#repetition-<tema>">`, här och på startsidan.
-- `infor-slutprovet/<tema>/` — temasidan: mallen ordagrant, `delkapitel.js` och boken i `innehall/repetition.js` (`Bok.niva('repetitionsbok', …)`, tom = "kommer"), skriven av `verktyg/md-till-repetitionsbok.js` ur `kallor/<tema>.md` (se *Textstil*).
+- `index.html` — startsidan: de sex temana. Ett tema med en repetitionsbok länkar till sin temasida, `infor-slutprovet/<tema>/index.html` (nattordern 2026-11-22: I, II, III och V; temasidan är ingången sedan 2026-11-24). Ett tema utan är tonat ("Kommer senare"). Under dem står blocket *Inför slutprovet*.
+- `infor-slutprovet/index.html` — kapitelindexet: sex kort, tonade ("Kommer snart") tills boken har en sammanfattning. Då byts kortet mot `<a class="kapitel-kort" href="<tema>/index.html">` (temasidan), här och på startsidan.
+- `infor-slutprovet/<tema>/` — temasidan, ingången till temat: överst korten Läsa (repetitionsboken) och Öva (övningsboken, där den finns). Mallen ordagrant, `delkapitel.js` och boken i `innehall/repetition.js` (`Bok.niva('repetitionsbok', …)`, tom = "kommer"), skriven av `verktyg/md-till-repetitionsbok.js` ur `kallor/<tema>.md` (se *Textstil*).
 
 ### Böckerna och kapitlen (arbetsnamn)
 Kapitlet **Inför slutprovet** presenterar sex bläddringsbara böcker, en per tema, som repeterar temat. Varje bok står som "kommer" tills sammanfattningen finns. Böckerna är sammanfattnings-/repetitionstext — inte tre-nivå-texter, flipcards eller elevbok.
@@ -104,7 +107,7 @@ De sex temana (arbetsnamn, kan justeras):
 5. Media
 6. Samhälls- och privatekonomi
 
-Startsidan listar de sex temana. De fulla kapitlen byggs senare; till dess länkar ett tema till sin repetitionsbok, eller är tonat ("Kommer senare").
+Startsidan listar de sex temana. De fulla kapitlen byggs senare; till dess länkar ett tema till sin temasida, eller är tonat ("Kommer senare").
 
 **NP-liknande frågor per tema:** beställda 2026-11-23, byggda för tema I (se *Beslutat*, Övningarna). De andra temana när materialet finns.
 

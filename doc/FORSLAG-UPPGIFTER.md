@@ -11,13 +11,13 @@
 | 1. Plats | I motorn och enkällig. Byggs och kopieras som resten av motorn. | Blocktypen `uppgift` i `bokskal/bok.js` och `bok.css` (Fysikbok), kopierad hit. |
 | 2. Typer | Lucktext, Ja/Nej och stämmer/stämmer inte, inget mer. | Slagen `tvaval` (Ja/Nej och Stämmer/Stämmer inte) och `lucktext`, och `oppen` för de öppna uppgifterna (svarsrutan och kopiera-knappen). |
 | 3. Efter Rätta | ✓/✗ per rad och antal rätt, utan facit och utan E/C/A. | "7 av 9 rätt." och "2 utan svar." |
-| 4. Lucktexten | Eleven skriver, och rättningen är generös: bestämd form och stora eller små bokstäver godkänns. | Motorn bortser från stora och små bokstäver, mellanslag och skiljetecken. De bestämda formerna står i verktyget (`BESTAMD`). **Listan är preliminär** och väntar på Joachims bekräftelse, se nedan. |
+| 4. Lucktexten | Eleven skriver, och rättningen är generös: bestämd form och stora eller små bokstäver godkänns. | Motorn bortser från stora och små bokstäver, mellanslag och skiljetecken. De bestämda formerna står i verktyget (`BESTAMD`). Listan är bekräftad och låst (2026-11-24), se nedan. |
 | 5. Svarsrutan | Ja. Knappen kopierar hela prompten med svaret ifyllt, utan A-exemplet. | Svaret ersätter "[klistras in av eleven]". Svaret sparas per elev. |
 | 6. Skrivmodellen | Redogöra och Resonera, inte bedömnings- och nivådelarna. | Uppgift 4–5 (beskriv) visar Redogöra. Uppgift 6 (resonera) visar Redogöra och Resonera. Samma text står i prompten. |
-| 7. Platsen på temasidan | En egen bok bredvid repetitionsboken. | *Öva inför slutprovet: Individ, migration och minoriteter* i `repetitionsbocker`, adressen `#repetition-ova-individ-migration-minoriteter`. |
+| 7. Platsen på temasidan | En egen bok bredvid repetitionsboken. | *Öva: Individ, migration och minoriteter* i `repetitionsbocker`, adressen `#repetition-ova-individ-migration-minoriteter`. Sedan 2026-11-24 är temasidan ingången: startsidans kort leder dit, och överst står Läsa och Öva (CLAUDE.md, *Beslutat*). |
 | Mobilen | Låg prioritet: fixa om det är enkelt, annars senare. | Inte fixat. Att hålla begreppen ihop med meningarna gav en sida på 39 % på 1366×633. Begreppen står därför före meningarna; på datorn på samma uppslag, på mobilen sidan före. |
 
-## Böjningslistan (preliminär, väntar på bekräftelse)
+## Böjningslistan (bekräftad och låst av Joachim 2026-11-24)
 
 Godkända svar utöver facit, med stora eller små bokstäver:
 

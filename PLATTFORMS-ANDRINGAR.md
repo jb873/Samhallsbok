@@ -66,7 +66,8 @@
 
 | Datum | Vad | Varför | Återuppta när |
 |---|---|---|---|
-| 2026-11-22 | NP-liknande frågor per tema, utifrån analys av offentliga nationella prov | Senare fas enligt Joachims beställning | Joachim beställer det |
+| 2026-11-22 | NP-liknande frågor per tema, utifrån analys av offentliga nationella prov | Senare fas enligt Joachims beställning | Joachim beställer det (tema I beställt och byggt 2026-11-23) |
+| 2026-11-24 | Läsa och Öva som lägen i samma bok (en växel inne i boken) i stället för två böcker | En medveten ändring i motorn (Fysikbok), inte nu (Joachim) | Joachim beställer den |
 
 ---
 
@@ -74,6 +75,7 @@
 
 | Datum | Vad |
 |---|---|
+| 2026-11-24 | **Temasidan är ingången** (Joachim): "Temasidan är ingången. Startsidans kort leder till temasidan. Överst på temasidan väljer eleven Läsa (repetitionsboken) eller Öva (övningsboken, där den finns)." I Samhällsboken med det som finns: startsidans och kapitelindexets kort går till temasidan, och böckernas kort överst heter "Läsa: <tema>" och "Öva: <tema>". Inget nytt i motorn. |
 | 2026-11-23 | Läsböckernas delade övningskomponent, blocktypen `uppgift` (tvåval, lucktext och öppen uppgift med AI-mallen att kopiera), beslutad av Joachim 2026-11-23: i Fysikbok 6297bbf (committad och pushad där), kopierad hit byte för byte. Beslut och bygge: `doc/FORSLAG-UPPGIFTER.md`. Kemis *Testa dig själv* ingår inte (beslut 2: bara de tre typerna). |
 | 2026-11-22 | Repetitionstema = nivålös *repetitionsbok*, en femte sort fristående bok i Fysiks motor (alternativ C): i Fysikbok 3c3cc86 (committad och pushad där), kopierad hit byte för byte |
 
