@@ -504,7 +504,7 @@ räkningen tror (fyllnaden skiljer cirka 1 %). Det ändrar inget här, men räkn
 | `bokref`, `boklank` | länkar till en annan bok, se *Fristående böcker* |
 | `vidare` | `lankar: [{text, bok, ankare}]`: rutan "Vill du gå vidare?" sist i en Fördjupningsbok (arbetsorder 13). Rubriken och inledningen ("Läs mer i Nästa steg – gymnasiets kraft och rörelse:") är motorns. Länkarna skrivs av `verktyg/vidare-rutor.js`, och kontrolläget prövar att varje länk går till ett avsnitts början med det numret och den titeln. En länk kan också gå till en annan sida, `{text, href}`, och rutan kan ha en egen `inledning` (arbetsorder 33: Repetitionen VI A → kapitel 2): `vidare-rutor.js` räknar fram texten ("Textens titel: N. Avsnittets titel") och adressen (`…/index.html?niva=…#text/avsnitt`) ur målsidans böcker och stoppar om målet inte finns. En länk i tabellen kan ha en egen sida, `[text, avsnitt, mapp]` (arbetsorder 34: VI A länkar till både avsnitt I och II i kapitel 2). |
 | `tabell` | `rubriker?`, `rader: [[...]]`, `fotnot?`. Första kolumnen är radrubrik. |
-| `uppgift` | en övning: `id`, `slag` (`kryss`, `lucktext`, `oppen`, `bild` eller `citat`) och dess fält, se *Övningar* |
+| `uppgift` | en övning: `id`, `slag` (`kryss`, `lucktext`, `oppen`, `bild` eller `citat`; i Samhälles kopia också `flerval` och `tabell`) och dess fält, se *Övningar* |
 
 Ett block får ett eget `id` om det som eleven gör i det ska överleva att block flyttas (för interaktiva block senare).
 Utan eget id heter blocket `<avsnitt>-b<n>` (det n:te blocket), och läsplatsen sparas så. Rubrikernas adresser heter
@@ -952,7 +952,9 @@ sidnummer är vänstersidor (innehållsförteckningen är sida 1).
 Arbetsorder 2026-11-23 (Samhällskunskap, *Inför slutprovet*), godkänd av Joachim. Det här är läsböckernas delade
 övningskomponent: den byggs här och kopieras byte för byte med resten av motorn. Den har tre slag för uppgifter
 (kolumn-kryss, lucktext och öppen) och två för det som hör till uppgiften (bilden och citatet). I Samhällskunskaps
-kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu inte är infällt här i Fysik.
+kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu inte är infällt här i Fysik, och för
+Media (Joachims beslut 2026-11-25, samma väg): uppgiftens tabell (`tabell`), citatets rubrik och listor, delningen av
+ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader.
 
 | `slag` | Fält | Eleven ser |
 |---|---|---|
@@ -961,7 +963,8 @@ kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu 
 | `flerval` | `rader: [{etikett?, text, alternativ: [2 eller fler], svar: alternativets index}]` | begreppet och under det dess alternativ med en kryssruta var, ett kryss per rad (ett klick till tar bort det), Rätta och Börja om; NP:s "kryssa för den förklaring som passar bäst" (2018 A3). Byggt i Samhälles kopia av motorn (Joachim 2026-11-25), infälls i Fysik senare |
 | `oppen` | `skrivmodell: [{rubrik, vad?, punkter: [{text, under?: [...]}]}]`, `prompt`, `platshallare`, `hjalp?`, `till?: {skrivmodell, svar}` | skrivmodellen, svarsrutan och knappen *Kopiera till AI-återkoppling*; med `till: 'uppslag'` (Joachims layout 2026-11-25, standard): uppgiftstexten på en vänstersida och skrivmodellen direkt efter på högersidan bredvid – aldrig en tom sida emellan – och svarsrutan på ny sida, i normalfallet nästa uppslag |
 | `bild` | `bild: {fil, bredd, hojd, beskrivning, kalla}` | uppgiftens bild (en karta, ett diagram) där den står i uppgiften, med källan under; `uppgiftsbild`, arbetsorder 2026-11-24 |
-| `citat` | `rader: [stycken]`, `kalla?` | en citerad ingång (ett påstående, en nyhetsnotis) där den står i uppgiften, med källan under; `uppgiftscitat`, arbetsorder 2026-11-24 |
+| `citat` | `rubrik?`, `rader: [stycken]`, `kalla?` | en citerad ingång (ett påstående, en nyhetsnotis, en källtext) där den står i uppgiften, med rubriken ("Text 1", "Källa 3") över och källan under; ett stycke som är en lista (`['punkt', …]`) blir en punktlista i citatet; `uppgiftscitat`, arbetsorder 2026-11-24 (rubriken och listorna: Samhälles kopia, 2026-11-25) |
+| `tabell` | `rubrik?`, `text?: [stycken]` (eller en text), `rubriker?: [kolumnernas namn]`, `rader: [[celler]]`, `kalla?` | uppgiftens tabell (statistiken, en källa) där den står i uppgiften: rubriken ("Tabell 1", "Källa 2"), texten före ("Barn 12–16 år"), tabellen och källraden, som en enhet; `uppgiftstabell`. Samhälles kopia (Joachim 2026-11-25, Media), infälls i Fysik senare |
 
 ```js
 { typ: 'uppgift', id: 'sam-imm-u1', slag: 'kryss', kolumner: ['Ja', 'Nej'],
@@ -980,6 +983,8 @@ kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu 
   (`tvaval`), som inte finns längre. Ett kryss per rad, så två kryss på samma rad går inte att sätta. Med
   `ogiltigSammaKolumn: true` (där NP säger det) säger Rätta att uppgiften är ogiltig när alla kryss står i samma kolumn.
   Med flera block räknar Rätta alla block tillsammans. Med tre kolumner står knapparna på en egen rad under påståendet.
+  Knapparna krymper aldrig under det längsta ordet: ett långt kolumnnamn ("Någon av källorna stödjer slutsatsen", NP 2016
+  A8) bryts på två rader i stället för att gå utanför sidan (Samhälles kopia, 2026-11-25); korta namn står som förut.
 - **Flervalet** (Samhälles kopia, 2026-11-25) rättas som kolumn-krysset: ✓ eller ✗ per rad och antal rätt. En rad är en
   hel delfråga med sina alternativ, så gruppen får delas med en rad på varje sida (`upgMinst`), inte två. Kontrolläget
   säger till om en rad har färre än två alternativ eller saknar facit bland dem.
@@ -995,8 +1000,10 @@ kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu 
   står med den sista raden. Ett blocks text i kolumn-krysset står med blockets rader, aldrig sist på en sida. Lucktextens begrepp är en egen post före gruppen (på datorn på samma uppslag som meningarna,
   på mobilen ibland sidan före). Den öppna blir två poster: skrivmodellen och svarsrutan.
 - **Kontrolläget** säger till om en övning saknar `id`, om ett block i kolumn-krysset inte har två eller tre kolumner
-  eller en rad saknar facit bland dem, om ett citat saknar text, om en lucka saknar facit eller facit inte står bland begreppen, om prompten saknar platshållaren, och
-  om en sida har en ensam rad ur en delad övning ("övningen har bara en rad på sidan").
+  eller en rad saknar facit bland dem, om ett citat saknar text, om en tabells rader inte har lika många celler som
+  kolumnerna, om en lucka saknar facit eller facit inte står bland begreppen, om prompten saknar platshållaren, och
+  om en sida har en ensam rad ur en delad övning ("övningen har bara en rad på sidan"), ett delat citat har ett ensamt
+  stycke på en sida ("citatet har bara ett stycke på sidan") eller ett citat som ryms är delat.
 - **Rättningen** är en ren funktion, `Bok.uppgiftRattning` (`rad`, `uppgift`, `text`), för grinden och för prov.
 - **Uppgiftens bild** (`slag: 'bild'`, blocktypen `uppgiftsbild`, arbetsorder 2026-11-24) är en del av uppgiften,
   ingen figur: den står där den står i uppgiften (i en NP-uppgift före "Tips i provet"), följer inte figurens
@@ -1007,6 +1014,20 @@ kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu 
   den laddas. Återanvändbar för alla ämnens NP-uppgifter.
 - **Uppgiftens citat** (`slag: 'citat'`, blocktypen `uppgiftscitat`, arbetsorder 2026-11-24) är en del av uppgiften,
   som bilden: den citerade ingången där den står i uppgiften, med en källrad under (`kalla`).
+  I Samhälles kopia (Joachims beslut 2026-11-25, Media; infälls i Fysik senare):
+  - **Rubriken** (`rubrik`: "Text 1", "Källa 3") står med citatets första stycke, så den lossnar aldrig.
+  - **En lista** i citatet är ett stycke som är en lista: `rader: ['I arbetet … är det bra att:', ['Utreda …', 'Vidta …']]`.
+  - **Sidbrytningen:** ett citat med flera stycken är en post per stycke, hållna ihop som en grupp (slag `citat`): helt
+    på en sida om det ryms, annars delat mellan styckena med minst två stycken på varje sida (som en punktlista), med
+    rubriken på den första sidan och källraden med det sista stycket. Delarna fortsätter samma ruta och har tillsammans
+    samma höjd som det hela. Ett citat med ett stycke är en post, som förut. Styckena sparas som `<id>`, `<id>-s2` …
+- **Uppgiftens tabell** (`slag: 'tabell'`, blocktypen `uppgiftstabell`, Samhälles kopia 2026-11-25, Media) är en del av
+  uppgiften, som bilden: rubriken, texten före, tabellen (som motorns `tabell`, första kolumnen som radrubrik) och
+  källraden är en post som aldrig delas. Den får stå i en bok med `till`. Tabellen ska rymmas på en sida; kontrolläget
+  säger till om den inte gör det.
+- **Källtexterna** (citatet och tabellen, med deras rubriker och källrader) skrivs utan löptextens index: ett understreck
+  står kvar (`friends_n_trapport_2013` i en webbadress), i stället för att bli nedsänkt som F_N (`kallText`; Samhälles
+  kopia, 2026-11-25). Annars är markeringen densamma (`*ord*`).
 - **Stilen** står i `bok.css` (klasserna `upg-*`) med motorns färgvariabler, så att varje bok får sin accent; rätt och
   fel i plattformens bas-palett (land `#5e7a3e`, blood `#6e2e1e`).
 

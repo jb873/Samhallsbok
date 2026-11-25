@@ -1051,7 +1051,9 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
   border-bottom: 1px solid var(--ruta-kant); }
 .upg-rad .upg-etikett { flex: none; min-width: 1.4em; font-weight: 600; }
 .upg-rad .upg-text { flex: 1 1 15em; }
-.upg-val { flex: none; display: inline-flex; gap: .35em; margin-left: auto; }
+/* (knapparna krymper aldrig under det längsta ordet; ett långt kolumnnamn bryts på två rader i stället för att gå utanför
+   sidan – Joachims beslut 2026-11-25, Media NP 5: "Någon av källorna stödjer slutsatsen". Korta namn står som förut.) */
+.upg-val { flex: 0 1 auto; max-width: 100%; display: inline-flex; gap: .35em; margin-left: auto; }
 .upg-knapp { font: inherit; font-size: .86em; line-height: 1.2; padding: .22em .7em; border-radius: 1em; cursor: pointer;
   background: transparent; color: var(--black); border: 1px solid var(--ruta-kant); }
 .upg-knapp[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--papper-ljus); }
@@ -1097,6 +1099,20 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
 .upg-citat p { margin: 0 0 .35em; }
 .upg-citat p:last-child { margin-bottom: 0; }
 .upg-citat-kalla { font-size: .85em; color: var(--dampad); }
+/* uppgiftens källtexter och tabeller (2026-11-25, Media): rubriken ("Text 1", "Källa 3") står med citatet eller tabellen;
+   en lista i ett citat; ett delat citat fortsätter samma ruta – delarna har tillsammans samma höjd som det hela
+   (styckets avstånd blir rutans nedre utfyllnad i en del som fortsätter) */
+.upg-stim-rubrik { margin: .5em 0 .15em; font-weight: 620; color: var(--accent); }
+.upg-citat-ram { margin: 0 0 .8em; }
+.upg-citat-ram .upg-citat { margin: .2em 0 0; }
+.upg-citat .b-punkter { margin: 0 0 .35em; }
+.upg-citat .b-punkter:last-child { margin-bottom: 0; }
+.upg-citat.uc-mer { margin-bottom: 0; padding-bottom: .35em; }
+.upg-citat.uc-fortsatt { margin-top: 0; padding-top: 0; }
+.upg-citat-ram:has(.uc-mer) { margin-bottom: 0; }
+.upg-tabell { margin: .4em 0 .8em; }
+.upg-tabell-text { margin: 0 0 .2em; }
+.upg-tabell .b-tabell { margin: .2em 0 .3em; }
 /* flervalet (slag 'flerval', 2026-11-25): begreppet, och under det alternativen med en kryssruta var – ett kryss per rad */
 .upg-flerval { margin: 0 0 .45em; padding: .2em 0 .35em; border-bottom: 1px solid var(--ruta-kant); }
 .upg-flerval-fraga { display: flex; align-items: baseline; gap: .15em .6em; margin: 0 0 .2em; }

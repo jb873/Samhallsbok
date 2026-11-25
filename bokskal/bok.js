@@ -116,10 +116,10 @@
   // Textens enda markering: *begrepp* (betonat, djupblått), *böjd form|grundform* när begreppet står böjt,
   // [[täljare|nämnare]] (bråk) och <sub>/<sup>. Har delkapitlet en begreppslista blir varje begrepp en länk dit.
   // Ett index skrivet med understreck (F_N, μ_vila, ρ_is – Nästa steg, arbetsorder 11) blir nedsänkt: F<sub>N</sub>.
-  function inline(s, lankar = true) {
-    return esc(bindTal(s))
-      .replace(/&lt;(\/?)(sub|sup)&gt;/g, '<$1$2>')
-      .replace(/(\p{L})_([\p{L}\p{N}]+)/gu, '$1<sub>$2</sub>')
+  // (index = false: understrecket står kvar, som i en webbadress – uppgiftens källtexter, tabeller och källrader, se kallText)
+  function inline(s, lankar = true, index = true) {
+    const t = esc(bindTal(s)).replace(/&lt;(\/?)(sub|sup)&gt;/g, '<$1$2>');
+    return (index ? t.replace(/(\p{L})_([\p{L}\p{N}]+)/gu, '$1<sub>$2</sub>') : t)
       .replace(/\[\[([^|\]]+)\|([^\]]+)\]\]/g,
         '<span class="brak"><span class="brak-t">$1</span><span class="brak-n">$2</span></span>')
       // [text](#bok/ankare) – en länk i löptexten till en annan bok på avsnittssidan (2026-11-11: IV B → djupdykningen
@@ -338,7 +338,16 @@
    *                    Rättas som kolumn-krysset. (Joachims beslut 2026-11-25: byggd i Samhälles kopia av motorn,
    *                    infälls i Fysiks kanoniska motor senare.)
    *   slag 'oppen'     skrivmodell?: [{rubrik, vad?, punkter: [{text, under?: [...]}]}], prompt, platshallare, hjalp?
-   *   slag 'citat'     rader: [stycken], kalla?   en citerad ingång (ett påstående, en nyhetsnotis), där den står i uppgiften
+   *   slag 'citat'     rubrik?, rader: [stycken], kalla?   en citerad ingång (ett påstående, en nyhetsnotis, en källtext), där
+   *                    den står i uppgiften. Ett stycke som är en lista ([punkter]) blir en punktlista i citatet. Rubriken
+   *                    ("Text 1", "Källa 3") står med det första stycket och källraden med det sista. Ett citat som är högre
+   *                    än sidan delas mellan styckena, minst två på varje sida; ett som ryms står helt på en sida.
+   *   slag 'tabell'    rubrik?, text?: [stycken], rubriker?: [kolumnernas namn], rader: [[celler]], kalla?   en tabell som
+   *                    hör till uppgiften (statistiken, källan), där den står i uppgiften: rubriken, texten före, tabellen
+   *                    och källraden är en enhet som aldrig delas, som uppgiftens bild.
+   *                    (citatets rubrik och listor, delningen och tabellen: Joachims beslut 2026-11-25, Media; byggda i
+   *                    Samhälles kopia av motorn, infälls i Fysiks kanoniska motor senare.) I citatet och tabellen blir ett
+   *                    understreck aldrig ett index (friends_n_trapport_2013 står rakt, se kallText).
    *   slag 'bild'      bild: {fil, bredd, hojd, beskrivning, kalla}   uppgiftens bild (kartan, diagrammet), där den står i
    *                    uppgiften – ingen figur: följer inte figurens uppslagsregel, och en bok med till får ha den
    *                    (arbetsorder 2026-11-24). Måtten i data: höjden är känd innan bilden laddats, så brytningen blir
@@ -423,9 +432,24 @@
   };
   // ett blocks text i kolumn-krysset (delar[].text): står med blockets rader
   blocktyper.uppgiftsdel = d => h('div', { class: 'upg-del' }, d.text.map(t => h('p', { html: inline(t) })));
-  // en citerad ingång (slag 'citat'), med källan under
-  blocktyper.uppgiftscitat = d => h('blockquote', { class: 'upg-citat' }, d.rader.map(t => h('p', { html: inline(t) })),
-    d.kalla && h('p', { class: 'upg-citat-kalla', html: inline(d.kalla) }));
+  // Uppgiftens källtexter, tabeller och källrader (2026-11-25): som löptexten, men ett understreck står kvar (en webbadress)
+  const kallText = s => inline(s, true, false);
+  const stimRubrik = t => t && h('p', { class: 'upg-stim-rubrik', html: kallText(t) });
+  // en citerad ingång (slag 'citat'), med källan under. Ett citat med flera stycken är en post per stycke (forsta/sista:
+  // rubriken med det första, källan med det sista); delarna fortsätter samma ruta, med samma höjd som det hela (bok.css).
+  blocktyper.uppgiftscitat = d => {
+    const ruta = h('blockquote', { class: 'upg-citat' + (d.forsta === false ? ' uc-fortsatt' : '') + (d.sista === false ? ' uc-mer' : '') },
+      d.rader.map(t => Array.isArray(t) ? h('ul', { class: 'b-punkter' }, t.map(x => h('li', { html: kallText(x) }))) : h('p', { html: kallText(t) })),
+      d.kalla && h('p', { class: 'upg-citat-kalla', html: kallText(d.kalla) }));
+    return d.rubrik ? h('div', { class: 'upg-citat-ram' }, stimRubrik(d.rubrik), ruta) : ruta;
+  };
+  // uppgiftens tabell (slag 'tabell'): rubriken, texten före, tabellen och källraden – en enhet
+  blocktyper.uppgiftstabell = d => h('div', { class: 'upg-tabell' }, stimRubrik(d.rubrik),
+    [].concat(d.text || []).map(t => h('p', { class: 'upg-tabell-text', html: kallText(t) })),
+    h('div', { class: 'b-tabell' }, h('table', null,
+      d.rubriker && h('thead', null, h('tr', null, d.rubriker.map(r => h('th', { scope: 'col', html: symboler(kallText(r)) })))),
+      h('tbody', null, d.rader.map(rad => h('tr', null, rad.map((c, i) => h(i ? 'td' : 'th', { scope: i ? null : 'row', html: kallText(c) }))))))),
+    d.kalla && h('p', { class: 'upg-citat-kalla', html: kallText(d.kalla) }));
   blocktyper.uppgiftsratta = d => {
     const g = d.grupp, resultat = h('p', { class: 'upg-resultat', 'aria-live': 'polite' });
     const ratta = h('button', { type: 'button', class: 'upg-ratta-knapp' }, 'Rätta'), om = h('button', { type: 'button', class: 'upg-om' }, 'Börja om');
@@ -580,8 +604,21 @@
           delar.forEach((x, k) => poster.push(Object.assign(post(Object.assign(x, { slag: b.slag, grupp, uppgift: b }),
             k === 0 ? pid : x.typ === 'uppgiftsrad' ? x.id || `${pid}-r${x.nr}` : x.typ === 'uppgiftsdel' ? `${pid}-text${x.n}` : `${pid}-ratta`), { ruta })));
         } else if (b.typ === 'uppgift' && b.slag === 'citat' && Array.isArray(b.rader) && b.rader.length) {
-          // En citerad ingång (arbetsorder 2026-11-24): en post där den står i uppgiften
-          poster.push(post({ typ: 'uppgiftscitat', rader: b.rader, kalla: b.kalla, uppgift: b }, pid));
+          // En citerad ingång (arbetsorder 2026-11-24): en post där den står i uppgiften. Med flera stycken (2026-11-25,
+          // Media): en post per stycke, hållna ihop som en grupp (slag 'citat') – helt på en sida om citatet ryms, annars
+          // delat mellan styckena med minst två på varje sida (paginera, som en punktlista som inte ryms; regelkoll).
+          // Rubriken står med det första stycket och källan med det sista. Det första behåller blockets id, de andra …-s2, …-s3.
+          const n = b.rader.length;
+          if (n < 2) poster.push(post({ typ: 'uppgiftscitat', rubrik: b.rubrik, rader: b.rader, kalla: b.kalla, uppgift: b }, pid));
+          else {
+            const ruta = { id: pid, slag: 'citat', antal: n };
+            b.rader.forEach((x, k) => poster.push(Object.assign(post({ typ: 'uppgiftscitat', rubrik: k ? null : b.rubrik, rader: [x],
+              kalla: k === n - 1 ? b.kalla : null, forsta: k === 0, sista: k === n - 1, uppgift: b }, k ? `${pid}-s${k + 1}` : pid), { ruta })));
+          }
+        } else if (b.typ === 'uppgift' && b.slag === 'tabell' && Array.isArray(b.rader) && b.rader.length) {
+          // Uppgiftens tabell (2026-11-25, Media): en post där den står i uppgiften – rubriken, texten, tabellen och
+          // källraden delas aldrig (som uppgiftens bild)
+          poster.push(post({ typ: 'uppgiftstabell', rubrik: b.rubrik, text: b.text, rubriker: b.rubriker, rader: b.rader, kalla: b.kalla, uppgift: b }, pid));
         } else if (b.typ === 'uppgift' && b.slag === 'bild' && b.bild) {
           // Uppgiftens bild (arbetsorder 2026-11-24): en post där den står i uppgiften, som texten runt den
           poster.push(post({ typ: 'uppgiftsbild', bild: b.bild, uppgift: b }, pid));
@@ -1078,12 +1115,13 @@
           // den sista raden (Svar) i samma grupp som raden före, så att den aldrig står ensam på en ny sida. Rubrikerna
           // före exemplet följer den första raden. Ett exempel som ryms står helt på en sida; en PROVA-ruta delas aldrig.
           // (En punktlista som inte ryms delas likadant, mellan punkterna, arbetsorder 16.)
-          if (u.ruta && ['exempel', 'punkter', 'uppgift'].includes(u.ruta.slag) && !u.radvis && hojd(u.poster) > kap(u.poster)) {
+          if (u.ruta && ['exempel', 'punkter', 'uppgift', 'citat'].includes(u.ruta.slag) && !u.radvis && hojd(u.poster) > kap(u.poster)) {
             const f = u.poster.findIndex(p => p.ruta), l = u.poster.map(p => !!p.ruta).lastIndexOf(true), rader = u.poster.slice(f, l + 1), delar = [];
             // (en punktlista: också de två första punkterna ihop – minst två punkter på varje sida, arbetsorder 31)
+            // (ett citat som en punktlista: mellan styckena, minst två på varje sida – 2026-11-25, Media)
             // (en övning, arbetsorder 2026-11-23: bara där övningen får delas, se upgDelbar)
             if (u.ruta.slag === 'uppgift') rader.forEach((p, k) => { if (k && !upgDelbar(rader, k)) delar[delar.length - 1].push(p); else delar.push([p]); });
-            else rader.forEach((p, k) => { if ((k === rader.length - 1 || (k === 1 && u.ruta.slag === 'punkter')) && delar.length) delar[delar.length - 1].push(p); else delar.push([p]); });
+            else rader.forEach((p, k) => { if ((k === rader.length - 1 || (k === 1 && ['punkter', 'citat'].includes(u.ruta.slag))) && delar.length) delar[delar.length - 1].push(p); else delar.push([p]); });
             delar[0].unshift(...u.poster.slice(0, f));
             delar[delar.length - 1].push(...u.poster.slice(l + 1));          // länken i foten, upphovet
             E.splice(i, 1, ...delar.map((ps, k) => Object.assign({}, u, { poster: ps, radvis: true, brytFore: k ? false : u.brytFore, rubrik: k ? false : u.rubrik, delVid: null })));
@@ -1381,6 +1419,16 @@
       // (rader i följd, arbetsorder 21: som ett exempel – "exemplet" i meddelandena blir "raderna")
       const nrs = sid.map(x => x.nr).join('–'), rubrik = R.slag === 'exempel' ? ` ”${renText(ps[0].b.rubrik)}”` : R.slag === 'rader' ? ` (rader i följd, ${ps[0].id})` : '';
       if (R.slag === 'prova') { brott.push(`sida ${nrs}: PROVA-rutan är delad`); continue; }
+      // ett citat (2026-11-25, Media) delas bara om det inte ryms på en sida, och då med minst två stycken på varje sida
+      if (R.slag === 'citat') {
+        sid.forEach(x => { if (ps.filter(p => r.postSida.get(p) === x).length < 2) brott.push(`sida ${x.nr}: citatet har bara ett stycke på sidan`); });
+        // (som brytningen: med rubrikerna före citatet, och med sidfotens plats om en fot följer det)
+        let f = bok.poster.indexOf(ps[0]);
+        while (f > 0 && RUBRIKER.includes(bok.poster[f - 1].typ)) f--;
+        const efter = bok.poster.slice(bok.poster.indexOf(ps[ps.length - 1]) + 1).find(p => p.fot || iFlodet(p));
+        if (r.matt.get(ps[ps.length - 1]).bottom - r.matt.get(bok.poster[f]).top <= (efter && efter.fot ? r.kapFot : r.kap)) brott.push(`sida ${nrs}: citatet är delat, fast det ryms på en sida`);
+        continue;
+      }
       // en punktlista (arbetsorder 16) delas bara om den inte ryms på en sida
       // (som brytningen: med rubrikerna före listan, och med sidfotens plats om en fot följer listan)
       // (en övning, arbetsorder 2026-11-23: som en punktlista, men bara raderna räknas – Rätta är ingen rad)
@@ -2187,7 +2235,7 @@
       if (!blocktyper[b.typ] && b.typ !== 'sidbrytning' && b.typ !== 'uppgift') ut.problem.push(`${kalla}: okänd blocktyp ”${b.typ}”`);
       if (b.typ === 'figur' && !figurer[b.namn]) ut.problem.push(`${kalla}: figuren ”${b.namn}” finns inte`);
       // en övning (arbetsorder 2026-11-23): ett id (elevens svar sparas på det), facit på varje rad, och prompten med platshållaren
-      if (b.typ === 'uppgift') ut.problem.push(`${kalla}: övningen ”${b.id || ''}” har ett okänt slag ”${b.slag}” (kryss, lucktext, flerval, oppen, bild eller citat) eller inga rader`);
+      if (b.typ === 'uppgift') ut.problem.push(`${kalla}: övningen ”${b.id || ''}” har ett okänt slag ”${b.slag}” (kryss, lucktext, flerval, oppen, bild, citat eller tabell) eller inga rader`);
       if (b.uppgift && bok.poster.find(x => x.b && x.b.uppgift === b.uppgift) === p) {
         const U = b.uppgift, namn = `${kalla}: övningen ”${U.id || '(utan id)'}”`;
         if (!U.id) ut.problem.push(`${namn} saknar id (elevens svar sparas på det)`);
@@ -2207,7 +2255,13 @@
           if (n < 2) ut.problem.push(`${namn}: rad ${k + 1} har färre än två alternativ`);
           else if (!(Number.isInteger(x.svar) && x.svar >= 0 && x.svar < n)) ut.problem.push(`${namn}: rad ${k + 1} saknar facit (svar: alternativets index, 0–${n - 1})`);
         });
-        if (U.slag === 'citat' && !(Array.isArray(U.rader) && U.rader.every(t => typeof t === 'string' && t.trim()))) ut.problem.push(`${namn}: citatet saknar text`);
+        // citatet: stycken (text, eller en lista med punkter); tabellen: rader av celler, lika många som kolumnernas namn
+        const text = t => typeof t === 'string' && t.trim();
+        if (U.slag === 'citat' && !(Array.isArray(U.rader) && U.rader.every(t => text(t) || (Array.isArray(t) && t.length && t.every(text))))) ut.problem.push(`${namn}: citatet saknar text`);
+        if (U.slag === 'tabell') {
+          const bredd = Array.isArray(U.rubriker) ? U.rubriker.length : (U.rader[0] || []).length;
+          if (!U.rader.every(rad => Array.isArray(rad) && rad.length === bredd && rad.every(c => typeof c === 'string'))) ut.problem.push(`${namn}: tabellens rader ska ha lika många celler (text) som kolumnerna`);
+        }
         if (U.slag === 'lucktext') U.rader.forEach((x, k) => {
           const s = [].concat(x.svar || []).filter(Boolean);
           if (!s.length) ut.problem.push(`${namn}: lucka ${k + 1} saknar facit`);
@@ -2438,7 +2492,8 @@
       storlekar.push(mobil ? ['mobilen (det här fönstret)', innerWidth, innerHeight - 96, true] : ['det här fönstret', innerWidth, innerHeight, false]);
       // (en punktlistas punkter räknas som listan: dess id en gång per sida, arbetsorder 16)
       // (och raderna i rader i följd som blocket, arbetsorder 21)
-      const ids = s => s.poster.map(p => p.typ === 'punktdel' || p.typ === 'raddel' ? p.ruta.id : p.id).filter((x, i, a) => x !== a[i - 1]);
+      // (och ett citats stycken som citatet, 2026-11-25)
+      const ids = s => s.poster.map(p => p.typ === 'punktdel' || p.typ === 'raddel' || (p.typ === 'uppgiftscitat' && p.ruta) ? p.ruta.id : p.id).filter((x, i, a) => x !== a[i - 1]);
       const spar = r => r.sidor.map(s => ids(s).join(',') + (s.over ? ` +${s.over}` : '') + (s.fyll !== undefined ? ` ${s.fyll.toFixed(4)}` : ''));
       const ut = {};
       for (const x of allaBocker().filter(x => harInnehall(x.n.id, x.t))) {
