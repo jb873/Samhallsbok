@@ -59,6 +59,7 @@
 | 2026-11-22 | Fysiks bokmotor är standarden för nya böcker, inte Geografis kopia (Geografis tillägg `villVetaMer`, `bild`, `fundera` finns inte i Fysiks) | Samhällsboken, framtida böcker | Samhällsboken har Fysikbok 3c3cc86 |
 | 2026-11-22 | Samhällsbokens sidor ligger i Fysiks form, två mappar djupt: `infor-slutprovet/<tema>/` | Samhällsboken | Gäller |
 | 2026-11-22 | Samhällets signaturfärg: plommon/aubergine, enda ämnesegna färgen; nyans C, djup aubergine `#5b2f4e`, vald på ögat i `verktyg/fargprov/` | Samhällsboken | Gäller (`css/bok-samhalle.css`) |
+| 2026-11-25 | **Flervalet (`slag: 'flerval'`) byggs i Samhälles kopia av motorn, inte i Fysik** (Joachim): fysiksessionen äger Fysik-mappen tills order 38 är klar. Ett kryss per rad bland radens egna alternativ (NP 2018 A3 Juridiska begrepp, tema III NP 2), rättas som kolumn-krysset; en flervalsrad är en hel delfråga, så gruppen får delas med en rad per sida (`upgMinst`). Samhälles `bokskal/` avviker därför från Fysikbok 5a53cf6 i `bok.js`, `bok.css` och `README.md` (Övningar). Ramverks-chatten beskriver ändringen för fysiksessionen. | Bokmotorn (enkällig), Samhällsboken | Väntar: infälls i Fysiks kanoniska motor senare, med öppna-layouten; sedan kopieras motorn hit byte för byte igen |
 
 ---
 

@@ -951,12 +951,14 @@ sidnummer är vänstersidor (innehållsförteckningen är sida 1).
 
 Arbetsorder 2026-11-23 (Samhällskunskap, *Inför slutprovet*), godkänd av Joachim. Det här är läsböckernas delade
 övningskomponent: den byggs här och kopieras byte för byte med resten av motorn. Den har tre slag för uppgifter
-(kolumn-kryss, lucktext och öppen) och två för det som hör till uppgiften (bilden och citatet).
+(kolumn-kryss, lucktext och öppen) och två för det som hör till uppgiften (bilden och citatet). I Samhällskunskaps
+kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu inte är infällt här i Fysik.
 
 | `slag` | Fält | Eleven ser |
 |---|---|---|
 | `kryss` | kolumn-kryss: `kolumner: [2–3 namn]`, `rader: [{text, etikett?, svar: kolumnens index}]`, `ogiltigSammaKolumn?` – eller flera block, `delar: [{text?: [rader], kolumner, rader}]` | en knapp per kolumn och rad (ett klick till tar bort krysset), blockens text före deras rader, Rätta och Börja om |
 | `lucktext` | `ordbank: [...]`, `rader: [{fore, efter, svar: ['facit', 'godkänd variant', …]}]` | begreppen, ett skrivfält per mening, Rätta och Börja om |
+| `flerval` | `rader: [{etikett?, text, alternativ: [2 eller fler], svar: alternativets index}]` | begreppet och under det dess alternativ med en kryssruta var, ett kryss per rad (ett klick till tar bort det), Rätta och Börja om; NP:s "kryssa för den förklaring som passar bäst" (2018 A3). Byggt i Samhälles kopia av motorn (Joachim 2026-11-25), infälls i Fysik senare |
 | `oppen` | `skrivmodell: [{rubrik, vad?, punkter: [{text, under?: [...]}]}]`, `prompt`, `platshallare`, `hjalp?`, `till?: {skrivmodell, svar}` | skrivmodellen, svarsrutan och knappen *Kopiera till AI-återkoppling*; med `till: 'uppslag'` (Joachims layout 2026-11-25, standard): uppgiftstexten på en vänstersida och skrivmodellen direkt efter på högersidan bredvid – aldrig en tom sida emellan – och svarsrutan på ny sida, i normalfallet nästa uppslag |
 | `bild` | `bild: {fil, bredd, hojd, beskrivning, kalla}` | uppgiftens bild (en karta, ett diagram) där den står i uppgiften, med källan under; `uppgiftsbild`, arbetsorder 2026-11-24 |
 | `citat` | `rader: [stycken]`, `kalla?` | en citerad ingång (ett påstående, en nyhetsnotis) där den står i uppgiften, med källan under; `uppgiftscitat`, arbetsorder 2026-11-24 |
@@ -978,6 +980,9 @@ Arbetsorder 2026-11-23 (Samhällskunskap, *Inför slutprovet*), godkänd av Joac
   (`tvaval`), som inte finns längre. Ett kryss per rad, så två kryss på samma rad går inte att sätta. Med
   `ogiltigSammaKolumn: true` (där NP säger det) säger Rätta att uppgiften är ogiltig när alla kryss står i samma kolumn.
   Med flera block räknar Rätta alla block tillsammans. Med tre kolumner står knapparna på en egen rad under påståendet.
+- **Flervalet** (Samhälles kopia, 2026-11-25) rättas som kolumn-krysset: ✓ eller ✗ per rad och antal rätt. En rad är en
+  hel delfråga med sina alternativ, så gruppen får delas med en rad på varje sida (`upgMinst`), inte två. Kontrolläget
+  säger till om en rad har färre än två alternativ eller saknar facit bland dem.
 - **Lucktexten** är generös: stora och små bokstäver, mellanslag och skiljetecken spelar ingen roll, och varje form i
   `svar` godkänns (till exempel bestämd form). Ett begrepp som står i en lucka tonas i begreppsrutan.
 - **Den öppna:** knappen kopierar `prompt` med elevens svar i stället för `platshallare` (utan svar står platshållaren

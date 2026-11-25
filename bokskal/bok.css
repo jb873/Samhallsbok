@@ -1097,6 +1097,18 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
 .upg-citat p { margin: 0 0 .35em; }
 .upg-citat p:last-child { margin-bottom: 0; }
 .upg-citat-kalla { font-size: .85em; color: var(--dampad); }
+/* flervalet (slag 'flerval', 2026-11-25): begreppet, och under det alternativen med en kryssruta var – ett kryss per rad */
+.upg-flerval { margin: 0 0 .45em; padding: .2em 0 .35em; border-bottom: 1px solid var(--ruta-kant); }
+.upg-flerval-fraga { display: flex; align-items: baseline; gap: .15em .6em; margin: 0 0 .2em; }
+.upg-flerval-fraga .upg-etikett { flex: none; min-width: 1.4em; font-weight: 600; }
+.upg-flerval-fraga .upg-text { flex: 1 1 auto; font-weight: 600; }
+.upg-alternativ { display: flex; flex-direction: column; gap: .05em; padding-left: 1.6em; }
+.upg-alt { font: inherit; line-height: 1.3; text-align: left; display: flex; align-items: baseline; gap: .55em; padding: .06em .4em;
+  border: 1px solid transparent; border-radius: .4em; background: transparent; color: var(--black); cursor: pointer; }
+.upg-alt-ruta { flex: none; width: .8em; height: .8em; border: 1.5px solid var(--accent); border-radius: .15em; transform: translateY(.08em); }
+.upg-alt[aria-pressed="true"] { border-color: var(--ruta-kant); background: var(--papper-ljus); }
+.upg-alt[aria-pressed="true"] .upg-alt-ruta { background: var(--accent); box-shadow: inset 0 0 0 2px var(--papper-ljus); }
+.upg-alt:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
 
 /* ---------- Vänster- och högersidor: efterpasset (bok.js: uppslagsstyrning, väg 3, 2026-11-24) ----------
  * Utfyllnadssidan bär bara "Fortsätter på nästa sida", mitt på sidan. Samma rad längst ned på en högersida där

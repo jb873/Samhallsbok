@@ -6,7 +6,7 @@
  *   node verktyg/md-till-np.js "<Hämtade filer>/<källa>.md" [tema]
  *     tema I:  Samlat_material_Individ_migration_minoriteter.md (Del A)
  *     tema II: NP_styrelseskick_med_bedomning_v2.md (hela filen)
- *     tema III: NP_lag_och_ratt_med_bedomning.md (hela filen; uppgift 2 väntar, se vantar i TEMAN)
+ *     tema III: NP_lag_och_ratt_med_bedomning.md (hela filen)
  *
  * Ur Joachims material läses NP-uppgifterna ordagrant med NP:s facit och bedömning (Del A i det samlade materialet, eller
  * hela filen när den bara har uppgifterna). Skrivmodellen är kallor/ovningar/skrivmodell.md och AI-mallen
@@ -28,6 +28,8 @@
  *                rader blir ett block: texten före raderna i samma stycke är blockets text, "Kolumner: A / B" dess
  *                kolumner; ett stycke utan rader mellan två block är nästa blocks text. Kolumnerna står annars i facit
  *                ("Stämmer: a, c" eller "a) Demokrati: 1, 5 · Diktatur: 2, 3" eller "1. … : direkt demokrati").
+ *   flerval med alternativ → 'flerval' (2018 A3): varje stycke "a) Begrepp" med alternativen som punkter under är en
+ *                rad; facit "- a) Begrepp: <alternativet>" pekar ut alternativet (Joachims beslut 2026-11-25).
  *   öppen      → 'oppen': skrivmodellen och prompten (uppgiftens text, A-kriteriet ur NP:s matris, skrivmodellen)
  * Uppslaget (väg 3): lucktexten och kryssuppgifterna börjar på en vänstersida; i de öppna står skrivmodellen till
  * vänster och svarsrutan överst till höger. Gränserna (E/C/A) används inte: eleven ser antal rätt, aldrig nivå. */
@@ -61,9 +63,7 @@ const TEMAN = {
     // PRELIMINÄRT, som böjningslistan.
     utbytbara: { 1: [['fängelse', 'dagsböter']] },
     // Uppgift 5 har ingen bild (fotot i NP, Monika Ruzek, publiceras inte utan Joachims beslut)
-    bilder: {},
-    // Uppgifter som väntar på Joachims beslut (Regel 0) och inte förs in än
-    vantar: { 2: 'flerval med fyra alternativ och ett kryss per begrepp: ingen sådan typ i motorn (kolumn-krysset har 2–3 kolumner)' } }
+    bilder: {} }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -85,7 +85,6 @@ const radlista = s => s.split('\n').map(x => x.trim());
 
 const avsnitt = [];
 for (const u of uppgifter) {
-  if (T.vantar && T.vantar[u.nr]) { console.warn(`uppgift ${u.nr} (${u.kod}) förs inte in: ${T.vantar[u.nr]}`); continue; }
   const [huvudOchElev, bedom] = u.kropp.split('\n### Bedömningsanvisning (NP)\n');
   kolla(bedom, `uppgift ${u.nr}: ingen bedömningsanvisning`);
   if (!bedom) continue;
@@ -98,7 +97,7 @@ for (const u of uppgifter) {
   const elev = huvudOchElev.split('\n').filter(r => !/^- \*\*[^*]+:\*\*/.test(r) && !/^\*\*Bilder och stimulus:\*\*/.test(r) && !/^### Uppgift\s*$/.test(r)).join('\n');
   const stycken = elev.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
   const id = `${T.prefix}-u${u.nr}`, block = [{ typ: 'text', text: `Källa: ${kalla}` }];
-  const slag = /^lucktext/.test(typ) ? 'lucktext' : /^flerval/.test(typ) ? 'kryss' : 'oppen';
+  let slag = /^lucktext/.test(typ) ? 'lucktext' : /^flerval/.test(typ) ? 'kryss' : 'oppen';
   // lucktextens meningar: numrerade ("1. … ______") eller ett stycke där varje rad har en lucka (2017 B4)
   const arLuckrad = x => slag === 'lucktext' && /______/.test(x);
   const arLucka = s => /^\d+\. .*______/.test(s) || radlista(s).every(arLuckrad);
@@ -108,8 +107,11 @@ for (const u of uppgifter) {
   const numrerade = slag === 'kryss' && radlista(elev).some(x => /^\d+\. /.test(x) && !/______/.test(x));
   const radMonster = numrerade ? /^(\d+)\. (.+)$/ : /^([a-z])\) (.+)$/;
   const arRad = x => radMonster.test(x) || /^- (.+)$/.test(x);
+  // flervalet: ett stycke med en bokstavsrad ("a) Straffmyndig") och under den alternativen som punkter (2018 A3)
+  const arFlerval = s => { const r = radlista(s); return /^[a-z]\) /.test(r[0]) && r.length > 2 && r.slice(1).every(x => /^- /.test(x)); };
+  if (slag === 'kryss' && !numrerade && stycken.some(arFlerval)) slag = 'flerval';
   const prompttext = [];                               // uppgiftens text till AI-mallen: elevdelen utan källan
-  const delar = [];
+  const delar = [], fler = [];
   let ordbank = null, vantande = { text: [], kolumner: null };
 
   for (const s of stycken) {
@@ -128,6 +130,9 @@ for (const u of uppgifter) {
       const kallrad = st.length > 1 && /^Källa: /.test(st[st.length - 1]) ? st.pop() : null;
       block.push(Object.assign({ typ: 'uppgift', id: `${id}-citat`, slag: 'citat', rader: st.map(stil) }, kallrad ? { kalla: stil(kallrad) } : {}));
       prompttext.push(st.map(ren).concat(kallrad ? [ren(kallrad)] : []).join('\n'));
+    } else if (slag === 'flerval' && arFlerval(s)) {      // en rad i flervalet: begreppet och dess alternativ
+      const m = r[0].match(/^([a-z])\) (.+)$/);
+      fler.push({ etikett: `${m[1]})`, text: stil(m[2]), alternativ: r.slice(1).map(x => stil(x.replace(/^- /, ''))), nyckel: m[1], kallrader: r.slice(1).map(x => x.replace(/^- /, '')) });
     } else if (slag === 'kryss' && r.some(arRad)) {      // ett block: text och kolumner före raderna, sedan raderna
       const forst = r.findIndex(arRad), fore = r.slice(0, forst), rader = r.slice(forst);
       kolla(rader.every(arRad), `uppgift ${u.nr}: ett stycke med rader har text efter raderna`);
@@ -152,7 +157,20 @@ for (const u of uppgifter) {
     }
   }
 
-  if (slag === 'kryss') {
+  if (slag === 'flerval') {
+    // Facit: "- a) Straffmyndig: <alternativet>" – svaret är det alternativ som facitraden slutar med (precis ett)
+    const fi = bedom.indexOf('**Facit');
+    kolla(fi >= 0, `uppgift ${u.nr}: inget facit`);
+    const facitrader = fi >= 0 ? bedom.slice(fi).split('\n').filter(x => /^- [a-z]\) /.test(x)) : [];
+    kolla(facitrader.length === fler.length, `uppgift ${u.nr}: ${fler.length} rader men ${facitrader.length} facitrader`);
+    const rader = fler.map(r => {
+      const f = facitrader.find(x => x.startsWith(`- ${r.nyckel}) `));
+      const tr = f ? r.kallrader.map((a, i) => f.endsWith(': ' + a) ? i : -1).filter(i => i >= 0) : [];
+      kolla(tr.length === 1, `uppgift ${u.nr}: rad ${r.etikett} – facit träffar ${tr.length} alternativ`);
+      return { etikett: r.etikett, text: r.text, alternativ: r.alternativ, svar: tr.length === 1 ? tr[0] : -1 };
+    });
+    block.push({ typ: 'uppgift', id, slag: 'flerval', rader });
+  } else if (slag === 'kryss') {
     kolla(delar.length && !vantande.text.length, `uppgift ${u.nr}: inga rader, eller text efter de sista raderna`);
     const alla = delar.flatMap(d => d.rader);
     // Facit: kolumnens namn för varje rad, ur NP:s bedömning (eller nyckelord, där NP beskriver raderna)

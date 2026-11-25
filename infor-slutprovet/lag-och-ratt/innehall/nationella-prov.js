@@ -131,6 +131,163 @@ Bok.niva('repetitionsbok', {
    ]
   },
   {
+   "id": "uppgift-2",
+   "titel": "Juridiska begrepp",
+   "till": "vanster",
+   "block": [
+    {
+     "typ": "text",
+     "text": "Källa: vt 2018, delprov A, uppgift A3"
+    },
+    {
+     "typ": "rader",
+     "rader": [
+      "Kryssa för den förklaring som passar bäst ihop med de olika begreppen.",
+      "I varje delfråga ska endast ett kryss sättas ut. Om du skriver fler kryss räknas svaret som ogiltigt."
+     ]
+    },
+    {
+     "typ": "uppgift",
+     "id": "sam-np-lag-u2",
+     "slag": "flerval",
+     "rader": [
+      {
+       "etikett": "a)",
+       "text": "Straffmyndig",
+       "alternativ": [
+        "efter att man fyllt 12 år kan man dömas för brott",
+        "efter att man fyllt 15 år kan man dömas för brott",
+        "efter att man fyllt 16 år kan man dömas för brott",
+        "efter att man fyllt 18 år kan man dömas för brott"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "b)",
+       "text": "Hovrätt",
+       "alternativ": [
+        "domstol som enbart tar upp rättsfall belagda med sekretess",
+        "domstol som tar upp överklaganden av tingsrättens beslut",
+        "den högsta domstolen i Sverige",
+        "den första instans som prövar ett rättsfall"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "c)",
+       "text": "Fotboja",
+       "alternativ": [
+        "elektronisk övervakning av brottslingar på fängelser",
+        "elektronisk övervakning av brottslingar som är yngre än 15 år",
+        "elektronisk övervakning av brottslingar i hemmet istället för fängelsestraff",
+        "elektronisk övervakning av brottslingar som dömts till sluten ungdomsvård"
+       ],
+       "svar": 2
+      },
+      {
+       "etikett": "d)",
+       "text": "Civilrätt",
+       "alternativ": [
+        "det område inom juridiken som berör förhållandet mellan företag och stat",
+        "annat namn för rättsfall som ger mycket låga straff",
+        "det område inom juridiken som berör förhållandet mellan privatpersoner",
+        "att en privatperson har rätt att läsa juridiska dokument"
+       ],
+       "svar": 2
+      },
+      {
+       "etikett": "e)",
+       "text": "Grundlagar",
+       "alternativ": [
+        "lagar om våldsbrott",
+        "lagar om hur ett land ska styras",
+        "lagar om internationell handel",
+        "lagar för brott med låg straffskala"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "f)",
+       "text": "Sveriges lagstiftande församling är…",
+       "alternativ": [
+        "regeringen",
+        "riksdagen",
+        "högsta domstolen",
+        "EU-domstolen"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "g)",
+       "text": "Prejudikat",
+       "alternativ": [
+        "ett beslut som fattas av ett flertal nämndemän",
+        "ett beslut som fattas av enskilda parter",
+        "ett beslut som överklagas till högsta instans",
+        "ett beslut som blir vägledande vid liknande domar"
+       ],
+       "svar": 3
+      },
+      {
+       "etikett": "h)",
+       "text": "Förundersökning",
+       "alternativ": [
+        "ett annat ord för att misstänkta brottslingar visiteras",
+        "den undersökning som polis eller åklagare gör av ett brott",
+        "den undersökning som domare och nämndemän gör av ett brott",
+        "ett annat ord för polisanmälan"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "i)",
+       "text": "Överklagande",
+       "alternativ": [
+        "åklagarens sista tal i rättssalen",
+        "att interner kan ansöka om att få byta fängelse",
+        "försvarsadvokatens sista tal i rättssalen",
+        "att få en högre domstol att ompröva en dom"
+       ],
+       "svar": 3
+      },
+      {
+       "etikett": "j)",
+       "text": "Mened",
+       "alternativ": [
+        "att ett vittne ljuger",
+        "att vägra vittna",
+        "att tvingas vittna mot en kompis eller släkting",
+        "att vittna anonymt"
+       ],
+       "svar": 0
+      },
+      {
+       "etikett": "k)",
+       "text": "Övergrepp i rättssak",
+       "alternativ": [
+        "att ett brottsoffer vägrar vittna under rättegången",
+        "att den misstänkte hotar ett vittne",
+        "att ett brottsoffer får skyddad identitet och behöver flytta",
+        "att någon som redan är misstänkt för ett brott begår ytterligare brott"
+       ],
+       "svar": 1
+      },
+      {
+       "etikett": "l)",
+       "text": "Resning",
+       "alternativ": [
+        "ett sätt att få brottslingar som avtjänat sitt straff att bli anställda",
+        "när flera interner delar på en cell",
+        "ett sätt att ändra en dom efter flera överklaganden",
+        "när en häktad person får besök"
+       ],
+       "svar": 2
+      }
+     ]
+    }
+   ]
+  },
+  {
    "id": "uppgift-3",
    "titel": "När ett brott har begåtts",
    "till": "vanster",
