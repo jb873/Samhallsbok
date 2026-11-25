@@ -158,6 +158,11 @@ Bok.niva('repetitionsbok', {
        "svar": 3
       }
      ]
+    },
+    {
+     "typ": "ruta",
+     "rubrik": "Obs:",
+     "text": "Sedan 2019 betalas public service med en avgift via skatten, inte med licens. Presstöd heter numera mediestöd. Facit följer provet från 2018."
     }
    ]
   },

@@ -75,7 +75,10 @@ const TEMAN = {
     bilder: {} },
   // Media (arbetsorder 2026-11-25): ingen lucktext, alltså ingen böjningslista. Alla bilder utelämnas (dekor eller ©):
   // de fyra fotona i uppgift 1 och nyhetsstudion i uppgift 6.
-  'media': { prefix: 'sam-np-med', uppgifter: 14, aExempel: 8, nycklar: {}, bestamd: {}, bilder: {} }
+  'media': { prefix: 'sam-np-med', uppgifter: 14, aExempel: 8, nycklar: {}, bestamd: {}, bilder: {},
+    // Notiser efter uppgiften (en ruta, som "Tips i provet"), där provet är äldre än det som gäller i dag. Facit följer
+    // provet. Joachims text 2026-11-25.
+    notiser: { 1: { rubrik: 'Obs:', text: 'Sedan 2019 betalas public service med en avgift via skatten, inte med licens. Presstöd heter numera mediestöd. Facit följer provet från 2018.' } } }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -289,6 +292,8 @@ for (const u of uppgifter) {
     // skrivmodellen efter NP:s typ: en resonerande uppgift får Redogöra och Resonera, en beskrivande Redogöra
     block.push(G.oppenUppgift(id, u.nr, prompttext.join('\n\n'), kriterium, /resonerande/.test(typ) ? modell.slice(0, 2) : modell.slice(0, 1)));
   }
+  // en notis efter uppgiften (notiser i TEMAN): det som ändrats sedan provet
+  if ((T.notiser || {})[u.nr]) block.push(Object.assign({ typ: 'ruta' }, T.notiser[u.nr]));
   // Uppslaget (väg 3): lucktexten och kryssuppgifterna börjar på en vänstersida (begreppen och raderna till vänster)
   avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'oppen' ? {} : { till: 'vanster' }, { block }));
 }
