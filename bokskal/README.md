@@ -504,7 +504,7 @@ räkningen tror (fyllnaden skiljer cirka 1 %). Det ändrar inget här, men räkn
 | `bokref`, `boklank` | länkar till en annan bok, se *Fristående böcker* |
 | `vidare` | `lankar: [{text, bok, ankare}]`: rutan "Vill du gå vidare?" sist i en Fördjupningsbok (arbetsorder 13). Rubriken och inledningen ("Läs mer i Nästa steg – gymnasiets kraft och rörelse:") är motorns. Länkarna skrivs av `verktyg/vidare-rutor.js`, och kontrolläget prövar att varje länk går till ett avsnitts början med det numret och den titeln. En länk kan också gå till en annan sida, `{text, href}`, och rutan kan ha en egen `inledning` (arbetsorder 33: Repetitionen VI A → kapitel 2): `vidare-rutor.js` räknar fram texten ("Textens titel: N. Avsnittets titel") och adressen (`…/index.html?niva=…#text/avsnitt`) ur målsidans böcker och stoppar om målet inte finns. En länk i tabellen kan ha en egen sida, `[text, avsnitt, mapp]` (arbetsorder 34: VI A länkar till både avsnitt I och II i kapitel 2). |
 | `tabell` | `rubriker?`, `rader: [[...]]`, `fotnot?`. Första kolumnen är radrubrik. |
-| `uppgift` | en övning: `id`, `slag` (`kryss`, `lucktext`, `oppen`, `bild` eller `citat`; i Samhälles kopia också `flerval` och `tabell`) och dess fält, se *Övningar* |
+| `uppgift` | en övning: `id`, `slag` (`kryss`, `lucktext`, `oppen`, `bild` eller `citat`; i Samhälles kopia också `flerval`, `urval`, `matchning` och `tabell`) och dess fält, se *Övningar* |
 
 Ett block får ett eget `id` om det som eleven gör i det ska överleva att block flyttas (för interaktiva block senare).
 Utan eget id heter blocket `<avsnitt>-b<n>` (det n:te blocket), och läsplatsen sparas så. Rubrikernas adresser heter
@@ -958,9 +958,11 @@ ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader
 
 | `slag` | Fält | Eleven ser |
 |---|---|---|
-| `kryss` | kolumn-kryss: `kolumner: [2–3 namn]`, `rader: [{text, etikett?, svar: kolumnens index}]`, `ogiltigSammaKolumn?` – eller flera block, `delar: [{text?: [rader], kolumner, rader}]` | en knapp per kolumn och rad (ett klick till tar bort krysset), blockens text före deras rader, Rätta och Börja om |
+| `kryss` | kolumn-kryss: `kolumner: [2 eller fler namn]` (fler än tre: Samhälles kopia, 2026-11-25), `rader: [{text, etikett?, svar: kolumnens index}]`, `ogiltigSammaKolumn?` – eller flera block, `delar: [{text?: [rader], kolumner, rader}]` | en knapp per kolumn och rad (ett klick till tar bort krysset), blockens text före deras rader, Rätta och Börja om |
 | `lucktext` | `ordbank: [...]`, `rader: [{fore, efter, svar: ['facit', 'godkänd variant', …]}]` | begreppen, ett skrivfält per mening, Rätta och Börja om |
 | `flerval` | `rader: [{etikett?, text, alternativ: [2 eller fler], svar: alternativets index}]` | begreppet och under det dess alternativ med en kryssruta var, ett kryss per rad (ett klick till tar bort det), Rätta och Börja om; NP:s "kryssa för den förklaring som passar bäst" (2018 A3). Byggt i Samhälles kopia av motorn (Joachim 2026-11-25), infälls i Fysik senare |
+| `urval` | `alternativ: [...]`, `svar: [de rätta alternativens index]`, `hogst?` | "kryssa i de fyra korrekta alternativen" (2016 A10 Grundlagar): ett alternativ per rad med en kryssruta, valfritt många kryss (ett klick till tar bort krysset), Rätta och Börja om. Samhälles kopia (Joachim 2026-11-25, tema IV), infälls i Fysik senare |
+| `matchning` | `alternativ: [begreppen]`, `rader: [{etikett?, text, svar: begreppets index, exempel?: true}]` | "para ihop förklaringarna med det begrepp som passar bäst" (2018 A6): begreppen i en ruta före raderna (som lucktextens; valda begrepp tonas), och vid varje förklaring en lista att välja begreppet ur. En exempelrad står med sitt begrepp ifyllt och räknas inte. Samhälles kopia (Joachim 2026-11-25, tema IV), infälls i Fysik senare |
 | `oppen` | `skrivmodell: [{rubrik, vad?, punkter: [{text, under?: [...]}]}]`, `prompt`, `platshallare`, `hjalp?`, `till?: {skrivmodell, svar}` | skrivmodellen, svarsrutan och knappen *Kopiera till AI-återkoppling*; med `till: 'uppslag'` (Joachims layout 2026-11-25, standard): uppgiftstexten på en vänstersida och skrivmodellen direkt efter på högersidan bredvid – aldrig en tom sida emellan – och svarsrutan på ny sida, i normalfallet nästa uppslag |
 | `bild` | `bild: {fil, bredd, hojd, beskrivning, kalla}` | uppgiftens bild (en karta, ett diagram) där den står i uppgiften, med källan under; `uppgiftsbild`, arbetsorder 2026-11-24 |
 | `citat` | `rubrik?`, `rader: [stycken]`, `kalla?` | en citerad ingång (ett påstående, en nyhetsnotis, en källtext) där den står i uppgiften, med rubriken ("Text 1", "Källa 3") över och källan under; ett stycke som är en lista (`['punkt', …]`) blir en punktlista i citatet; `uppgiftscitat`, arbetsorder 2026-11-24 (rubriken och listorna: Samhälles kopia, 2026-11-25) |
@@ -982,9 +984,19 @@ ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader
   Stödjer/Stödjer inte, Demokrati/Diktatur/Varken, Monarki/Republik, Direkt/Representativ … Det ersätter tvåvalet
   (`tvaval`), som inte finns längre. Ett kryss per rad, så två kryss på samma rad går inte att sätta. Med
   `ogiltigSammaKolumn: true` (där NP säger det) säger Rätta att uppgiften är ogiltig när alla kryss står i samma kolumn.
-  Med flera block räknar Rätta alla block tillsammans. Med tre kolumner står knapparna på en egen rad under påståendet.
+  Med flera block räknar Rätta alla block tillsammans. Med tre eller fler kolumner (Skola/Kommun/Riksdag/EU, 2016 B4) står knapparna på en egen rad under påståendet, och
+  markeringen efter Rätta står med dem, så att raden inte blir högre än när sidan bröts (Samhälles kopia, 2026-11-25).
   Knapparna krymper aldrig under det längsta ordet: ett långt kolumnnamn ("Någon av källorna stödjer slutsatsen", NP 2016
   A8) bryts på två rader i stället för att gå utanför sidan (Samhälles kopia, 2026-11-25); korta namn står som förut.
+- **Urvalet** (Samhälles kopia, 2026-11-25): Rätta sätter ✓ eller ✗ vid varje markerat alternativ (inget vid de omarkerade)
+  och säger antalet rätt av de rätta ("3 av 4 rätt."). Med `hogst` (NP: "Om du skriver fler än fyra kryss räknas ditt svar
+  som ogiltigt") säger Rätta att svaret är ogiltigt när det har fler kryss, och markerar inget. Kontrolläget säger till om
+  urvalet har färre än två alternativ, om `svar` inte är de rätta alternativens index eller om `hogst` är färre än de rätta.
+- **Matchningen** (Samhälles kopia, 2026-11-25): eleven väljer ett begrepp ur en lista vid varje förklaring (listan har
+  begreppen i uppgiftens ordning, utan exemplens). Rätta sätter ✓ eller ✗ per förklaring och säger antal rätt. Samma
+  begrepp vid två förklaringar är fel på båda, som två bokstäver vid ett begrepp på provet. Markeringen står med listan,
+  så att raden inte blir högre efter Rätta. Kontrolläget säger till om en rad saknar facit bland begreppen eller om samma
+  begrepp står två gånger i facit.
 - **Flervalet** (Samhälles kopia, 2026-11-25) rättas som kolumn-krysset: ✓ eller ✗ per rad och antal rätt. En rad är en
   hel delfråga med sina alternativ, så gruppen får delas med en rad på varje sida (`upgMinst`), inte två. Kontrolläget
   säger till om en rad har färre än två alternativ eller saknar facit bland dem.
@@ -999,7 +1011,7 @@ ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader
   punktlista: hela på en sida om de ryms, annars delade mellan två rader med minst två rader på varje sida, och Rätta
   står med den sista raden. Ett blocks text i kolumn-krysset står med blockets rader, aldrig sist på en sida. Lucktextens begrepp är en egen post före gruppen (på datorn på samma uppslag som meningarna,
   på mobilen ibland sidan före). Den öppna blir två poster: skrivmodellen och svarsrutan.
-- **Kontrolläget** säger till om en övning saknar `id`, om ett block i kolumn-krysset inte har två eller tre kolumner
+- **Kontrolläget** säger till om en övning saknar `id`, om ett block i kolumn-krysset har färre än två kolumner
   eller en rad saknar facit bland dem, om ett citat saknar text, om en tabells rader inte har lika många celler som
   kolumnerna, om en lucka saknar facit eller facit inte står bland begreppen, om prompten saknar platshållaren, och
   om en sida har en ensam rad ur en delad övning ("övningen har bara en rad på sidan"), ett delat citat har ett ensamt

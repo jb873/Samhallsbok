@@ -1125,6 +1125,16 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
 .upg-alt[aria-pressed="true"] { border-color: var(--ruta-kant); background: var(--papper-ljus); }
 .upg-alt[aria-pressed="true"] .upg-alt-ruta { background: var(--accent); box-shadow: inset 0 0 0 2px var(--papper-ljus); }
 .upg-alt:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+/* urvalet (slag 'urval', 2026-11-25): ett alternativ per rad med samma kryssruta som flervalet, valfritt många kryss */
+.upg-urval { display: flex; align-items: baseline; gap: .2em .5em; margin: 0 0 .05em; }
+.upg-urval.upg-sista { margin-bottom: .35em; }
+/* matchningen (slag 'matchning', 2026-11-25): förklaringen och till höger en lista att välja begreppet ur; exempelraden
+   med sitt begrepp ifyllt, dämpad */
+.upg-valj { font: inherit; font-size: .9em; max-width: 100%; padding: .12em .3em; border: 1px solid var(--ruta-kant);
+  border-radius: .35em; background: var(--papper-ljus); color: var(--black); cursor: pointer; }
+.upg-valj:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+.upg-exempelrad { color: var(--dampad); }
+.upg-exempel-svar { display: inline-block; font-size: .9em; padding: .12em .6em; border: 1px dashed var(--ruta-kant); border-radius: .35em; }
 
 /* ---------- Vänster- och högersidor: efterpasset (bok.js: uppslagsstyrning, väg 3, 2026-11-24) ----------
  * Utfyllnadssidan bär bara "Fortsätter på nästa sida", mitt på sidan. Samma rad längst ned på en högersida där
