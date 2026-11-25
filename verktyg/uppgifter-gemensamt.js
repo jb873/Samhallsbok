@@ -48,12 +48,13 @@ const tillPrompt = delar => delar.map(d => [d.rubrik + (d.vad ? ` (${d.vad})` : 
   ...d.punkter.flatMap(p => [`- ${ren(p.text)}`, ...p.under.map(x => `  - ${ren(x)}`)])].join('\n')).join('\n\n');
 
 /* En öppen uppgift: prompten är mallen ifylld med uppgiftens text, A-kriteriet och skrivmodellen (aldrig A-exemplet).
- * Uppslaget (väg 3): skrivmodellen på en vänstersida och svarsrutan överst på högersidan bredvid. */
+ * Uppslaget (väg 3, Joachims layout 2026-11-25, till: 'uppslag'): uppgiftstexten på en vänstersida och skrivmodellen
+ * direkt efter, på högersidan bredvid – aldrig en tom sida emellan – och svarsrutan på nästa uppslag. */
 function oppenUppgift(id, nr, uppgiftText, kriterium, delar) {
   const prompt = MALL.replace('[uppgiftens text]', () => uppgiftText).replace('[A-kriteriet]', () => kriterium).replace('[skrivmodellen]', () => tillPrompt(delar));
   kolla(!/\[(uppgiftens text|A-kriteriet|skrivmodellen|A-exemplet)\]/.test(prompt) && prompt.split(PLATSHALLARE).length === 2, `uppgift ${nr}: prompten blev inte ifylld`);
   return { typ: 'uppgift', id, slag: 'oppen', skrivmodell: tillBok(delar), prompt, platshallare: PLATSHALLARE, hjalp: HJALP,
-    till: { skrivmodell: 'vanster', svar: 'hoger' } };
+    till: 'uppslag' };
 }
 
 // Facit för Ja/Nej står som ord i bedömningen, inte radnummer: varje nyckelord ska träffa precis en rad
