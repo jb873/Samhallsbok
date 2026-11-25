@@ -5,7 +5,7 @@
 
 **Senast uppdaterad:** 2026-11-22
 **Plattformsversion:** Alphaskolans lärplattform v0.3 (Lager 1) + Lager 2-3-utökning v0.1
-**Bok-status:** 2026-11-24: motorn är Fysikbok 8aecb03, med repetitionsboken, övningarna (blocktypen `uppgift`, med uppgiftens bild), och vänster- och högersidor (efterpasset, väg 3). Tema I har en övningsbok bredvid repetitionsboken. Fem av sex repetitionsböcker i *Inför slutprovet* är byggda: I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt och V Media (nattordern 2026-11-22), och IV Beslutsfattande (2026-11-24, Joachims text oförändrad, inklusive "Det här har ändrats sedan boken skrevs"). VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
+**Bok-status:** 2026-11-24: motorn är Fysikbok 54cbe79, med repetitionsboken, övningarna (blocktypen `uppgift`, med uppgiftens bild), och vänster- och högersidor (efterpasset, väg 3). Tema I har en övningsbok bredvid repetitionsboken. Fem av sex repetitionsböcker i *Inför slutprovet* är byggda: I Individ, migration och minoriteter, II Styrelseskick, III Lag och rätt och V Media (nattordern 2026-11-22), och IV Beslutsfattande (2026-11-24, Joachims text oförändrad, inklusive "Det här har ändrats sedan boken skrevs"). VI Samhälls- och privatekonomi saknar text och står som "kommer". Se *Obeslutat* nedan.
 
 ---
 
@@ -27,7 +27,7 @@ Samhällsboken är en **läsebok** i Alphaskolans lärplattform, i geografi/hist
 
 - **Innehållsramen** är Historiabokens (`jb873/Historiabok`, den här filen bygger på dess CLAUDE.md).
 - **Referensimplementationen** att kopiera komponenter rakt av från är Geografibokens (`jb873/Geografibok`).
-- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 8aecb03 (2026-11-24, med repetitionsboken, övningarna med kolumn-krysset, uppgiftens bild och citat, och efterpasset) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
+- **Bokformatet** (bläddringsbara böcker) är bokmotorn i [`bokskal/`](bokskal/). **Fysiks motor är standarden** (Joachims beslut 2026-11-22), kopierad ordagrant från Fysikbok 54cbe79 (2026-11-25, med repetitionsboken, övningarna med kolumn-krysset, uppgiftens bild och citat, efterpasset och kompakt layout för de öppna) — inte Geografis äldre kopia. Motorns handbok är Fysiks README, här [`bokskal/README.md`](bokskal/README.md).
 - **Enkällig motor:** motorn ändras aldrig här. Ändringar görs i Fysikbok och kopieras hit byte för byte (se `PLATTFORMS-ANDRINGAR.md`).
 
 ---
@@ -84,6 +84,7 @@ Följande komponenter implementeras enligt Geografibokens kanoniska mönster:
   - Så är det byggt, utan något nytt i motorn: startsidans och kapitelindexets kort går till `<tema>/index.html`. Överst på temasidan står motorns kort för fristående böcker; repetitionsboken heter "Läsa: <tema>" och övningsboken "Öva: <tema>", och kortet visar titeln.
   - Senare (inte nu): Läsa och Öva som lägen i samma bok, en växel inne i boken. Det är en medveten ändring i motorn som beställs för sig.
 - **Uppslaget i övningsboken (Joachim, 2026-11-24, väg 3):** motorns efterpass styr vänster- och högersidor (`till`, se `bokskal/README.md`, *Vänster- och högersidor*). Kryssuppgifterna (tvåval) börjar på en vänstersida; i de öppna står skrivmodellen till vänster och svarsrutan överst till höger. Där en sida annars hamnar fel står en utfyllnadssida "Fortsätter på nästa sida", och samma rad står längst ned på en högersida där uppgiften fortsätter. Eleven ska aldrig tro att uppgifterna tagit slut. Gränsen: en bok med `till` får inte ha figurer eller formler.
+  - **Kompakt layout för de öppna (Joachim, 2026-11-25):** ryms uppgiftstexten och skrivmodellen på en vänstersida delar de den, och svarsrutan står till höger – ett uppslag, ingen utfyllnadssida. Ryms de inte behålls delningen (modellen överst på nästa vänstersida). Motorn avgör det själv vid brytningen (`sidaTill`, Fysikbok 54cbe79). Mätt 2026-11-25: ingen av de 14 öppna uppgifterna i tema I och II ryms (texten 0,78–0,90 sida, modellen 0,49–0,85), så alla behåller delningen.
   - Inte nu: lucktexten helt på ett uppslag (a). Väljs när det mätts om ett smalare fält räcker.
 - **Nationella prov-boken (Joachim, 2026-11-24):** de sju riktiga NP-uppgifterna (Del A ur det samlade materialet, ordagrant med NP:s facit) i en egen interaktiv bok, skild från Öva-boken, som ett tredje kort på temasidan (tema I). Samma övningskomponent, inga nya typer, inget nytt i motorn; samma uppslag (väg 3). De slutna rättas mot NP:s facit (gränserna E/C/A används inte: eleven ser antal rätt, aldrig nivå). De öppna: skrivmodellen, A-kriteriet ur NP:s matris och samma AI-mall som Öva-boken. **NP:s A-exempel publiceras aldrig** (prompt, källkod eller historik); verktyget stoppar om en rad ur något A-exempel skulle stå i boken. Uppgift 6–7 (befolkning, gränsar mot geografi) är med tills Joachim säger annat. Bilderna i Del A: en uppgifts bild står i uppgiften som **`uppgiftsbild`** (`slag: 'bild'`, se nedan), bara när Joachim godkänt bilden. Uppgift 3: ingen bild (© UNHCR, publiceras inte). Uppgift 6: väntar på en karta som visar befolkningsfördelningen (bilden i NP-PDF:en är bara Sveriges kontur).
   - Bekräftat av Joachim 2026-11-24: etiketten **"Nationella prov"** och böjningslistan i lucktexten (`BESTAMD` i `verktyg/md-till-np.js`: asylen, flyktingen, visumet, migrationen, integrationen, segregationen, emigrationen; Migrationsverket bara som det står). Listan är låst.
@@ -152,7 +153,7 @@ Använd **flat naming** (samma som Geografi): `.elevbok-fraga-block`, `.begrepp-
 
 | Sökväg | Vad | Källa (ordagrant) |
 |---|---|---|
-| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 8aecb03: `bokskal/`, `README.md` |
+| `bokskal/` | bokmotorn; `README.md` är Fysiks handbok | Fysikbok 54cbe79: `bokskal/`, `README.md` |
 | `mall/delkapitel/` | mallen för en bok-sida | Fysikbok `mall/delkapitel/`; `index.html` med titeln och `css/bok-samhalle.css` (som Geografis mall) |
 | `css/bok-samhalle.css` | samhällets färg ovanpå motorn | Geografis `css/bok-geografi.css` som mönster |
 | `verktyg/fargprov/` | färgprovet A/B/C (inte elevinnehåll; grinden letar inte i `verktyg/`) | nytt |
