@@ -107,7 +107,8 @@ Bok.niva('repetitionsbok', {
         "fängelset",
         "dagsböter",
         "dagsböterna"
-       ]
+       ],
+       "olika": "fängelse/dagsböter"
       },
       {
        "fore": "eller",
@@ -117,7 +118,8 @@ Bok.niva('repetitionsbok', {
         "dagsböterna",
         "fängelse",
         "fängelset"
-       ]
+       ],
+       "olika": "fängelse/dagsböter"
       },
       {
        "fore": "Det är domaren i tingsrätten tillsammans med",

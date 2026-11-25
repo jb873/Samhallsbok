@@ -984,7 +984,9 @@ kopia finns också flervalet (`flerval`, Joachims beslut 2026-11-25), som ännu 
   hel delfråga med sina alternativ, så gruppen får delas med en rad på varje sida (`upgMinst`), inte två. Kontrolläget
   säger till om en rad har färre än två alternativ eller saknar facit bland dem.
 - **Lucktexten** är generös: stora och små bokstäver, mellanslag och skiljetecken spelar ingen roll, och varje form i
-  `svar` godkänns (till exempel bestämd form). Ett begrepp som står i en lucka tonas i begreppsrutan.
+  `svar` godkänns (till exempel bestämd form). Luckor med samma `olika` (Samhälles kopia, 2026-11-25: "till exempel
+  fängelse eller dagsböter") godkänner svaren i valfri ordning, men samma begrepp två gånger räknas rätt bara första
+  gången; begreppet är det i begreppsrutan som svaret är eller börjar med. Ett begrepp som står i en lucka tonas i begreppsrutan.
 - **Den öppna:** knappen kopierar `prompt` med elevens svar i stället för `platshallare` (utan svar står platshållaren
   kvar). Prompten skrivs av boken (Samhällskunskap: `verktyg/md-till-uppgifter.js`); motorn fyller bara i svaret.
   `hjalp` är en rad under knappen.

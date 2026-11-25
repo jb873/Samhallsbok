@@ -331,7 +331,8 @@
    *                    svar: kolumnens index}], ogiltigSammaKolumn? – eller flera block med egna kolumner och en egen text
    *                    före raderna: delar: [{text?: [rader], kolumner, rader}]. Ja/Nej, Stämmer/Stämmer inte, demokrati/
    *                    diktatur/varken, monarki/republik … Ett kryss per rad. Rätta räknar alla block tillsammans.
-   *   slag 'lucktext'  ordbank: [...], rader: [{fore, efter, svar: [godkända svar, …]}]
+   *   slag 'lucktext'  ordbank: [...], rader: [{fore, efter, svar: [godkända svar, …], olika?}]   olika: luckor med samma
+   *                    nyckel får svaren i valfri ordning men inte samma begrepp två gånger (Samhälles kopia, 2026-11-25)
    *   slag 'flerval'   rader: [{etikett?, text, alternativ: [2 eller fler], svar: alternativets index}]   ett kryss per rad
    *                    bland radens egna alternativ, som NP:s "kryssa för den förklaring som passar bäst" (2018 A3).
    *                    Rättas som kolumn-krysset. (Joachims beslut 2026-11-25: byggd i Samhälles kopia av motorn,
@@ -355,6 +356,14 @@
     // en uppgift: status per rad, antalet rätt, och om kryssen är ogiltiga (som på NP: alla kryss i samma kolumn)
     uppgift(rader, svar, ogiltigSammaKolumn) {
       const status = rader.map((d, k) => uppgiftRattning.rad(d, svar[k]));
+      // luckor i valfri ordning (lucktextens olika, 2026-11-25: "fängelse eller dagsböter"): samma begrepp två gånger
+      // räknas rätt bara första gången. Begreppet är det i begreppsrutan som svaret är eller börjar med (som tonandet).
+      const ord = ((rader[0] && rader[0].uppgift && rader[0].uppgift.ordbank) || []).map(normSvar), sedda = new Set();
+      rader.forEach((d, k) => {
+        if (!d.olika || status[k] !== 'ratt') return;
+        const s = normSvar(svar[k]), n = `${d.olika}|${ord.find(o => s === o || s.startsWith(o)) || s}`;
+        if (sedda.has(n)) status[k] = 'fel'; else sedda.add(n);
+      });
       const givna = svar.filter(Number.isInteger);
       return { status, ratt: status.filter(s => s === 'ratt').length, tomma: status.filter(s => s === 'tomt').length, antal: rader.length,
         ogiltig: !!ogiltigSammaKolumn && givna.length > 1 && givna.every(v => v === givna[0]) };

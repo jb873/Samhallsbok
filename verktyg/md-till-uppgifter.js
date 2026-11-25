@@ -46,7 +46,7 @@ const TEMAN = {
   'lag-och-ratt': { prefix: 'sam-lag', uppgifter: 6, aExempel: 3,
     nycklar: { 1: { Ja: ['köpa ut alkohol', 'nakenbild', 'köra bil', 'ljuga som vittne', 'hota ett vittne'],
       Nej: ['hälsa på sina grannar', 'keps', 'tränga sig', 'demonstration'] } },
-    // BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-25). Varianterna ur källans
+    // BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-25. Ändra den bara på hans beslut. Varianterna ur källans
     // förslag: bestämd form, "en polisstat" och "prejudikat" i lucka 5.
     bestamd: { 'rättssäkerhet': ['rättssäkerheten'], 'polisstat': ['polisstaten', 'en polisstat'], 'offentlighetsprincipen': [],
       'överklaga': [], 'prejudicerande': ['prejudikat'], 'tvistemål': ['tvistemålet'], 'resning': ['resningen'], 'uppsåt': ['uppsåtet'] } }

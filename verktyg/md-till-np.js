@@ -22,7 +22,8 @@
  * på provet ("1: ______") förs inte in: svarsrutan ersätter dem.
  *   lucktext   → 'lucktext' (godkända svar: facit och dess bestämda form). Meningarna är numrerade eller ett stycke där
  *                varje rad har en lucka; en rad med två luckor blir två rader. Facit är numrerat eller meningarna med
- *                svaret i fetstil. Utbytbara luckor (utbytbara i TEMAN) godkänner varandras svar.
+ *                svaret i fetstil. Utbytbara luckor (utbytbara i TEMAN) godkänner varandras svar, men inte samma
+ *                begrepp två gånger (olika).
  *   flerval    → 'kryss' (kolumn-kryss, arbetsorder 2026-11-24). Raderna är a), b) … eller 1., 2. … eller punkter. Har en
  *                uppgift numrerade rader är raderna med bokstav texter (som "a) Markera …" i 2017 B1). Ett stycke med
  *                rader blir ett block: texten före raderna i samma stycke är blockets text, "Kolumner: A / B" dess
@@ -55,14 +56,14 @@ const TEMAN = {
     bilder: {} },
   'styrelseskick': { prefix: 'sam-np-sty', uppgifter: 8, aExempel: 4, nycklar: {}, bestamd: {}, bilder: {} },
   'lag-och-ratt': { prefix: 'sam-np-lag', uppgifter: 5, aExempel: 2, nycklar: {},
-    // BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-25)
+    // BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-25. Ändra den bara på hans beslut.
     bestamd: { 'gripen': [], 'åklagare': ['åklagaren'], 'anhållen': [], 'försvarsadvokat': ['försvarsadvokaten'],
       'målsägande': ['målsäganden'], 'tilltalad': ['den tilltalade'], 'vittne': ['vittnet'], 'fängelse': ['fängelset'],
       'dagsböter': ['dagsböterna'], 'nämndemännen': [] },
-    // Luckor där facit kan stå i vilken ordning som helst ("till exempel fängelse eller dagsböter"): båda godkänns i båda.
-    // PRELIMINÄRT, som böjningslistan.
+    // Luckor där facit kan stå i vilken ordning som helst ("till exempel fängelse eller dagsböter"): båda godkänns i båda,
+    // men inte samma begrepp två gånger (olika i motorn). Joachim 2026-11-25: valfri ordning, inte NP:s strikta.
     utbytbara: { 1: [['fängelse', 'dagsböter']] },
-    // Uppgift 5 har ingen bild (fotot i NP, Monika Ruzek, publiceras inte utan Joachims beslut)
+    // Uppgift 5 har ingen bild (Joachim 2026-11-25: dekor, och ett foto på en namngiven person)
     bilder: {} }
 };
 const T = TEMAN[TEMA];
@@ -243,7 +244,8 @@ for (const u of uppgifter) {
       kolla(ordbank && ordbank.map(liten).includes(liten(facit[k])), `uppgift ${u.nr}: facit ”${facit[k]}” står inte bland begreppen`);
       const grupp = utbyt.find(g => g.includes(liten(facit[k])));
       if (grupp) kolla(grupp.every(o => facit.map(liten).includes(o)), `uppgift ${u.nr}: utbytbara ${grupp.join('/')} står inte alla i facit`);
-      return { fore: stil(l.fore), efter: stil(l.efter), svar: grupp ? [facit[k], ...grupp.filter(o => o !== liten(facit[k]))].flatMap(former) : former(facit[k]) };
+      return Object.assign({ fore: stil(l.fore), efter: stil(l.efter), svar: grupp ? [facit[k], ...grupp.filter(o => o !== liten(facit[k]))].flatMap(former) : former(facit[k]) },
+        grupp ? { olika: grupp.join('/') } : {});
     });
     block.push({ typ: 'uppgift', id, slag: 'lucktext', ordbank, rader });
   } else {
