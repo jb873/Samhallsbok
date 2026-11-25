@@ -6,6 +6,7 @@
  *   node verktyg/md-till-np.js "<Hämtade filer>/<källa>.md" [tema]
  *     tema I:  Samlat_material_Individ_migration_minoriteter.md (Del A)
  *     tema II: NP_styrelseskick_med_bedomning_v2.md (hela filen)
+ *     tema III: NP_lag_och_ratt_med_bedomning.md (hela filen; uppgift 2 väntar, se vantar i TEMAN)
  *
  * Ur Joachims material läses NP-uppgifterna ordagrant med NP:s facit och bedömning (Del A i det samlade materialet, eller
  * hela filen när den bara har uppgifterna). Skrivmodellen är kallor/ovningar/skrivmodell.md och AI-mallen
@@ -19,7 +20,9 @@
  * 'bild', ingen figur) där den står, före "Tips i provet" som på NP, men bara om bilden finns i temats bilder; annars förs
  * raden inte in. Ett citat (> …) blir uppgiftens citat (slag 'citat'), med en sista rad "Källa: …" som källa. Svarsraderna
  * på provet ("1: ______") förs inte in: svarsrutan ersätter dem.
- *   lucktext   → 'lucktext' (godkända svar: facit och dess bestämda form)
+ *   lucktext   → 'lucktext' (godkända svar: facit och dess bestämda form). Meningarna är numrerade eller ett stycke där
+ *                varje rad har en lucka; en rad med två luckor blir två rader. Facit är numrerat eller meningarna med
+ *                svaret i fetstil. Utbytbara luckor (utbytbara i TEMAN) godkänner varandras svar.
  *   flerval    → 'kryss' (kolumn-kryss, arbetsorder 2026-11-24). Raderna är a), b) … eller 1., 2. … eller punkter. Har en
  *                uppgift numrerade rader är raderna med bokstav texter (som "a) Markera …" i 2017 B1). Ett stycke med
  *                rader blir ett block: texten före raderna i samma stycke är blockets text, "Kolumner: A / B" dess
@@ -48,7 +51,19 @@ const TEMAN = {
     // Uppgift 3 har ingen bild (© UNHCR, publiceras inte); uppgift 6 väntar på en karta som visar var folk bor (bilden i
     // NP-PDF:en är bara Sveriges kontur)
     bilder: {} },
-  'styrelseskick': { prefix: 'sam-np-sty', uppgifter: 8, aExempel: 4, nycklar: {}, bestamd: {}, bilder: {} }
+  'styrelseskick': { prefix: 'sam-np-sty', uppgifter: 8, aExempel: 4, nycklar: {}, bestamd: {}, bilder: {} },
+  'lag-och-ratt': { prefix: 'sam-np-lag', uppgifter: 5, aExempel: 2, nycklar: {},
+    // BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-25)
+    bestamd: { 'gripen': [], 'åklagare': ['åklagaren'], 'anhållen': [], 'försvarsadvokat': ['försvarsadvokaten'],
+      'målsägande': ['målsäganden'], 'tilltalad': ['den tilltalade'], 'vittne': ['vittnet'], 'fängelse': ['fängelset'],
+      'dagsböter': ['dagsböterna'], 'nämndemännen': [] },
+    // Luckor där facit kan stå i vilken ordning som helst ("till exempel fängelse eller dagsböter"): båda godkänns i båda.
+    // PRELIMINÄRT, som böjningslistan.
+    utbytbara: { 1: [['fängelse', 'dagsböter']] },
+    // Uppgift 5 har ingen bild (fotot i NP, Monika Ruzek, publiceras inte utan Joachims beslut)
+    bilder: {},
+    // Uppgifter som väntar på Joachims beslut (Regel 0) och inte förs in än
+    vantar: { 2: 'flerval med fyra alternativ och ett kryss per begrepp: ingen sådan typ i motorn (kolumn-krysset har 2–3 kolumner)' } }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -70,6 +85,7 @@ const radlista = s => s.split('\n').map(x => x.trim());
 
 const avsnitt = [];
 for (const u of uppgifter) {
+  if (T.vantar && T.vantar[u.nr]) { console.warn(`uppgift ${u.nr} (${u.kod}) förs inte in: ${T.vantar[u.nr]}`); continue; }
   const [huvudOchElev, bedom] = u.kropp.split('\n### Bedömningsanvisning (NP)\n');
   kolla(bedom, `uppgift ${u.nr}: ingen bedömningsanvisning`);
   if (!bedom) continue;
@@ -83,7 +99,9 @@ for (const u of uppgifter) {
   const stycken = elev.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
   const id = `${T.prefix}-u${u.nr}`, block = [{ typ: 'text', text: `Källa: ${kalla}` }];
   const slag = /^lucktext/.test(typ) ? 'lucktext' : /^flerval/.test(typ) ? 'kryss' : 'oppen';
-  const arLucka = s => /^\d+\. .*______/.test(s);
+  // lucktextens meningar: numrerade ("1. … ______") eller ett stycke där varje rad har en lucka (2017 B4)
+  const arLuckrad = x => slag === 'lucktext' && /______/.test(x);
+  const arLucka = s => /^\d+\. .*______/.test(s) || radlista(s).every(arLuckrad);
   const arSvarsrad = s => radlista(s).every(x => /^\d+: _+$/.test(x));
   const arCitat = s => radlista(s).every(x => /^>/.test(x));
   // kolumn-krysset: raderna med bokstav, nummer eller punkt (med numrerade rader är bokstavsraderna texter)
@@ -172,28 +190,42 @@ for (const u of uppgifter) {
       });
       kolla(d.kolumner.length >= 2 && d.kolumner.length <= 3, `uppgift ${u.nr}: ${d.kolumner.length} kolumner`);
     }
-    const ogiltig = /alla kryss (står )?i samma kolumn/i.test(bedom) ? { ogiltigSammaKolumn: true } : {};
+    // NP:s regel om alla kryss i samma kolumn, där NP anger den: i bedömningen eller i uppgiften ("sätter alla som
+    // "stämmer" eller "stämmer inte"", 2018 B5)
+    const ogiltig = /alla kryss (står )?i samma kolumn/i.test(bedom) || /sätter alla som "stämmer" eller "stämmer inte"/i.test(elev)
+      ? { ogiltigSammaKolumn: true } : {};
     const rensa = r => Object.assign(r.etikett ? { etikett: r.etikett } : {}, { text: r.text, svar: r.svar });
     // ett block utan egen text: kolumner och rader direkt i uppgiften
     block.push(delar.length === 1 && !delar[0].text.length
       ? Object.assign({ typ: 'uppgift', id, slag: 'kryss', kolumner: delar[0].kolumner }, ogiltig, { rader: delar[0].rader.map(rensa) })
       : Object.assign({ typ: 'uppgift', id, slag: 'kryss' }, ogiltig, { delar: delar.map(d => Object.assign(d.text.length ? { text: d.text.map(stil) } : {}, { kolumner: d.kolumner, rader: d.rader.map(rensa) })) }));
   } else if (slag === 'lucktext') {
-    const meningar = elev.split('\n').filter(arLucka).map(r => r.replace(/^\d+\. /, ''));
+    // En rad med två luckor blir två rader i övningen (ett skrivfält per rad): texten före den andra luckan står på den
+    // andra raden, så att meningen står ordagrant läst i ordning
+    const luckor = [];
+    for (const m of elev.split('\n').filter(x => /^\d+\. .*______/.test(x) || arLuckrad(x)).map(r => r.replace(/^\d+\. /, ''))) {
+      const bit = m.split('______');
+      for (let k = 0; k < bit.length - 1; k++) luckor.push({ fore: bit[k], efter: k === bit.length - 2 ? bit[k + 1] : '' });
+    }
+    // Facit: numrerat ("1. asyl") eller meningarna med svaren i fetstil ("- … blir **gripen**.")
     const facit = [];
     let iFacit = false;
     for (const r of bedom.split('\n')) {
       if (/^\*\*Facit:\*\*/.test(r)) { iFacit = true; continue; }
       const m = r.match(/^(\d+)\. (.+)$/);
-      if (iFacit && m) facit[+m[1] - 1] = m[2].trim(); else if (iFacit && facit.length && r.trim()) iFacit = false;
+      if (iFacit && m) facit[+m[1] - 1] = m[2].trim();
+      else if (iFacit && /^- .*\*\*/.test(r)) facit.push(...[...r.matchAll(/\*\*(.+?)\*\*/g)].map(x => x[1].trim()));
+      else if (iFacit && facit.length && r.trim()) iFacit = false;
     }
-    kolla(meningar.length && meningar.length === facit.length, `uppgift ${u.nr}: ${meningar.length} meningar men ${facit.length} facit`);
+    kolla(luckor.length && luckor.length === facit.length, `uppgift ${u.nr}: ${luckor.length} luckor men ${facit.length} facit`);
     kolla(ordbank, `uppgift ${u.nr}: inga begrepp`);
-    const rader = meningar.map((m, k) => {
-      const [fore, efter] = m.split('______');
+    const former = ord => { kolla(T.bestamd[liten(ord)], `uppgift ${u.nr}: ingen rad i böjningslistan för ”${ord}”`); return [ord, ...(T.bestamd[liten(ord)] || [])]; };
+    const utbyt = (T.utbytbara || {})[u.nr] || [];
+    const rader = luckor.map((l, k) => {
       kolla(ordbank && ordbank.map(liten).includes(liten(facit[k])), `uppgift ${u.nr}: facit ”${facit[k]}” står inte bland begreppen`);
-      kolla(T.bestamd[liten(facit[k])], `uppgift ${u.nr}: ingen rad i böjningslistan för ”${facit[k]}”`);
-      return { fore: stil(fore), efter: stil(efter), svar: [facit[k], ...(T.bestamd[liten(facit[k])] || [])] };
+      const grupp = utbyt.find(g => g.includes(liten(facit[k])));
+      if (grupp) kolla(grupp.every(o => facit.map(liten).includes(o)), `uppgift ${u.nr}: utbytbara ${grupp.join('/')} står inte alla i facit`);
+      return { fore: stil(l.fore), efter: stil(l.efter), svar: grupp ? [facit[k], ...grupp.filter(o => o !== liten(facit[k]))].flatMap(former) : former(facit[k]) };
     });
     block.push({ typ: 'uppgift', id, slag: 'lucktext', ordbank, rader });
   } else {

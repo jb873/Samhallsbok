@@ -19,7 +19,12 @@ Bok.delkapitel({
   // (övningsboken, "Öva: …", där den finns). Korten är motorns kort för fristående böcker; titeln är kortets text.
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-lag-och-ratt
   repetitionsbocker: [
-    { id: 'lag-och-ratt', titel: 'Läsa: Lag och rätt', fil: 'innehall/repetition.js' }
+    { id: 'lag-och-ratt', titel: 'Läsa: Lag och rätt', fil: 'innehall/repetition.js' },
+    // Övningsboken och Nationella prov-boken (arbetsorder 2026-11-25), som på tema I och II: de sex egna NP-liknande
+    // uppgifterna (verktyg/md-till-uppgifter.js) och NP-uppgifterna (verktyg/md-till-np.js). id:n är nycklarna för det
+    // eleven sparat – byt dem aldrig. Adresserna: #repetition-ova-lag-och-ratt och #repetition-np-lag-och-ratt
+    { id: 'ova-lag-och-ratt', titel: 'Öva: Lag och rätt', fil: 'innehall/ovningar.js' },
+    { id: 'np-lag-och-ratt', titel: 'Nationella prov: Lag och rätt', fil: 'innehall/nationella-prov.js' }
   ],
 
   // NP-liknande frågor per tema (senare fas, inte byggd): plats här på temasidan.

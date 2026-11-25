@@ -5,6 +5,7 @@
  *   node verktyg/md-till-uppgifter.js "<Hämtade filer>/<källa>.md" [tema]
  *     tema I:  Samlat_material_Individ_migration_minoriteter.md (Del B)
  *     tema II: NP-liknande_Styrelseskick_v2.md (hela filen)
+ *     tema III: NP-liknande_Lag_och_ratt.md (hela filen)
  *
  * Ur Joachims material läses bara de NP-liknande uppgifterna (elevdelen och bedömningsanvisningen): Del B i det samlade
  * materialet, eller hela filen när den bara har uppgifterna. Skrivmodellen är kallor/ovningar/skrivmodell.md. A-exemplen
@@ -41,7 +42,14 @@ const TEMAN = {
       Nej: ['inte gå på en fest', 'rättvis rättegång', 'betala skatt', 'inte rösta i riksdagsvalet'] } },
     // BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-24).
     bestamd: { 'maktdelning': ['maktdelningen'], 'enpartistat': ['enpartistaten'], 'teokrati': ['teokratin'], 'censur': ['censuren'],
-      'konvention': ['konventionen'], 'civil olydnad': ['civila olydnaden'], 'folkrörelse': ['folkrörelsen'], 'naturrätt': ['naturrätten'] } }
+      'konvention': ['konventionen'], 'civil olydnad': ['civila olydnaden'], 'folkrörelse': ['folkrörelsen'], 'naturrätt': ['naturrätten'] } },
+  'lag-och-ratt': { prefix: 'sam-lag', uppgifter: 6, aExempel: 3,
+    nycklar: { 1: { Ja: ['köpa ut alkohol', 'nakenbild', 'köra bil', 'ljuga som vittne', 'hota ett vittne'],
+      Nej: ['hälsa på sina grannar', 'keps', 'tränga sig', 'demonstration'] } },
+    // BÖJNINGSLISTAN ÄR PRELIMINÄR: Joachim bekräftar den innan den låses (arbetsorder 2026-11-25). Varianterna ur källans
+    // förslag: bestämd form, "en polisstat" och "prejudikat" i lucka 5.
+    bestamd: { 'rättssäkerhet': ['rättssäkerheten'], 'polisstat': ['polisstaten', 'en polisstat'], 'offentlighetsprincipen': [],
+      'överklaga': [], 'prejudicerande': ['prejudikat'], 'tvistemål': ['tvistemålet'], 'resning': ['resningen'], 'uppsåt': ['uppsåtet'] } }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -64,7 +72,8 @@ for (const u of uppgifter) {
   const elev = elev0.split('\n').filter(r => !/^\*\*Bilder och stimulus:\*\*/.test(r)).join('\n');
   const id = `${T.prefix}-u${u.nr}`, block = [];
   const tabell = tabellrader(elev);
-  const stycken = elev.replace(/^\|.*$/gm, '').split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  // En bildrad ("[Bild: …]") är Joachims anteckning om en bild som inte finns i boken: den förs inte in
+  const stycken = elev.replace(/^\|.*$/gm, '').split(/\n\s*\n/).map(s => s.trim()).filter(s => s && !/^\[Bild: .*\]$/.test(s));
   const slag = tabell.length && /^\| Ja \| Nej \|/.test(tabell[0]) ? 'janej' : tabell.length && /Stämmer \| Stämmer inte/.test(tabell[0]) ? 'stammer'
     : /\nBegrepp: /.test(elev) ? 'lucktext' : 'oppen';
   let ordbank = null;
