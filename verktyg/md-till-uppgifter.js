@@ -6,6 +6,7 @@
  *     tema I:  Samlat_material_Individ_migration_minoriteter.md (Del B)
  *     tema II: NP-liknande_Styrelseskick_v2.md (hela filen)
  *     tema III: NP-liknande_Lag_och_ratt.md (hela filen)
+ *     tema V:  NP-liknande_Media_v2.md (hela filen)
  *
  * Ur Joachims material läses bara de NP-liknande uppgifterna (elevdelen och bedömningsanvisningen): Del B i det samlade
  * materialet, eller hela filen när den bara har uppgifterna. Skrivmodellen är kallor/ovningar/skrivmodell.md. A-exemplen
@@ -17,6 +18,9 @@
  * stimulus" är Joachims anteckning, inte elevtext.
  *   Ja/Nej och Stämmer/Stämmer inte → slag 'kryss' (kolumn-kryss; facit: kolumnens index)
  *   lucktext                         → slag 'lucktext' (godkända svar: facit och dess bestämda form, BESTAMD nedan)
+ *   flerval ("a) Begrepp" med alternativen som punkter) → slag 'flerval' (facit "- a) <alternativet>")
+ *   källtext (> …, utom "Försök att") och tabell utan ☐ → uppgiftens citat och tabell (slag 'citat', 'tabell'; Media,
+ *                                      2026-11-25), se lasStimulus i uppgifter-gemensamt.js
  *   öppen                            → slag 'oppen': skrivmodellen och prompten (kallor/ovningar/ai-mall.txt,
  *                                      ifylld med uppgiftens text, A-kriteriet och skrivmodellen)
  * Varje uppgift blir ett numrerat avsnitt (ny sida per uppgift). Stoppar med fel om något inte stämmer. */
@@ -49,7 +53,12 @@ const TEMAN = {
     // BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-25. Ändra den bara på hans beslut. Varianterna ur källans
     // förslag: bestämd form, "en polisstat" och "prejudikat" i lucka 5.
     bestamd: { 'rättssäkerhet': ['rättssäkerheten'], 'polisstat': ['polisstaten', 'en polisstat'], 'offentlighetsprincipen': [],
-      'överklaga': [], 'prejudicerande': ['prejudikat'], 'tvistemål': ['tvistemålet'], 'resning': ['resningen'], 'uppsåt': ['uppsåtet'] } }
+      'överklaga': [], 'prejudicerande': ['prejudikat'], 'tvistemål': ['tvistemålet'], 'resning': ['resningen'], 'uppsåt': ['uppsåtet'] } },
+  // Media (arbetsorder 2026-11-25): ingen lucktext, alltså ingen böjningslista
+  'media': { prefix: 'sam-med', uppgifter: 6, aExempel: 3,
+    nycklar: { 1: { Ja: ['starta en egen tidning', 'läsa allmänna handlingar', 'kritisera regeringen', 'citera en del'],
+      Nej: ['tar reda på vem', 'tv-reklam', 'influencer', 'falskt påstå', 'kopiera någon annans bilder'] } },
+    bestamd: {} }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -71,16 +80,31 @@ for (const u of uppgifter) {
   if (!bedom) continue;
   const elev = elev0.split('\n').filter(r => !/^\*\*Bilder och stimulus:\*\*/.test(r)).join('\n');
   const id = `${T.prefix}-u${u.nr}`, block = [];
-  const tabell = tabellrader(elev);
+  // Kryssets tabell: raderna i en tabell med ☐ (tabellens rader i följd). En tabell utan ☐ är uppgiftens tabell och står
+  // kvar i texten (lasStimulus).
+  const tabeller = elev.split('\n').reduce((t, r, k, a) => { if (/^\|/.test(r)) { if (!(k && /^\|/.test(a[k - 1]))) t.push([]); t[t.length - 1].push(r); } return t; }, []);
+  const kryssrader = new Set(tabeller.filter(t => t.some(r => /☐/.test(r))).flat());
+  const tabell = tabellrader([...kryssrader].join('\n'));
   // En bildrad ("[Bild: …]") är Joachims anteckning om en bild som inte finns i boken: den förs inte in
-  const stycken = elev.replace(/^\|.*$/gm, '').split(/\n\s*\n/).map(s => s.trim()).filter(s => s && !/^\[Bild: .*\]$/.test(s));
+  const stycken = elev.split('\n').map(r => kryssrader.has(r) ? '' : r).join('\n')
+    .split(/\n\s*\n/).map(s => s.trim()).filter(s => s && !/^\[Bild: .*\]$/.test(s));
   const slag = tabell.length && /^\| Ja \| Nej \|/.test(tabell[0]) ? 'janej' : tabell.length && /Stämmer \| Stämmer inte/.test(tabell[0]) ? 'stammer'
-    : /\nBegrepp: /.test(elev) ? 'lucktext' : 'oppen';
+    : /\nBegrepp: /.test(elev) ? 'lucktext' : stycken.some(G.arFlerval) ? 'flerval' : 'oppen';
   let ordbank = null;
+  const raknare = { citat: 0, tabell: 0 }, fler = [], prompttext = [];
 
   // Elevdelens stycken, i ordning. Tabellen, begreppen och lucktextens meningar står i övningsblocket.
-  for (const s of stycken) {
-    if (/^>/.test(s)) {                                   // > **Försök att:** och punkterna
+  for (let i = 0; i < stycken.length; i++) {
+    const s = stycken[i], stim = G.lasStimulus(stycken, i, id, raknare);
+    // uppgiftens text till prompten (de öppna): som den står, utan raden om belägg
+    if (!/^\*Uppgiften ger möjlighet/.test(s) && !stim) prompttext.push(/^>/.test(s)
+      ? s.split('\n').map(x => ren(x.replace(/^>\s?/, ''))).join('\n') : ren(s.split('\n').join(' ')));
+    if (stim) {                                           // källtext eller tabell: uppgiftens citat eller tabell
+      block.push(stim.block);
+      prompttext.push(stim.prompt);
+      i += stim.steg - 1;
+    } else if (slag === 'flerval' && G.arFlerval(s)) fler.push(G.flervalRad(s));   // en rad i flervalet
+    else if (/^>/.test(s)) {                              // > **Försök att:** och punkterna
       const r = s.split('\n').map(x => x.replace(/^>\s?/, ''));
       kolla(/^\*\*Försök att:\*\*$/.test(r[0]), `uppgift ${u.nr}: oväntad ruta ”${r[0]}”`);
       block.push({ typ: 'ruta', rubrik: 'Försök att:', punkter: r.slice(1).map(x => stil(x.replace(/^- /, ''))).filter(Boolean) });
@@ -94,7 +118,7 @@ for (const u of uppgifter) {
     if (slag === 'janej') {
       const n = T.nycklar[u.nr];
       G.facitMedNycklar(u.nr, rader, n);
-      const ja = (bedom.match(/^- Ja(?: \([^)]*\))?: (.+)$/m) || [])[1], nej = (bedom.match(/^- Nej: (.+)$/m) || [])[1];
+      const ja = (bedom.match(/^- Ja(?: \([^)]*\))?: (.+)$/m) || [])[1], nej = (bedom.match(/^- Nej(?: \([^)]*\))?: (.+)$/m) || [])[1];
       kolla(n && ja && ja.split(';').length === n.Ja.length && nej && nej.split(';').length === n.Nej.length, `uppgift ${u.nr}: facit och nyckelord har olika antal`);
     } else {
       const bok = kol => ((bedom.match(new RegExp(`^- ${kol}: (.+)$`, 'm')) || [])[1] || '').split(',').map(x => x.trim() + ')');
@@ -121,23 +145,24 @@ for (const u of uppgifter) {
       return { fore: stil(fore), efter: stil(efter), svar: [facit[k], ...(T.bestamd[facit[k]] || [])] };
     });
     block.push({ typ: 'uppgift', id, slag: 'lucktext', ordbank, rader });
+  } else if (slag === 'flerval') {
+    block.push({ typ: 'uppgift', id, slag: 'flerval', rader: G.flervalRader(u.nr, fler, bedom) });
   } else {
     // Öppen: prompten = mallen med uppgiftens text (elevdelen utan raden om belägg), A-kriteriet (nivåmatrisens tredje
     // cell) och skrivmodellen. Resonera-uppgifter får också Resonera-delen.
     const matris = tabellrader(bedom);
     kolla(matris.length === 2 && /nivå A/.test(celler(matris[0])[2] || ''), `uppgift ${u.nr}: hittar inte nivåmatrisen`);
     const kriterium = matris.length === 2 ? ren(celler(matris[1])[2]) : '';
-    const uppgiftText = stycken.filter(s => !/^\*Uppgiften ger möjlighet/.test(s)).map(s => /^>/.test(s)
-      ? s.split('\n').map(x => ren(x.replace(/^>\s?/, ''))).join('\n') : ren(s.split('\n').join(' '))).join('\n\n');
-    block.push(G.oppenUppgift(id, u.nr, uppgiftText, kriterium, G.modellFor(modell, elev)));
+    block.push(G.oppenUppgift(id, u.nr, prompttext.join('\n\n'), kriterium, G.modellFor(modell, elev)));
   }
   // En kryssuppgift tar flera sidor och börjar på en vänstersida (c, väg 3): avsnittets till
-  avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'janej' || slag === 'stammer' ? { till: 'vanster' } : {}, { block }));
+  avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'janej' || slag === 'stammer' || slag === 'flerval' ? { till: 'vanster' } : {}, { block }));
 }
 
 const bok = G.skrivBok(UT, `/* GENERERAD av verktyg/md-till-uppgifter.js ur Joachims samlade material (Del B och Del C) – skriv inte i den här
  * filen för hand. Övningsboken till temat: övningarna ({typ: 'uppgift'}) beskrivs i bokskal/README.md (Övningar).
  * Facit står här (rättningen sker i webbläsaren; det är övningar, inte prov) men ritas aldrig. A-exemplen står inte här. */`, avsnitt);
+G.citatSparr(uppgifter.map(u => u.kropp.split('\n### Bedömningsanvisning\n')[1] || ''), bok.json);
 G.aExempelSparr([...delB.matchAll(/\*\*A-exempel[^\n]*\n([\s\S]*?)\n\n\*Kommentar/g)].map(m => m[1]), bok.json, T.aExempel);
 G.stoppaVidFel();
 bok.skriv();
