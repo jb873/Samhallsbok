@@ -958,7 +958,7 @@ ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader
 
 | `slag` | Fält | Eleven ser |
 |---|---|---|
-| `kryss` | kolumn-kryss: `kolumner: [2 eller fler namn]` (fler än tre: Samhälles kopia, 2026-11-25), `rader: [{text, etikett?, svar: kolumnens index}]`, `ogiltigSammaKolumn?` – eller flera block, `delar: [{text?: [rader], kolumner, rader}]` | en knapp per kolumn och rad (ett klick till tar bort krysset), blockens text före deras rader, Rätta och Börja om |
+| `kryss` | kolumn-kryss: `kolumner: [2 eller fler namn]` (fler än tre: Samhälles kopia, 2026-11-25), `staplad?: true`, `rader: [{text, etikett?, svar: kolumnens index}]`, `ogiltigSammaKolumn?` – eller flera block, `delar: [{text?: [rader], kolumner, staplad?, rader}]` | en knapp per kolumn och rad (ett klick till tar bort krysset), blockens text före deras rader, Rätta och Börja om; med `staplad: true` en staplad kryssruta (se nedan) |
 | `lucktext` | `ordbank: [...]`, `rader: [{fore, efter, svar: ['facit', 'godkänd variant', …]}]` | begreppen, ett skrivfält per mening, Rätta och Börja om |
 | `flerval` | `rader: [{etikett?, text, alternativ: [2 eller fler], svar: alternativets index}]` | begreppet och under det dess alternativ med en kryssruta var, ett kryss per rad (ett klick till tar bort det), Rätta och Börja om; NP:s "kryssa för den förklaring som passar bäst" (2018 A3). Byggt i Samhälles kopia av motorn (Joachim 2026-11-25), infälls i Fysik senare |
 | `urval` | `alternativ: [...]`, `svar: [de rätta alternativens index]`, `hogst?` | "kryssa i de fyra korrekta alternativen" (2016 A10 Grundlagar): ett alternativ per rad med en kryssruta, valfritt många kryss (ett klick till tar bort krysset), Rätta och Börja om. Samhälles kopia (Joachim 2026-11-25, tema IV), infälls i Fysik senare |
@@ -988,6 +988,13 @@ ett långt citat, källtexter utan index och kolumnnamn som bryts på två rader
   markeringen efter Rätta står med dem, så att raden inte blir högre än när sidan bröts (Samhälles kopia, 2026-11-25).
   Knapparna krymper aldrig under det längsta ordet: ett långt kolumnnamn ("Någon av källorna stödjer slutsatsen", NP 2016
   A8) bryts på två rader i stället för att gå utanför sidan (Samhälles kopia, 2026-11-25); korta namn står som förut.
+- **Staplad kryssruta** (Samhälles kopia, Joachim 2026-11-26): ett block med långa kolumnnamn (flera ord eller en
+  mening, "Stämmer varken med demokrati eller diktatur") får `staplad: true`. Kolumnerna står då under påståendet, en
+  per rad med en fyrkantig ruta framför, som flervalets alternativ, och en markerad ruta har ett kryss. Ett kryss per
+  rad (att markera en ruta tar bort krysset i en annan på samma påstående), och Rätta och `ogiltigSammaKolumn` är
+  oförändrade. Korta namn, och gränsfall, står sida vid sida (standard). Taggen gäller per block, så en uppgift kan
+  blanda (tema II NP 3). Gruppen delas som kolumn-krysset, med minst två rader på varje sida. Kontrolläget säger till
+  om `staplad` är något annat än `true`.
 - **Urvalet** (Samhälles kopia, 2026-11-25): Rätta sätter ✓ eller ✗ vid varje markerat alternativ (inget vid de omarkerade)
   och säger antalet rätt av de rätta ("3 av 4 rätt."). Med `hogst` (NP: "Om du skriver fler än fyra kryss räknas ditt svar
   som ogiltigt") säger Rätta att svaret är ogiltigt när det har fler kryss, och markerar inget. Kontrolläget säger till om

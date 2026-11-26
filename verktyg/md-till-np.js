@@ -48,6 +48,8 @@
  *   lucktext med ordruta (2018 A1): "**Ordruta:**" och en tabell före texten är begreppen, rad för rad. En rad utan
  *                lucka i luckornas stycke står först i nästa lucka; facit "**Facit (i textens ordning):**" går också.
  *   kolumn-kryss med fyra kolumner (2016 B4): facit som tabell "| a) … | Riksdag |".
+ * Staplad kryssruta (Joachim 2026-11-26): blocken i staplad i TEMAN (uppgift: [blockens nummer]) får staplad: true –
+ * långa kolumnnamn (flera ord, en mening) står under påståendet med en kryssruta per rad. Korta, och gränsfall, sida vid sida.
  *   öppen      → 'oppen': skrivmodellen och prompten (uppgiftens text, A-kriteriet ur NP:s matris, skrivmodellen)
  * Uppslaget (väg 3): lucktexten och kryssuppgifterna börjar på en vänstersida; i de öppna står skrivmodellen till
  * vänster och svarsrutan överst till höger. Gränserna (E/C/A) används inte: eleven ser antal rätt, aldrig nivå. En
@@ -72,7 +74,10 @@ const TEMAN = {
     // Uppgift 3 har ingen bild (© UNHCR, publiceras inte); uppgift 6 väntar på en karta som visar var folk bor (bilden i
     // NP-PDF:en är bara Sveriges kontur)
     bilder: {} },
-  'styrelseskick': { prefix: 'sam-np-sty', uppgifter: 8, aExempel: 4, nycklar: {}, bestamd: {}, bilder: {} },
+  // staplad: de kolumn-kryss-block (uppgift: [blockens nummer, från 1]) som har långa kolumnnamn och står staplade, med
+  // en kryssruta per rad (Joachim 2026-11-26): NP 1 (A13, demokrati/diktatur/varken) och NP 3:s första block
+  // (Vanligare i en demokrati/diktatur). Allt annat står sida vid sida.
+  'styrelseskick': { prefix: 'sam-np-sty', uppgifter: 8, aExempel: 4, nycklar: {}, bestamd: {}, bilder: {}, staplad: { 1: [1], 3: [1] } },
   'lag-och-ratt': { prefix: 'sam-np-lag', uppgifter: 5, aExempel: 2, nycklar: {},
     // BÖJNINGSLISTAN ÄR LÅST: Joachim bekräftade den 2026-11-25. Ändra den bara på hans beslut.
     bestamd: { 'gripen': [], 'åklagare': ['åklagaren'], 'anhållen': [], 'försvarsadvokat': ['försvarsadvokaten'],
@@ -337,10 +342,14 @@ for (const u of uppgifter) {
       kolla(d.kolumner.length >= 2, `uppgift ${u.nr}: ${d.kolumner.length} kolumner`);
     }
     const rensa = r => Object.assign(r.etikett ? { etikett: r.etikett } : {}, { text: r.text, svar: r.svar });
+    // staplad kryssruta (2026-11-26): blocken i T.staplad[u.nr] får staplad: true, efter kolumnerna
+    const stapla = ((T.staplad || {})[u.nr] || []);
+    stapla.forEach(n => kolla(n >= 1 && n <= delar.length, `uppgift ${u.nr}: staplad block ${n} finns inte (${delar.length} block)`));
+    const stap = n => stapla.includes(n + 1) ? { staplad: true } : {};
     // ett block utan egen text: kolumner och rader direkt i uppgiften
     block.push(delar.length === 1 && !delar[0].text.length
-      ? Object.assign({ typ: 'uppgift', id, slag: 'kryss', kolumner: delar[0].kolumner }, ogiltig, { rader: delar[0].rader.map(rensa) })
-      : Object.assign({ typ: 'uppgift', id, slag: 'kryss' }, ogiltig, { delar: delar.map(d => Object.assign(d.text.length ? { text: d.text.map(stil) } : {}, { kolumner: d.kolumner, rader: d.rader.map(rensa) })) }));
+      ? Object.assign({ typ: 'uppgift', id, slag: 'kryss', kolumner: delar[0].kolumner }, stap(0), ogiltig, { rader: delar[0].rader.map(rensa) })
+      : Object.assign({ typ: 'uppgift', id, slag: 'kryss' }, ogiltig, { delar: delar.map((d, n) => Object.assign(d.text.length ? { text: d.text.map(stil) } : {}, { kolumner: d.kolumner }, stap(n), { rader: d.rader.map(rensa) })) }));
   } else if (slag === 'lucktext') {
     // En rad med två luckor blir två rader i övningen (ett skrivfält per rad): texten före den andra luckan står på den
     // andra raden, så att meningen står ordagrant läst i ordning

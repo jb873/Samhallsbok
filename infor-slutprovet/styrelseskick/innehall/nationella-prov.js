@@ -37,6 +37,7 @@ Bok.niva('repetitionsbok', {
         "Stämmer bäst med diktatur",
         "Stämmer varken med demokrati eller diktatur"
        ],
+       "staplad": true,
        "rader": [
         {
          "etikett": "a)",
@@ -230,6 +231,7 @@ Bok.niva('repetitionsbok', {
         "Vanligare i en demokrati",
         "Vanligare i en diktatur"
        ],
+       "staplad": true,
        "rader": [
         {
          "etikett": "a)",

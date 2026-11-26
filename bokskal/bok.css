@@ -1125,6 +1125,10 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
 .upg-alt[aria-pressed="true"] { border-color: var(--ruta-kant); background: var(--papper-ljus); }
 .upg-alt[aria-pressed="true"] .upg-alt-ruta { background: var(--accent); box-shadow: inset 0 0 0 2px var(--papper-ljus); }
 .upg-alt:focus-visible { outline: 2px solid var(--fokus); outline-offset: 2px; }
+/* staplad kryssruta (kolumn-kryss med staplad: true, 2026-11-26): flervalets rader, men den markerade rutan har ett kryss */
+.upg-staplad .upg-alt[aria-pressed="true"] .upg-alt-ruta { box-shadow: none;
+  background: linear-gradient(45deg, transparent 43%, var(--accent) 43%, var(--accent) 57%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, var(--accent) 43%, var(--accent) 57%, transparent 57%); }
 /* urvalet (slag 'urval', 2026-11-25): ett alternativ per rad med samma kryssruta som flervalet, valfritt många kryss */
 .upg-urval { display: flex; align-items: baseline; gap: .2em .5em; margin: 0 0 .05em; }
 .upg-urval.upg-sista { margin-bottom: .35em; }
