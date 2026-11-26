@@ -7,6 +7,7 @@
  *     tema II: NP-liknande_Styrelseskick_v2.md (hela filen)
  *     tema III: NP-liknande_Lag_och_ratt.md (hela filen)
  *     tema V:  NP-liknande_Media_v2.md (hela filen)
+ *     tema IV: NP-liknande_Beslutsfattande.md (hela filen)
  *
  * Ur Joachims material läses bara de NP-liknande uppgifterna (elevdelen och bedömningsanvisningen): Del B i det samlade
  * materialet, eller hela filen när den bara har uppgifterna. Skrivmodellen är kallor/ovningar/skrivmodell.md. A-exemplen
@@ -58,7 +59,17 @@ const TEMAN = {
   'media': { prefix: 'sam-med', uppgifter: 6, aExempel: 3,
     nycklar: { 1: { Ja: ['starta en egen tidning', 'läsa allmänna handlingar', 'kritisera regeringen', 'citera en del'],
       Nej: ['tar reda på vem', 'tv-reklam', 'influencer', 'falskt påstå', 'kopiera någon annans bilder'] } },
-    bestamd: {} }
+    bestamd: {} },
+  // Beslutsfattande (arbetsorder 2026-11-26). Facit till Ja/Nej i uppgift 1 är beskrivande i md:n: Joachims mappning i
+  // radordningen (facitrader, rad 1 = den första raden). Skrivmodellen satt per öppen uppgift (md:n har ingen Typ-rad).
+  // Inga notiser, inga bilder.
+  'beslutsfattande': { prefix: 'sam-bes', uppgifter: 6, aExempel: 3, nycklar: {},
+    facitrader: { 1: { Ja: [1, 3, 6, 7, 9], Nej: [2, 4, 5, 8] } },
+    modell: { 4: 'Redogöra', 5: 'Redogöra', 6: 'Resonera' },
+    // Böjningslistan till uppgift 2: Joachims lista i arbetsordern 2026-11-26. Ändra den bara på hans beslut.
+    bestamd: { 'parlamentarism': ['parlamentarismen'], 'fyraprocentsspärren': ['spärren'], 'politisk vilde': ['en politisk vilde', 'politiska vilden'],
+      'misstroendeförklaring': ['misstroendeförklaringen'], 'JO': ['Justitieombudsmannen'], 'ministerstyre': ['ministerstyret'],
+      'subsidiaritetsprincipen': ['subsidiaritetsprincip'], 'förordning': ['förordningen'] } }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -115,7 +126,14 @@ for (const u of uppgifter) {
   if (slag === 'janej' || slag === 'stammer') {
     const kolumner = slag === 'janej' ? ['Ja', 'Nej'] : ['Stämmer', 'Stämmer inte'];
     const rader = tabell.slice(1).map(r => { const c = celler(r); return slag === 'janej' ? { text: stil(c[2]) } : { etikett: c[0], text: stil(c[1]) }; });
-    if (slag === 'janej') {
+    if (slag === 'janej' && (T.facitrader || {})[u.nr]) {
+      // facit som radnummer (tema IV): varje rad i precis en kolumn, och antalet som i md:ns beskrivande facit
+      const f = T.facitrader[u.nr];
+      rader.forEach((r, k) => { r.svar = f.Ja.includes(k + 1) ? 0 : f.Nej.includes(k + 1) ? 1 : null; });
+      kolla(f.Ja.length + f.Nej.length === rader.length && !f.Ja.some(k => f.Nej.includes(k)), `uppgift ${u.nr}: facitraderna täcker inte raderna en gång var`);
+      const ja = (bedom.match(/^- Ja(?: \([^)]*\))?: (.+)$/m) || [])[1], nej = (bedom.match(/^- Nej(?: \([^)]*\))?: (.+)$/m) || [])[1];
+      kolla(ja && ja.split(';').length === f.Ja.length && nej && nej.split(';').length === f.Nej.length, `uppgift ${u.nr}: facit och facitraderna har olika antal`);
+    } else if (slag === 'janej') {
       const n = T.nycklar[u.nr];
       G.facitMedNycklar(u.nr, rader, n);
       const ja = (bedom.match(/^- Ja(?: \([^)]*\))?: (.+)$/m) || [])[1], nej = (bedom.match(/^- Nej(?: \([^)]*\))?: (.+)$/m) || [])[1];
@@ -153,7 +171,10 @@ for (const u of uppgifter) {
     const matris = tabellrader(bedom);
     kolla(matris.length === 2 && /nivå A/.test(celler(matris[0])[2] || ''), `uppgift ${u.nr}: hittar inte nivåmatrisen`);
     const kriterium = matris.length === 2 ? ren(celler(matris[1])[2]) : '';
-    block.push(G.oppenUppgift(id, u.nr, prompttext.join('\n\n'), kriterium, G.modellFor(modell, elev)));
+    // (skrivmodellen satt per uppgift i TEMAN, tema IV; annars efter uppgiftens "Resonera …")
+    const satt = (T.modell || {})[u.nr];
+    if (T.modell) kolla(satt === 'Redogöra' || satt === 'Resonera', `uppgift ${u.nr}: ingen skrivmodell i TEMAN`);
+    block.push(G.oppenUppgift(id, u.nr, prompttext.join('\n\n'), kriterium, satt ? modell.slice(0, satt === 'Resonera' ? 2 : 1) : G.modellFor(modell, elev)));
   }
   // En kryssuppgift tar flera sidor och börjar på en vänstersida (c, väg 3): avsnittets till
   avsnitt.push(Object.assign({ id: `uppgift-${u.nr}`, titel: u.titel }, slag === 'janej' || slag === 'stammer' || slag === 'flerval' ? { till: 'vanster' } : {}, { block }));
