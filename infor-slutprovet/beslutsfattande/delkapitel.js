@@ -1,6 +1,7 @@
 /* Inför slutprovet, tema 4: Beslutsfattande. En repetitionsbok utan nivåer (repetitionsbocker, Fysiks motor sedan
  * 2026-11-22). Sidan har bara boken: inga texter, nivåer eller flikar (nivaer: [], flikar: false). Boken (Läsa) är byggd
- * 2026-11-24 ur kallor/beslutsfattande.md (verktyg/md-till-repetitionsbok.js); ingen övningsbok än. Bara data; motorn är bokskal/.
+ * 2026-11-24 ur kallor/beslutsfattande.md (verktyg/md-till-repetitionsbok.js), Nationella prov-boken 2026-11-26; ingen
+ * Öva-bok än. Bara data; motorn är bokskal/.
  * Fälten beskrivs i bokskal/README.md (Fristående böcker). ELEVTEXT: titel och undertitel sätter Joachim. */
 Bok.delkapitel({
   id: 'sam-infor-slutprovet-beslutsfattande',   // nyckeln för det eleven sparat – byt det aldrig
@@ -19,9 +20,11 @@ Bok.delkapitel({
   // (övningsboken, "Öva: …", där den finns). Korten är motorns kort för fristående böcker; titeln är kortets text.
   // Temats repetitionsbok. id är nyckeln för det eleven sparat – byt det aldrig. Adressen: index.html#repetition-beslutsfattande
   repetitionsbocker: [
-    { id: 'beslutsfattande', titel: 'Läsa: Beslutsfattande', fil: 'innehall/repetition.js' }
+    { id: 'beslutsfattande', titel: 'Läsa: Beslutsfattande', fil: 'innehall/repetition.js' },
+    // Nationella prov-boken (arbetsorder 2026-11-26): de tio NP-uppgifterna (verktyg/md-till-np.js). id:t är nyckeln för
+    // det eleven sparat – byt det aldrig. Adressen: #repetition-np-beslutsfattande. Öva-boken är inte byggd.
+    { id: 'np-beslutsfattande', titel: 'Nationella prov: Beslutsfattande', fil: 'innehall/nationella-prov.js' }
   ],
 
-  // NP-liknande frågor per tema (senare fas, inte byggd): plats här på temasidan.
   hjalpmedel: {}
 });

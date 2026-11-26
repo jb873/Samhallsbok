@@ -8,6 +8,7 @@
  *     tema II: NP_styrelseskick_med_bedomning_v2.md (hela filen)
  *     tema III: NP_lag_och_ratt_med_bedomning.md (hela filen)
  *     tema V:  NP_media_med_bedomning_v2.md (hela filen)
+ *     tema IV: NP_beslutsfattande_med_bedomning.md (hela filen; typerna ur TEMAN, se nedan)
  *
  * Ur Joachims material läses NP-uppgifterna ordagrant med NP:s facit och bedömning (Del A i det samlade materialet, eller
  * hela filen när den bara har uppgifterna). Skrivmodellen är kallor/ovningar/skrivmodell.md och AI-mallen
@@ -38,6 +39,15 @@
  *                kolumnerna ur tabellhuvudet (kolumnerna med ☐). Facit: en tabell i bedömningen (kolumn n för den n:te
  *                tabellen, raderna i ordning) eller "- Kolumn: a, b, …". Flera tabeller i en uppgift (2016 B8, Joachims
  *                beslut 2026-11-25): var sitt kryss med var sin Rätta, id …-1, …-2.
+ * Har temat typer i TEMAN (tema IV, arbetsorder 2026-11-26) styr de uppgiften i stället för md:ns Typ-rad, och då finns
+ * också (Samhälles motorkopia, 2026-11-25):
+ *   urval      → 'urval' (2016 A10): alternativen som punkter, facit "**Facit:** A, B, …", högst så många kryss som
+ *                uppgiften anger ("fler än fyra kryss").
+ *   matchning  → 'matchning' (2018 A6): förklaringarna "- B …" (exemplet "- A (Exempel) …"), begreppen "Begrepp: …" med
+ *                exemplets begrepp märkt "(A) diktatur", facit "- B ideologi".
+ *   lucktext med ordruta (2018 A1): "**Ordruta:**" och en tabell före texten är begreppen, rad för rad. En rad utan
+ *                lucka i luckornas stycke står först i nästa lucka; facit "**Facit (i textens ordning):**" går också.
+ *   kolumn-kryss med fyra kolumner (2016 B4): facit som tabell "| a) … | Riksdag |".
  *   öppen      → 'oppen': skrivmodellen och prompten (uppgiftens text, A-kriteriet ur NP:s matris, skrivmodellen)
  * Uppslaget (väg 3): lucktexten och kryssuppgifterna börjar på en vänstersida; i de öppna står skrivmodellen till
  * vänster och svarsrutan överst till höger. Gränserna (E/C/A) används inte: eleven ser antal rätt, aldrig nivå. En
@@ -78,7 +88,19 @@ const TEMAN = {
   'media': { prefix: 'sam-np-med', uppgifter: 14, aExempel: 8, nycklar: {}, bestamd: {}, bilder: {},
     // Notiser efter uppgiften (en ruta, som "Tips i provet"), där provet är äldre än det som gäller i dag. Facit följer
     // provet. Joachims text 2026-11-25.
-    notiser: { 1: { rubrik: 'Obs:', text: 'Sedan 2019 betalas public service med en avgift via skatten, inte med licens. Presstöd heter numera mediestöd. Facit följer provet från 2018.' } } }
+    notiser: { 1: { rubrik: 'Obs:', text: 'Sedan 2019 betalas public service med en avgift via skatten, inte med licens. Presstöd heter numera mediestöd. Facit följer provet från 2018.' } } },
+  // Beslutsfattande (arbetsorder 2026-11-26). Typerna står i ordern, inte i md:ns Typ-rad (som kallar 1, 3, 5, 6 och 7
+  // "flerval"): typer styr uppgiften. Inga bilder. Landsting/region (uppgift 3 och 4) och värnplikt/Nato (A-exemplet i 9):
+  // ingen notis.
+  'beslutsfattande': { prefix: 'sam-np-bes', uppgifter: 10, aExempel: 3, nycklar: {}, bilder: {},
+    typer: { 1: 'urval', 2: 'lucktext', 3: 'flerval', 4: 'matchning', 5: 'kryss', 6: 'kryss', 7: 'kryss', 8: 'oppen', 9: 'oppen', 10: 'oppen' },
+    // Böjningslistan till uppgift 2: Joachims lista i arbetsordern 2026-11-26. Ändra den bara på hans beslut.
+    bestamd: { 'riksdag': ['riksdagen'], 'ledamöter': ['ledamöterna'], 'motion': ['motionen'], 'regering': ['regeringen'],
+      'proposition': ['propositionen'], 'utskott': ['utskottet'], 'talmannen': ['talman'], 'debatt': ['debatten'],
+      'votering': ['voteringen'], 'majoritet': ['majoriteten'], 'minoritet': ['minoriteten'] },
+    // Joachims text 2026-11-26, med gränsen som i kapitlets sammanfattning (kallor/beslutsfattande.md: "minst hälften av
+    // alla ledamöter … i det första beslutet och minst två tredjedelar i det andra"), som ordern säger
+    notiser: { 8: { rubrik: 'Obs:', text: 'Reglerna håller på att ändras. Från den 1 april 2027 krävs dessutom att minst hälften av alla ledamöter röstar ja i det första beslutet och minst två tredjedelar i det andra. Kravet på två beslut med ett riksdagsval emellan gäller fortfarande. Mer står i kapitlets sammanfattning.' } } }
 };
 const T = TEMAN[TEMA];
 if (!KALLA || !T) { console.error('Ange källfilen och ett tema som finns i TEMAN.'); process.exit(1); }
@@ -114,20 +136,22 @@ for (const u of uppgifter) {
   const elev = uppgiftsdel.split('\n').filter(r => !/^- \*\*[^*]+:\*\*/.test(r) && !/^\*\*Bilder och stimulus:\*\*/.test(r) && !/^### Uppgift\s*$/.test(r)).join('\n');
   const stycken = elev.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
   const id = `${T.prefix}-u${u.nr}`, block = [{ typ: 'text', text: `Källa: ${kalla}` }];
-  let slag = /^lucktext/.test(typ) ? 'lucktext' : /^flerval/.test(typ) || /☐/.test(elev) ? 'kryss' : 'oppen';
+  let slag = T.typer ? T.typer[u.nr] : /^lucktext/.test(typ) ? 'lucktext' : /^flerval/.test(typ) || /☐/.test(elev) ? 'kryss' : 'oppen';
+  kolla(slag, `uppgift ${u.nr}: ingen typ i TEMAN`);
   // lucktextens meningar: numrerade ("1. … ______") eller ett stycke där varje rad har en lucka (2017 B4)
   const arLuckrad = x => slag === 'lucktext' && /______/.test(x);
-  const arLucka = s => /^\d+\. .*______/.test(s) || radlista(s).every(arLuckrad);
+  // (en rad utan lucka mellan luckraderna står i samma stycke, 2018 A1: den hör till lucktexten, se nedan)
+  const arLucka = s => /^\d+\. .*______/.test(s) || radlista(s).some(arLuckrad);
   const arSvarsrad = s => radlista(s).every(x => /^\d+: _+$/.test(x));
   // kolumn-krysset: raderna med bokstav, nummer eller punkt (med numrerade rader är bokstavsraderna texter)
   const numrerade = slag === 'kryss' && radlista(elev).some(x => /^\d+\. /.test(x) && !/______/.test(x));
   const radMonster = numrerade ? /^(\d+)\. (.+)$/ : /^([a-z])\) (.+)$/;
   const arRad = x => radMonster.test(x) || /^- (.+)$/.test(x);
   // flervalet: ett stycke med en bokstavsrad ("a) Straffmyndig") och under den alternativen som punkter (2018 A3)
-  if (slag === 'kryss' && !numrerade && stycken.some(G.arFlerval)) slag = 'flerval';
+  if (!T.typer && slag === 'kryss' && !numrerade && stycken.some(G.arFlerval)) slag = 'flerval';
   const prompttext = [];                               // uppgiftens text till AI-mallen: elevdelen utan källan
-  const delar = [], fler = [];
-  let ordbank = null, vantande = { text: [], kolumner: null };
+  const delar = [], fler = [], match = [], exempelOrd = {};
+  let ordbank = null, vantande = { text: [], kolumner: null }, urval = null;
   const raknare = { citat: 0, tabell: 0 }, tabellkryss = [];
 
   for (let i = 0; i < stycken.length; i++) {
@@ -138,8 +162,18 @@ for (const u of uppgifter) {
       const m = s.match(/^\*Tips i provet( \([^)]*\))?:\*\s*/);
       block.push({ typ: 'ruta', rubrik: `Tips i provet${m[1] || ''}:`, text: stil(s.slice(m[0].length)) });
       prompttext.push(ren(s));
-    } else if (/^Begrepp: /.test(s)) ordbank = s.replace(/^Begrepp: /, '').split(',').map(x => x.trim());
-    else if (arLucka(s)) { /* lucktextens meningar: i övningsblocket */ }
+    } else if (/^Begrepp: /.test(s)) {
+      // matchningens exempel står märkt bland begreppen: "(A) diktatur" (2018 A6)
+      ordbank = s.replace(/^Begrepp: /, '').split(',').map(x => x.trim()).map(x => {
+        const m = x.match(/^\(([A-Z])\) (.+)$/);
+        if (m) exempelOrd[m[1]] = m[2];
+        return m ? m[2] : x;
+      });
+    } else if (slag === 'lucktext' && /^\*\*Ordruta:\*\*$/.test(s) && stycken[i + 1] && G.arStimTabell(stycken[i + 1])) {
+      // lucktextens ordruta som tabell (2018 A1): begreppen rad för rad, som de läses
+      ordbank = G.tabellrader(stycken[i + 1]).map(celler).flat().filter(Boolean);
+      i++;
+    } else if (arLucka(s)) { /* lucktextens meningar: i övningsblocket */ }
     else if (arSvarsrad(s)) { /* provets svarsrader: svarsrutan ersätter dem */ }
     else if (stim) {                                     // källtext eller tabell: uppgiftens citat eller tabell (lasStimulus)
       block.push(stim.block);
@@ -157,6 +191,15 @@ for (const u of uppgifter) {
       tabellkryss.push(upg);
     } else if (slag === 'flerval' && G.arFlerval(s)) {    // en rad i flervalet: begreppet och dess alternativ
       fler.push(G.flervalRad(s));
+    } else if (slag === 'urval' && r.every(x => /^- /.test(x))) {   // urvalets alternativ (2016 A10)
+      kolla(!urval, `uppgift ${u.nr}: två listor med alternativ`);
+      urval = r.map(x => stil(x.replace(/^- /, '')));
+    } else if (slag === 'matchning' && r.some(x => /^- [A-Z] /.test(x))) {
+      // matchningens förklaringar: "- B En samling idéer …", exemplet "- A (Exempel) …". Raden "Förklaringar:" före
+      // listan är provets etikett (begreppen står i en ruta före raderna i övningen) och förs inte in.
+      const f = r.findIndex(x => /^- [A-Z] /.test(x));
+      kolla(r.slice(0, f).every(x => x === 'Förklaringar:') && r.slice(f).every(x => /^- [A-Z] /.test(x)), `uppgift ${u.nr}: oväntad text runt förklaringarna`);
+      r.slice(f).forEach(x => { const m = x.match(/^- ([A-Z]) (.+)$/); match.push({ etikett: m[1], text: stil(m[2]) }); });
     } else if (slag === 'kryss' && r.some(arRad)) {      // ett block: text och kolumner före raderna, sedan raderna
       const forst = r.findIndex(arRad), fore = r.slice(0, forst), rader = r.slice(forst);
       kolla(rader.every(arRad), `uppgift ${u.nr}: ett stycke med rader har text efter raderna`);
@@ -188,6 +231,40 @@ for (const u of uppgifter) {
   if (slag === 'flerval') {
     // Facit: "- a) Straffmyndig: <alternativet>" – svaret är det alternativ som facitraden slutar med (precis ett)
     block.push({ typ: 'uppgift', id, slag: 'flerval', rader: G.flervalRader(u.nr, fler, bedom) });
+  } else if (slag === 'urval') {
+    // Facit: "**Facit:** Regeringsformen, Successionsordningen, …" – de rätta alternativen. Högst så många kryss som
+    // uppgiften anger ("Om du skriver fler än fyra kryss räknas ditt svar som ogiltigt"), som beställt i typordern.
+    const f = (bedom.match(/^\*\*Facit:\*\*\s*(.+)$/m) || [])[1];
+    kolla(urval && f, `uppgift ${u.nr}: inga alternativ eller inget facit`);
+    const ratta = (f || '').replace(/\.$/, '').split(',').map(x => x.trim());
+    const svar = ratta.map(x => (urval || []).findIndex(a => liten(a) === liten(x)));
+    kolla(svar.every(k => k >= 0), `uppgift ${u.nr}: facit ”${ratta.join(', ')}” står inte alla bland alternativen`);
+    const ANTAL = { två: 2, tre: 3, fyra: 4, fem: 5, sex: 6 };
+    const hogst = ANTAL[(elev.match(/fler än (\S+) kryss/) || [])[1]];
+    kolla(hogst === svar.length, `uppgift ${u.nr}: uppgiften anger högst ${hogst} kryss, facit har ${svar.length}`);
+    block.push({ typ: 'uppgift', id, slag: 'urval', hogst, alternativ: urval || [], svar: svar.sort((a, b) => a - b) });
+  } else if (slag === 'matchning') {
+    // Facit: "- B ideologi" – begreppet till varje förklaring. Exemplet (A) har begreppet som är märkt "(A)" bland
+    // begreppen; det står ifyllt och räknas inte.
+    const fi = bedom.indexOf('**Facit');
+    kolla(fi >= 0 && ordbank, `uppgift ${u.nr}: inget facit eller inga begrepp`);
+    const facit = {};
+    for (const x of bedom.slice(fi).split('\n').slice(1)) {
+      if (!x.trim()) { if (Object.keys(facit).length) break; continue; }
+      const m = x.match(/^- ([A-Z]) (.+)$/);
+      if (!m) break;
+      facit[m[1]] = m[2].trim();
+    }
+    const alt = ordbank || [];
+    kolla(new Set(alt.map(liten)).size === alt.length, `uppgift ${u.nr}: ett begrepp står två gånger`);
+    const rader = match.map(r => {
+      const ex = /^\(Exempel\) /.test(r.text), ord = ex ? exempelOrd[r.etikett] : facit[r.etikett];
+      const svar = ord ? alt.findIndex(a => liten(a) === liten(ord)) : -1;
+      kolla(svar >= 0, `uppgift ${u.nr}: förklaring ${r.etikett} saknar facit bland begreppen`);
+      return Object.assign({ etikett: r.etikett, text: r.text, svar }, ex ? { exempel: true } : {});
+    });
+    kolla(rader.length && Object.keys(facit).length === rader.filter(r => !r.exempel).length, `uppgift ${u.nr}: ${rader.length} förklaringar men ${Object.keys(facit).length} facit`);
+    block.push({ typ: 'uppgift', id, slag: 'matchning', alternativ: alt, rader });
   } else if (tabellkryss.length) {
     // Kolumn-kryss i tabeller: facit ur en tabell i bedömningen (kolumn n för den n:te tabellen, raderna i ordning) eller
     // ur "- Kolumn: a, b, …"; var sitt kryss med var sin Rätta (id …-1, …-2 när de är flera)
@@ -224,7 +301,16 @@ for (const u of uppgifter) {
     } else {
       const fi = bedom.indexOf('**Facit');
       kolla(fi >= 0, `uppgift ${u.nr}: inget facit`);
-      for (const rad of bedom.slice(fi).split('\n').slice(1)) {
+      // facit som tabell direkt efter rubriken ("| a) högre barnbidrag | Riksdag |", 2016 B4): radens bokstav och kolumnen
+      const efterFacit = bedom.slice(fi).split('\n').slice(1), tab = [];
+      for (let k = efterFacit.findIndex(x => x.trim()); k >= 0 && k < efterFacit.length && /^\|/.test(efterFacit[k]); k++) tab.push(efterFacit[k]);
+      const facitTabell = tabellrader(tab.join('\n')).map(celler);
+      for (const c of facitTabell.slice(1)) {
+        const m = c[0].match(/^([a-z])\) /);
+        kolla(m && c[1], `uppgift ${u.nr}: oväntad rad i facittabellen ”${c.join(' | ')}”`);
+        if (m) etikettFor[m[1]] = c[1];
+      }
+      if (!facitTabell.length) for (const rad of bedom.slice(fi).split('\n').slice(1)) {
         if (!rad.trim()) { if (Object.keys(etikettFor).length) break; continue; }
         const num = rad.match(/^(\d+)\. (.+)$/);
         if (num) { const i = num[2].lastIndexOf(': '); etikettFor[num[1]] = num[2].slice(i + 2).trim(); continue; }
@@ -247,7 +333,8 @@ for (const u of uppgifter) {
         r.svar = l ? d.kolumner.findIndex(k => liten(k) === liten(l)) : -1;
         kolla(r.svar >= 0, `uppgift ${u.nr}: rad ${r.etikett || r.nyckel} saknar facit bland kolumnerna ${d.kolumner.join(' / ')}`);
       });
-      kolla(d.kolumner.length >= 2 && d.kolumner.length <= 3, `uppgift ${u.nr}: ${d.kolumner.length} kolumner`);
+      // (fler än tre kolumner sedan 2026-11-25: Skola / Kommun / Riksdag / EU, 2016 B4)
+      kolla(d.kolumner.length >= 2, `uppgift ${u.nr}: ${d.kolumner.length} kolumner`);
     }
     const rensa = r => Object.assign(r.etikett ? { etikett: r.etikett } : {}, { text: r.text, svar: r.svar });
     // ett block utan egen text: kolumner och rader direkt i uppgiften
@@ -257,16 +344,27 @@ for (const u of uppgifter) {
   } else if (slag === 'lucktext') {
     // En rad med två luckor blir två rader i övningen (ett skrivfält per rad): texten före den andra luckan står på den
     // andra raden, så att meningen står ordagrant läst i ordning
+    // En rad utan lucka i samma stycke som luckraderna (2018 A1: "En av dem har ett förslag på en lagändring.") står
+    // först i nästa rads text, så att hela texten står ordagrant i ordning; efter den sista luckan står den sist.
     const luckor = [];
-    for (const m of elev.split('\n').filter(x => /^\d+\. .*______/.test(x) || arLuckrad(x)).map(r => r.replace(/^\d+\. /, ''))) {
-      const bit = m.split('______');
-      for (let k = 0; k < bit.length - 1; k++) luckor.push({ fore: bit[k], efter: k === bit.length - 2 ? bit[k + 1] : '' });
+    let lost = [];
+    for (const s of stycken.filter(arLucka)) for (const x of radlista(s)) {
+      if (!(/^\d+\. .*______/.test(x) || arLuckrad(x))) { lost.push(x); continue; }
+      // (ett skiljetecken direkt efter en lucka som inte är radens sista står kvar på luckans rad: "… en ______. Om …")
+      const bit = x.replace(/^\d+\. /, '').split('______');
+      for (let k = 0; k < bit.length - 1; k++) {
+        const tecken = k < bit.length - 2 ? (bit[k + 1].match(/^[.,;:!?]+/) || [''])[0] : '';
+        if (tecken) bit[k + 1] = bit[k + 1].slice(tecken.length);
+        luckor.push({ fore: (k === 0 && lost.length ? lost.join(' ') + ' ' : '') + bit[k], efter: k === bit.length - 2 ? bit[k + 1] : tecken });
+      }
+      lost = [];
     }
+    if (lost.length && luckor.length) luckor[luckor.length - 1].efter += ' ' + lost.join(' ');
     // Facit: numrerat ("1. asyl") eller meningarna med svaren i fetstil ("- … blir **gripen**.")
     const facit = [];
     let iFacit = false;
     for (const r of bedom.split('\n')) {
-      if (/^\*\*Facit:\*\*/.test(r)) { iFacit = true; continue; }
+      if (/^\*\*Facit( \([^)]*\))?:\*\*/.test(r)) { iFacit = true; continue; }
       const m = r.match(/^(\d+)\. (.+)$/);
       if (iFacit && m) facit[+m[1] - 1] = m[2].trim();
       else if (iFacit && /^- .*\*\*/.test(r)) facit.push(...[...r.matchAll(/\*\*(.+?)\*\*/g)].map(x => x[1].trim()));
