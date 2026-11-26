@@ -10,10 +10,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E och C."
-    },
-    {
-     "typ": "text",
      "text": "I Sverige skyddar grundlagarna det fria ordet, men friheten har gränser."
     },
     {
@@ -74,10 +70,6 @@ Bok.niva('repetitionsbok', {
    "titel": "Begrepp om medier",
    "till": "vanster",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Kryssa för den förklaring som passar bäst ihop med de olika begreppen. I varje delfråga ska endast ett kryss sättas ut. Om du skriver fler kryss räknas svaret som ogiltigt."
@@ -208,10 +200,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Vilka av följande påståenden om medier stämmer och vilka stämmer inte? Kryssa för \"Stämmer\" eller \"Stämmer inte\" vid varje påstående! Om du sätter ut två kryss vid någon deluppgift eller sätter alla kryss i samma kolumn räknas svaret som ogiltigt."
     },
     {
@@ -299,10 +287,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Du ska skriva ett skolarbete om energidrycker och hälsa. Du hittar hemsidan för företaget Kraftkick, som tillverkar och säljer energidrycker. Där står bland annat:"
     },
     {
@@ -377,10 +361,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Falska nyheter och manipulerade bilder kan spridas snabbt i sociala medier. Ibland sprids osanningar med flit, vilket kallas desinformation."
     },
     {
@@ -428,10 +408,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-6",
    "titel": "Mediestöd",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "På många orter finns en större tidning som får de flesta annonserna och en mindre tidning som har svårt att klara sig. Staten ger därför mediestöd till vissa tidningar."

@@ -16,7 +16,8 @@
  * verktyg/uppgifter-gemensamt.js.
  *
  * Texten förs över ordagrant: **fet** blir *fet* (motorns enda markering), *kursiv* blir vanlig text. Raden "Bilder och
- * stimulus" är Joachims anteckning, inte elevtext.
+ * stimulus" är Joachims anteckning, inte elevtext, och raden "Uppgiften ger möjlighet att visa belägg för nivå …" förs
+ * aldrig in (eleven ser aldrig nivå eller belägg, som i Nationella prov-boken; arbetsorder 2026-11-26).
  *   Ja/Nej och Stämmer/Stämmer inte → slag 'kryss' (kolumn-kryss; facit: kolumnens index)
  *   lucktext                         → slag 'lucktext' (godkända svar: facit och dess bestämda form, BESTAMD nedan)
  *   flerval ("a) Begrepp" med alternativen som punkter) → slag 'flerval' (facit "- a) <alternativet>")
@@ -89,7 +90,9 @@ for (const u of uppgifter) {
   const [elev0, bedom] = u.kropp.split('\n### Bedömningsanvisning\n');
   kolla(bedom, `uppgift ${u.nr}: ingen bedömningsanvisning`);
   if (!bedom) continue;
-  const elev = elev0.split('\n').filter(r => !/^\*\*Bilder och stimulus:\*\*/.test(r)).join('\n');
+  // (raden "Uppgiften ger möjlighet att visa belägg för nivå …" står aldrig i boken: eleven ser aldrig nivå eller belägg,
+  // som i Nationella prov-boken – Joachims arbetsorder 2026-11-26)
+  const elev = elev0.split('\n').filter(r => !/^\*\*Bilder och stimulus:\*\*/.test(r) && !/^\*?Uppgiften ger möjlighet att visa belägg/.test(r.trim())).join('\n');
   const id = `${T.prefix}-u${u.nr}`, block = [];
   // Kryssets tabell: raderna i en tabell med ☐ (tabellens rader i följd). En tabell utan ☐ är uppgiftens tabell och står
   // kvar i texten (lasStimulus).

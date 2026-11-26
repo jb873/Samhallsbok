@@ -10,10 +10,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E och C."
-    },
-    {
-     "typ": "text",
      "text": "Sverige har fem nationella minoriteter: samer, sverigefinnar, tornedalingar, judar och romer. De har särskilda rättigheter i lag."
     },
     {
@@ -73,10 +69,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-2",
    "titel": "Befolkning, migration och minoriteter",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Läs först igenom begreppen och skriv sedan in begreppen där de passar bäst! Det finns fler begrepp än meningar. Inget begrepp ska användas två gånger."
@@ -176,10 +168,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Det finns olika uppfattningar om migration och integration i Sverige. Vilka av följande påståenden stämmer och vilka stämmer inte? Kryssa för \"Stämmer\" eller \"Stämmer inte\" vid varje påstående! Om du sätter ut två kryss vid någon deluppgift eller sätter alla kryss i samma kolumn räknas svaret som ogiltigt."
     },
     {
@@ -267,10 +255,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Integration betyder att människor med olika ursprung lever tillsammans och har samma rättigheter och möjligheter. För den som har flyttat till Sverige kan det gå olika lätt att bli en del av samhället."
     },
     {
@@ -319,10 +303,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-5",
    "titel": "Bostadssegregation",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Segregation betyder att olika befolkningsgrupper lever åtskilda, till exempel i olika bostadsområden. I Sverige syns bostadssegregationen tydligast i Stockholm, Göteborg och Malmö."
@@ -376,10 +356,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-6",
    "titel": "Minoritetsspråk i förskola och äldreomsorg",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "I vissa kommuner, så kallade förvaltningsområden, har de som tillhör en nationell minoritet rätt att få förskola och äldreomsorg helt eller delvis på finska, meänkieli eller samiska."

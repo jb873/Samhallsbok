@@ -10,10 +10,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E och C."
-    },
-    {
-     "typ": "text",
      "text": "FN:s allmänna förklaring om de mänskliga rättigheterna slår fast att alla människor är födda fria och lika i värde och rättigheter."
     },
     {
@@ -73,10 +69,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-2",
    "titel": "Demokrati, diktatur och mänskliga rättigheter",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Läs först igenom begreppen och skriv sedan in begreppen där de passar bäst! Det finns fler begrepp än meningar. Inget begrepp ska användas två gånger."
@@ -175,10 +167,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Vilka av följande påståenden stämmer och vilka stämmer inte? Kryssa för \"Stämmer\" eller \"Stämmer inte\" vid varje påstående! Om du sätter ut två kryss vid någon deluppgift eller sätter alla kryss i samma kolumn räknas svaret som ogiltigt."
     },
     {
@@ -266,10 +254,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Demokratin är inte självklar. I flera länder har demokratin försvagats, och en diktatur kan till och med växa fram ur en demokrati."
     },
     {
@@ -323,10 +307,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "I många diktaturer granskar och stoppar staten information innan den når folket. Det kan gälla tidningar, böcker, tv och internet."
     },
     {
@@ -374,10 +354,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-6",
    "titel": "Sänkt rösträttsålder",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "I Sverige är rösträttsåldern 18 år. Ibland diskuteras om den ska sänkas till 16 år."

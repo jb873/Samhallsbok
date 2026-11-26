@@ -10,10 +10,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E och C."
-    },
-    {
-     "typ": "text",
      "text": "I Sverige är makten delad mellan riksdagen, regeringen och domstolarna. Regeringen styr landet, men den får inte göra vad som helst."
     },
     {
@@ -73,10 +69,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-2",
    "titel": "Riksdag, regering och EU",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Läs först igenom begreppen och skriv sedan in begreppen där de passar bäst! Det finns fler begrepp än meningar. Inget begrepp ska användas två gånger."
@@ -176,10 +168,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Vilka av följande påståenden stämmer och vilka stämmer inte? Kryssa för \"Stämmer\" eller \"Stämmer inte\" vid varje påstående! Om du sätter ut två kryss vid någon deluppgift eller sätter alla kryss i samma kolumn räknas svaret som ogiltigt."
     },
     {
@@ -267,10 +255,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Sveriges 290 kommuner har kommunalt självstyre. De har egna folkvalda politiker, tar ut egen skatt och bestämmer själva i många frågor, till exempel om skola och äldreomsorg."
     },
     {
@@ -321,10 +305,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Regeringen utser myndigheternas chefer och ger dem uppdrag och pengar. Men varken regeringen eller en enskild minister får bestämma hur en myndighet ska besluta i ett enskilt ärende, till exempel om en viss person ska få bygglov, uppehållstillstånd eller bidrag. Det kallas ministerstyre och är förbjudet."
     },
     {
@@ -372,10 +352,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-6",
    "titel": "EU:s överstatliga beslut",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "De flesta EU-lagar är överstatliga. Det betyder att Sverige måste följa en EU-lag även om Sverige röstade emot den. EU:s lagar går då före svenska lagar."

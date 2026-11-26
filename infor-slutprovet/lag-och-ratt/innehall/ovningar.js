@@ -10,10 +10,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E och C."
-    },
-    {
-     "typ": "text",
      "text": "Normer är oskrivna regler, regler gäller i ett visst sammanhang och lagar gäller alla. Den som bryter mot en lag kan straffas."
     },
     {
@@ -73,10 +69,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-2",
    "titel": "Rättsstaten och domstolarna",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Läs först igenom begreppen och skriv sedan in begreppen där de passar bäst! Det finns fler begrepp än meningar. Inget begrepp ska användas två gånger."
@@ -174,10 +166,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Det finns många uppfattningar om brott och straff. Vilka av följande påståenden stämmer och vilka stämmer inte? Kryssa för \"Stämmer\" eller \"Stämmer inte\" vid varje påstående! Om du sätter ut två kryss vid någon deluppgift eller sätter alla kryss i samma kolumn räknas svaret som ogiltigt."
     },
     {
@@ -265,10 +253,6 @@ Bok.niva('repetitionsbok', {
    "block": [
     {
      "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
-    {
-     "typ": "text",
      "text": "Ungdomar mellan 15 och 20 år begår flest brott. De flesta slutar begå brott när de kommer upp i 20-årsåldern."
     },
     {
@@ -317,10 +301,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-5",
    "titel": "Brott drabbar fler än offret",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "Den som utsätts för ett brott kallas brottsoffer. Men ett brott påverkar ofta fler än den som blev utsatt."
@@ -374,10 +354,6 @@ Bok.niva('repetitionsbok', {
    "id": "uppgift-6",
    "titel": "Kameraövervakning",
    "block": [
-    {
-     "typ": "text",
-     "text": "Uppgiften ger möjlighet att visa belägg för nivå E, C och A."
-    },
     {
      "typ": "text",
      "text": "På många offentliga platser, till exempel på torg och i tunnelbanan, finns det övervakningskameror. Polisen vill gärna att det sätts upp fler."
