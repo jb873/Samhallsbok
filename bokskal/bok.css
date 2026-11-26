@@ -470,6 +470,14 @@ sub, sup { font-size: .7em; line-height: 0; }
 /* en punkt ur en punktlista som får delas (arbetsorder 16): samma avstånd som mellan punkterna i en hel lista, och
    listans marginal under den sista – höjden blir densamma som den hela listans */
 .b-punktdel:not(.pd-sista) { margin-bottom: .28em; }
+/* …utom sist på sidan: ingen marginal under, som sidans sista block (brytningen räknar så). Regeln ovan vann över
+   .sidinnehall > :last-child (samma specificitet, senare i filen); den här är mer specifik och står efter den
+   (Samhälles kopia, 2026-11-26: Läsa: Beslutsfattande s. 41 blev 5 px för hög). Punktens egen marginal går genom
+   listan (ingen kant under), så också den sista punkten i en lista sist på sidan – eller sist före raden
+   "Fortsätter på nästa sida" – får ingen marginal under; punkterna före den har kvar sina 0,28 em. */
+.sidinnehall > .b-punktdel:last-child,
+.sidinnehall > .b-punkter:last-child > li:last-child,
+.sidinnehall > .b-punkter:has(+ .b-fortsatter:last-child) > li:last-child { margin-bottom: 0; }
 .b-punkter li::before {
   content: ""; position: absolute; left: .1em; top: .6em; width: .3em; height: .3em;
   background: var(--accent-2); transform: rotate(45deg);

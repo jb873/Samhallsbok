@@ -452,6 +452,9 @@ Motorn mäter alla block i sidans bredd i ett enda layoutvarv och packar dem sed
   avsnittet *Provpunktlista efter ett kort stycke*. Negativa prov: `punktlista med en punkt ensam på en sida`
   (`?kontroll&prova=punkt-ensam`) och `punktlista hel fast sidan blir tunn` (`?kontroll&prova=punktlista-hel`, regeln
   avstängd för listor).
+  En punkt som står sist på sidan (eller sist före "Fortsätter på nästa sida") har ingen marginal under, som sidans
+  sista block; punkterna före den har kvar sina 0,28 em (Samhälles kopia, 2026-11-26: annars vann `.b-punktdel:not(.pd-sista)`
+  över `.sidinnehall > :last-child`, och punktens egen marginal gick genom listan – sidan blev 5 px för hög).
 - **PROVA-rutan** delas aldrig.
 - **Kontrollen:** `?kontroll` (brytningsreglerna) och grindens mätning på skärmen säger till om en regel bryts.
 
