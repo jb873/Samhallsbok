@@ -1147,6 +1147,10 @@ circle.fig-energi-fore { fill: none; stroke: var(--dampad); stroke-width: 1.4; s
 .b-utfyllnad { margin: 0; padding-top: 55%; text-align: center; color: var(--dampad); }   /* (padding: första blockets marginal nollas) */
 .b-fortsatter { position: absolute; right: 0; bottom: .25em; margin: 0; padding-right: 8%; font-size: .8em; line-height: 1.2; color: var(--dampad); }
 @media (max-width: 599px) { .b-fortsatter { padding-right: 6%; } }
+/* Raden står sist i sidinnehållet, så sidans sista block är inte :last-child – det blocket får ingen marginal under,
+ * som brytningen räknar (Samhälles kopia, 2026-11-26: annars blev sidan 3–10 px för hög och visade "mer längre ner") */
+.sidinnehall > :has(+ .b-fortsatter:last-child) { margin-bottom: 0; }
+.sidinnehall > .b-rutarad:has(+ .b-fortsatter:last-child) { margin-bottom: 0 !important; }
 
 /* ---------- Innehållsförteckningen (sida 1 och menyn) ---------- */
 

@@ -2831,7 +2831,7 @@ const TOMMA_SVEP = String.raw`async () => {
   const medStycket = sl => sl === 'f' || sl === 'm';
   // Rutorna och formlerna (arbetsorder 11), mätta på skärmen: varje rad i ett EXEMPEL eller en PROVA-ruta (sida, höjd,
   // Svar) och sidans plats för text; varje formels uttryck – på en rad, inom spalten
-  const rutor = { exempel: 0, prova: 0, delade: 0, fyrtio: 0, fel: [] }, formler = { antal: 0, fel: [] };
+  const rutor = { exempel: 0, prova: 0, delade: 0, fyrtio: 0, fel: [] }, formler = { antal: 0, fel: [] }, hoga = [];
   // (arbetsorder 13) en rad i ett exempel som hör ihop med raden före – Svar, eller ett mellanled: i samma stycke och en
   // uträkning (börjar inte med versal, eller "x = …") eller efter en rad som slutar med kolon; samma regel som bok.js
   const RAKNING = /^(?!\p{Lu})|^\S{1,15} [=≈<>≤≥]/u, bunden = (x, fore) => x.svar || (!x.ny && (/:\s*$/.test(fore.t) || RAKNING.test(x.t)));
@@ -2840,6 +2840,9 @@ const TOMMA_SVEP = String.raw`async () => {
       $$('.scen .uppslag > .sida[data-nr]').forEach(e => { ids[e.dataset.nr] = [...e.querySelectorAll('[data-post]')].map(p => p.dataset.post).join(',');
         const inne = e.querySelector('.sidinnehall'); if (inne && !e.classList.contains('innehallssida')) bl[e.dataset.nr] = [...inne.children].map(b => [b.dataset.post, slag(b)]);
         if (inne && !jamfor && !(e.dataset.nr in rr)) {
+          // Höjden som eleven ser den (Samhälle, 2026-11-26): kontrolläget provar sidan före efterpasset, så raden
+          // "Fortsätter på nästa sida" (och det den gör med sidans sista block) mäts bara här
+          if (inne.scrollHeight > inne.clientHeight + 1) hoga.push(namn + ' s.' + e.dataset.nr + ' (+' + (inne.scrollHeight - inne.clientHeight) + ' px' + (inne.querySelector('.b-fortsatter') ? ', Fortsätter på nästa sida' : '') + ')');
           const cs = getComputedStyle(inne); kap[e.dataset.nr] = inne.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
           rr[e.dataset.nr] = [...inne.querySelectorAll('.b-rutarad')].map(x => ({ ruta: x.dataset.ruta, rad: +x.dataset.rad, svar: x.hasAttribute('data-svar'),
             prova: x.classList.contains('rr-prova'), h: x.getBoundingClientRect().height, post: x.dataset.post, ny: x.classList.contains('rr-ny'),
@@ -2911,7 +2914,7 @@ const TOMMA_SVEP = String.raw`async () => {
   for (let kn = 0; kn < antalKort; kn++) { await stang(); const kort = $$('.fordj-kort:not([aria-disabled="true"])')[kn]; if (!kort) continue;
     const namn = kort.textContent.trim().slice(0, 30); kort.click(); await v(700);
     if (Bok.oppen) bocker.push([namn, (await hela(namn)).n]); }
-  const svep = { bocker: bocker.length, sidor: bocker.reduce((s, b) => s + b[1], 0), fel: fel.slice(), skilda, rutor, formler };
+  const svep = { bocker: bocker.length, sidor: bocker.reduce((s, b) => s + b[1], 0), fel: fel.slice(), skilda, rutor, formler, hoga };
   // bladvändning fram och tillbaka i den första boken, en annan bok öppnas och stängs, och den första gås igenom igen
   // (blocken på varje sida ska vara desamma som i den första genomgången)
   fel.length = 0;
@@ -2959,6 +2962,9 @@ async function provaTommaSidor(c, lage) {
   const r = await c.ev(`(${TOMMA_SVEP})()`);
   k.push({ namn: 'tomma sidor: varje sida i varje bok (texterna på varje nivå, djupdykningarna) har block',
     ok: r.svep.bocker > 0 && !r.svep.fel.length, detalj: `${r.svep.bocker} böcker, ${r.svep.sidor} sidor` + (r.svep.fel.length ? ' – TOMMA: ' + r.svep.fel.join('; ') : '') });
+  // (Samhälle, 2026-11-26: grindens blinda fläck – kontrolläget mäter sidan före efterpasset, här mäts den som eleven ser den)
+  k.push({ namn: 'visningen: varje sida i varje bok ryms som eleven ser den, efter efterpasset (med raden "Fortsätter på nästa sida")',
+    ok: r.svep.bocker > 0 && !r.svep.hoga.length, detalj: r.svep.hoga.length ? 'FÖR HÖGA: ' + r.svep.hoga.join('; ') : `${r.svep.sidor} sidor` });
   // Uppslagsregeln (order 8): på datorn står ingen figur på ett annat uppslag än stycket före den, utom när stycket
   // står först på sin sida (undantaget, varning); på mobilen bara varningar (inga flyttar för mobilens skull)
   const sk = r.svep.skilda, beskriv = x => `${x.bok} s.${x.stycke}→${x.sida} (${x.figur})`;

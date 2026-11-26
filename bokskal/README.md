@@ -926,7 +926,9 @@ sidnummer är vänstersidor (innehållsförteckningen är sida 1).
   är sidan föres). Läsplatsen på en utfyllnadssida är nästa riktiga block, eftersom utfyllnadssidan inte finns i
   alla lägen.
 - **"Fortsätter på nästa sida"** står också längst ned på en högersida där avsnittet fortsätter på nästa uppslag (i
-  en övningsbok: uppgiften fortsätter), i luften under texten. Den tar ingen höjd från sidan.
+  en övningsbok: uppgiften fortsätter), i luften under texten. Den tar ingen höjd från sidan. Raden står sist i
+  sidinnehållet, så blocket före den får ingen marginal under, som sidans sista block annars (Samhälles kopia,
+  2026-11-26; före det blev en sådan sida 3–10 px för hög och visade "mer längre ner på sidan").
 - **Den öppna uppgiftens uppslag** (`till: 'uppslag'`, Joachims layout 2026-11-25; ersätter den kompakta regeln samma
   dag, som aldrig slog till): uppgiftens avsnitt börjar på en vänstersida, skrivmodellen flödar direkt efter texten –
   ingen sidbrytning, så det står aldrig en tom sida mellan text och modell – och hamnar på högersidan bredvid; svarsrutan
